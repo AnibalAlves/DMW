@@ -2,15 +2,18 @@ package eu.croussel.sportyfield;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -39,8 +42,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng milanLatlong = new LatLng(45.464211, 9.191383);
+        MarkerOptions milan = new MarkerOptions().position(milanLatlong)
+                .title("Marker in Milan")
+                .snippet("Erasmus in milano");
+
+        mMap.addMarker(milan);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milanLatlong, 14.0f));
+        mMap.setOnInfoWindowClickListener(this);
+
     }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(this, "Let's finish this DMW project",
+                Toast.LENGTH_SHORT).show();
+    }
+
 }
