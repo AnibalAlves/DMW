@@ -46,7 +46,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
+        Intent i = new Intent(this,fieldInfo.class);
+        startActivity(i);
        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);

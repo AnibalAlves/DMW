@@ -65,18 +65,18 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     //Table create statements
     //fields TABLE
-    private static final String CREATE_TABLE_FIELDS = "CREATE TABLE" + FIELD + "(" + KEY_ID + "INTEGER UNIQUE PRIMARY KEY"
-            + KEY_LOCATION + "TEXT" + KEY_LATITUDE + "DOUBLE" + KEY_LONGITUDE + "DOUBLE" + KEY_PRIVATE + "BOOLEAN"
-            + KEY_OUTDOOR + "BOOLEAN" + ")";
+    private static final String CREATE_TABLE_FIELDS = "CREATE TABLE " + FIELD + "(" + KEY_ID + " INTEGER UNIQUE PRIMARY KEY, "
+            + KEY_LOCATION + " TEXT, " + KEY_LATITUDE + " DOUBLE, " + KEY_LONGITUDE + " DOUBLE, " + KEY_PRIVATE + " BOOLEAN, "
+            + KEY_OUTDOOR + " BOOLEAN " + ")";
     //descrip table
-    private static final String CREATE_TABLE_DESCR = "CREATE TABLE" + DESCR + "(" + KEY_NUMBER + "INTEGER AUTOINCREMENT PRIMARY KEY"
-            + KEY_DESCRIPTION + "TEXT" + KEY_FIELDID + "INTEGER" + KEY_DATE + "DATETIME" + ")";
+    private static final String CREATE_TABLE_DESCR = "CREATE TABLE " + DESCR + "(" + KEY_NUMBER + " INTEGER PRIMARY KEY, "
+            + KEY_DESCRIPTION + " TEXT, " + KEY_FIELDID + " INTEGER, " + KEY_DATE + " DATETIME " + ")";
 
-    private static final String CREATE_TABLE_USER = "CREATE TABLE" + USER + "(" + KEY_USERNAME + "TEXT PRIMARY KEY" +
-            KEY_AGE + "INTEGER" + KEY_EMAIL + "TEXT" + KEY_PHONE + "INTEGER" + KEY_REPUTATION + "INTEGER" + KEY_FAVSPORT + "TEXT" + ")";
+    private static final String CREATE_TABLE_USER = "CREATE TABLE " + USER + "(" + KEY_USERNAME + " TEXT PRIMARY KEY, " +
+            KEY_AGE + " INTEGER, " + KEY_EMAIL + " TEXT, " + KEY_PHONE + " INTEGER, " + KEY_REPUTATION + " INTEGER, " + KEY_FAVSPORT + " TEXT " + ")";
 
-    private static final String CREATE_TABLE_USER_DESCR = "CREATE TABLE" + USER_DESCR + "(" + KEY_USER_NAME + "TEXT PRIMARY KEY" + KEY_DESCR
-            + "INTEGER" + ")";
+    private static final String CREATE_TABLE_USER_DESCR = "CREATE TABLE " + USER_DESCR + "(" + KEY_USER_NAME + " TEXT PRIMARY KEY, " + KEY_DESCR
+            + " INTEGER, " + ")";
 
     public DataBaseHandler(Context context) {
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -110,7 +110,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_ID, f.getId());
         values.put(KEY_LOCATION, f.getLocation());
         values.put(KEY_LATITUDE, f.getLat());
         values.put(KEY_LONGITUDE, f.getLong());
@@ -118,7 +117,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_OUTDOOR, f.getOut());
 
         // insert row
-        db.insert(CREATE_TABLE_FIELDS, null, values);
+        db.insertWithOnConflict(FIELD, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public field getField(Integer id)
@@ -162,7 +161,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_DATE, String.valueOf(Calendar.getInstance().getTime()));
 
         // insert row
-        db.insert(DESCR, null, values);
+        db.insertWithOnConflict(DESCR, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     /**
@@ -209,7 +208,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_FAVSPORT, u.getFavSport());
 
         // insert row
-        db.insert(CREATE_TABLE_USER, null, values);
+        db.insertWithOnConflict(USER, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public user getUser(String uName)
@@ -217,7 +216,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT  * FROM " + USER + " WHERE "
-                + KEY_USERNAME + " = " + uName;
+                + KEY_USERNAME + " = '" + uName + "'";
         Log.e(LOG, selectQuery);
 
         Cursor c = db.rawQuery(selectQuery, null);
@@ -267,7 +266,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_USER_NAME, uName);
         values.put(KEY_AGE, desc_n);
         // insert row
-        db.insert(CREATE_TABLE_USER_DESCR, null, values);
+        db.insertWithOnConflict(USER_DESCR, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     /*
