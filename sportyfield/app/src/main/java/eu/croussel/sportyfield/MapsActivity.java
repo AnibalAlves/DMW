@@ -46,8 +46,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        Intent i = new Intent(this,fieldInfo.class);
-        startActivity(i);
+
        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -139,7 +138,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
-
+        mCurrLocationMarker.setTag(2);
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
 
@@ -231,6 +230,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
                         Toast.LENGTH_SHORT).show();
                 break;
             default :
+                Toast.makeText(this, "Tag >2 clicked",
+                        Toast.LENGTH_SHORT).show();
                 break ;
         }
     }
