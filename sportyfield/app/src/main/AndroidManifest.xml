@@ -16,7 +16,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< Updated upstream
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -38,9 +37,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-=======
+
         <activity android:name=".fieldInfo"></activity>
->>>>>>> Stashed changes
+
     </application>
 
 </manifest>
