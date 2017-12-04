@@ -47,7 +47,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-       SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        //Fragment of the Maps API
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
@@ -84,17 +85,26 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
-        // Add a marker in Sydney and move the camera
+
+        // Add a marker in Milan and move the camera
         LatLng milanLatlong = new LatLng(45.464211, 9.191383);
-        MarkerOptions milan = new MarkerOptions().position(milanLatlong)
+        MarkerOptions milan = new MarkerOptions()
+                .position(milanLatlong)
                 .title("Marker in Milan")
                 .snippet("Erasmus in milano");
 
+        //Put the marker and give it a tag
         Marker milanMarker = mMap.addMarker(milan);
         milanMarker.setTag(1);
+
+        //Move the camera to Milan and zoom as city view
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milanLatlong, 14.0f));
+
+        //Activate listener for marker's info windows
         mMap.setOnInfoWindowClickListener(this);
     }
+
+    //Method to build the google API client
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -104,12 +114,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
         mGoogleApiClient.connect();
     }
 
+    //Method called when app connecter to google's api
     @Override
     public void onConnected(Bundle bundle) {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest = new LocationRequest()
+                .setInterval(1000)
+                .setFastestInterval(1000)
+                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -117,12 +128,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
         }
     }
 
+    //Method when google's api is suspended
     @Override
     public void onConnectionSuspended(int i) {}
 
+    //Method when google's api not reached
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {}
 
+    //Method when location changes
     @Override
     public void onLocationChanged(Location location)
     {
@@ -133,10 +147,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(latLng)
+                .title("Current Position")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
         mCurrLocationMarker.setTag(2);
         //move map camera
@@ -144,6 +158,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
 
     }
 
+    //Check of Location permision (Fine location here)
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -181,6 +196,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
         }
     }
 
+    //Builds the client after asking for location permission
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -217,6 +233,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
     }
 
 
+    //called everytime a window is called
     @Override
     public void onInfoWindowClick(Marker marker) {
         int tag = (int) marker.getTag();
@@ -237,13 +254,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
     }
 
 
-
+    //Add action buttons to the action bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbuttons, menu);
         return true ;
     }
+
+    //Called when one of the action button is called
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
