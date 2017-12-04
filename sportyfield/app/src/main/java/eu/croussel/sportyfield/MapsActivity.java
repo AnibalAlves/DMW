@@ -1,9 +1,8 @@
 package eu.croussel.sportyfield;
 
-import android.support.v4.app.FragmentActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,6 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback {
 
@@ -78,8 +78,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(this, "Let's finish this DMW project",
-                Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, fieldInfo.class);
+        startActivity(intent);
     }
 
 }
