@@ -240,6 +240,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
         switch (tag) {
             case 1 :
                 Intent intent = new Intent(this, fieldInfo.class);
+                intent.putExtra("fieldID", 1); //added this to pass the field ID. You need
+                //to get it from the database. When somenone click on marker, get that id from db and send to fieldInfo
                 startActivity(intent);
                 break ;
             case 2 :
