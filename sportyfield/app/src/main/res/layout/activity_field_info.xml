@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:text="bla"
+            android:text=""
             android:textColor="@android:color/white"
             android:textSize="20sp" />
     </LinearLayout>
@@ -28,6 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
+            android:id="@+id/field_image"
             android:scaleType="fitXY"
             android:src="@drawable/field"
             android:layout_width="match_parent"
