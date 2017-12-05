@@ -6,42 +6,42 @@
     <RelativeLayout>
 
         <ImageView
-            android:id="@+id/img"
+            android:id="@+id/user_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="7dp"
             android:src="@drawable/user_icon" />
 
         <TextView
-            android:id="@+id/txt"
+            android:id="@+id/user_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/img"
+            android:layout_below="@+id/user_image"
             android:layout_marginLeft="8dp"
             android:text="PRO USER"
             android:textColor="@android:color/holo_green_dark"
             android:textSize="10dp" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/txt"
+            android:layout_above="@+id/user_type"
             android:layout_marginStart="40dp"
             android:layout_marginTop="10dp"
-            android:layout_alignTop="@+id/img"
-            android:layout_toEndOf="@+id/img"
+            android:layout_alignTop="@+id/user_image"
+            android:layout_toEndOf="@+id/user_image"
             android:text="SOME DATE"
             android:textColor="@android:color/black"
             android:textSize="10dp" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/descr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textView"
-            android:layout_alignStart="@+id/textView"
+            android:layout_alignBottom="@+id/date"
+            android:layout_alignStart="@+id/date"
             android:text="Description"
             android:textColor="@android:color/black"
             android:textSize="10dp" />
@@ -53,13 +53,13 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="105dp"
             android:src="@drawable/broken_ring"
-            android:id="@+id/imageView" />
+            android:id="@+id/report_image" />
 
         <ImageButton
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/imageView"
+            android:layout_alignTop="@+id/report_image"
             android:layout_marginEnd="33dp"
             android:background="@android:color/transparent"
             android:src="@drawable/arrow_up"
@@ -68,7 +68,7 @@
             />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/reputation"
             android:layout_width="24dp"
             android:layout_height="15dp"
             android:layout_alignStart="@+id/imageButton"
@@ -81,10 +81,11 @@
             android:layout_height="24dp"
             android:layout_marginTop="7dp"
             android:background="@android:color/transparent"
-            android:layout_alignStart="@+id/textView3"
-            android:layout_alignTop="@+id/textView2"
+            android:layout_alignStart="@+id/reputation"
+            android:layout_alignTop="@+id/descr"
             android:src="@drawable/arrow_down"
             android:onClick="downArrow"
+            android:id="@+id/down"
             />
 
     </RelativeLayout>
