@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.media.audiofx.AudioEffect;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -153,7 +152,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     /*
     * Creating Descr
     */
-    public void createDescr(descri d) {
+    public void createDescr(report d) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -168,8 +167,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     /**
      * getting all descr of that field
      * */
-    public List<descri> getAllDescri() {
-        List<descri> description = new ArrayList<descri>();
+    public List<report> getAllDescri() {
+        List<report> description = new ArrayList<report>();
 
         String selectQuery = "SELECT  * FROM " + DESCR;
 
@@ -181,7 +180,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                descri t = new descri();
+                report t = new report();
                 t.setId(c.getInt(c.getColumnIndex(KEY_FIELDID)));
                 t.setDescr(c.getString(c.getColumnIndex(KEY_DESCRIPTION)));
                 t.setNumber(c.getInt(c.getColumnIndex(KEY_NUMBER)));

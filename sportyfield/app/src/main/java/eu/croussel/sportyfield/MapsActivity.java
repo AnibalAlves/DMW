@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,9 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.Calendar;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
@@ -49,7 +46,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     Marker mClickedMark ;
     // Database Helper
     DataBaseHandler db;
-    List<descri> fieldDescriptions ;
+    List<report> fieldDescriptions ;
 
 
 
@@ -67,10 +64,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         db = new DataBaseHandler(this);
         Log.d("Insert:", "Inserting fields...");
         db.createField(new field("Milano Castle", 45.471944, 9.178889, false, true, 3));
-        db.createDescr(new descri("This is a castle, wow.",3,1,null));
+        db.createDescr(new report("This is a castle, wow.",3,1,null));
 
         db.createField(new field("Duomo",45.464211, 9.191383, false, false, 1));
-        db.createDescr(new descri("This is Duomo - click to go on info", 1, 2, null));
+        db.createDescr(new report("This is Duomo - click to go on info", 1, 2, null));
         fieldDescriptions = db.getAllDescri();
     }
 
@@ -167,7 +164,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 
     //display all the fields on the map
     private void displayFields(){
-        for( descri d:fieldDescriptions )
+        for( report d:fieldDescriptions )
         {
             int id = d.getId();
             field f = db.getField(id);

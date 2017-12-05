@@ -4,7 +4,7 @@ package eu.croussel.sportyfield;
  * Created by afonso on 29-11-2017.
  */
 
-public class descri {
+public class report {
     String _descr;
     int _fieldId; //secondary key that connects to field
     int _number; //descr number primary key must be incremented automatically
@@ -14,12 +14,12 @@ public class descri {
     // String date = sdf.format(new Date());
 
     //empty
-    public descri()
+    public report()
     {
 
     }
     //contructor
-    public descri(String descr,int id, int number, String date)
+    public report(String descr, int id, int number, String date)
     {
         this._descr=descr;
         this._fieldId=id;
