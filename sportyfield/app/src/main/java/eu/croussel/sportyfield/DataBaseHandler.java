@@ -58,6 +58,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String KEY_PHONE = "_phone";
     private static final String KEY_REPUTATION = "_reputation";
     private static final String KEY_FAVSPORT = "_favSport";
+    private static final String KEY_TYPE = "_type";
 
     //USER_EVENTS columns
     private static final String KEY_USER_NAME = "userName";
@@ -73,7 +74,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             + KEY_DESCRIPTION + " TEXT, " + KEY_FIELDID + " INTEGER, " + KEY_DATE + " DATETIME " + ")";
 
     private static final String CREATE_TABLE_USER = "CREATE TABLE " + USER + "(" + KEY_USERNAME + " TEXT PRIMARY KEY, " +
-            KEY_AGE + " INTEGER, " + KEY_EMAIL + " TEXT, " + KEY_PHONE + " INTEGER, " + KEY_REPUTATION + " INTEGER, " + KEY_FAVSPORT + " TEXT " + ")";
+            KEY_AGE + " INTEGER, " + KEY_EMAIL + " TEXT, " + KEY_PHONE + " INTEGER, " + KEY_REPUTATION + " INTEGER, "  + KEY_TYPE + " TEXT, " + KEY_FAVSPORT + " TEXT " + ")";
 
     private static final String CREATE_TABLE_USER_DESCR = "CREATE TABLE " + USER_DESCR + "(" + KEY_USER_NAME + " TEXT PRIMARY KEY, " + KEY_DESCR
             + " INTEGER " + ")";
@@ -200,6 +201,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(KEY_TYPE,u.getType());
         values.put(KEY_USERNAME, u.getUserName());
         values.put(KEY_AGE, u.getAge());
         values.put(KEY_EMAIL, u.getEmail());
@@ -228,6 +230,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         u.setEmail(c.getString(c.getColumnIndex(KEY_EMAIL)));
         u.setReputation(c.getInt(c.getColumnIndex(KEY_REPUTATION)));
         u.setFavSport(c.getString(c.getColumnIndex(KEY_FAVSPORT)));
+        u.setType(c.getString(c.getColumnIndex(KEY_TYPE)));
         return u;
     }
 
@@ -241,6 +244,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_PHONE, u.getPhone());
         values.put(KEY_REPUTATION, u.getReputatio());
         values.put(KEY_FAVSPORT, u.getFavSport());
+        values.put(KEY_TYPE, u.getType());
 
         // updating row
         return db.update(USER, values, KEY_ID + " = ?",

@@ -11,13 +11,14 @@ public class user {
     int _phone;
     int _reputation;
     String _favSport;
+    String _type; //PRO USER OR AMATEUR USER
 
     public user()
     {
 
     }
 
-    public user(String u, int a, String e,int p, int r, String f)
+    public user(String u, int a, String e,int p, int r, String f, String t)
     {
         this._userName=u;
         this._age=a;
@@ -25,6 +26,7 @@ public class user {
         this._phone=p;
         this._reputation=r;
         this._favSport=f;
+        this._type=t;
     }
 
     public String getUserName()
@@ -85,5 +87,15 @@ public class user {
     public void setFavSport(String f)
     {
         this._favSport=f;
+    }
+
+    public String getType()
+    {
+        return this._type;
+    }
+
+    public void setType(String t)
+    {
+        this._type=t;
     }
 }
