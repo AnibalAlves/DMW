@@ -36,7 +36,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.Calendar;
 import java.util.List;
 
-public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
+public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
@@ -45,9 +45,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
+
+    Marker mClickedMark ;
     // Database Helper
     DataBaseHandler db;
     List<descri> fieldDescriptions ;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +65,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
 
         //get the DB
         db = new DataBaseHandler(this);
-        Log.d("Insert:", "Inserting field...");
+        Log.d("Insert:", "Inserting fields...");
         db.createField(new field("Milano Castle", 45.471944, 9.178889, false, true, 3));
         db.createDescr(new descri("This is a castle, wow.",3,1,null));
 
@@ -80,11 +85,32 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
     }
 
 
+
+
+    /////////////////////////////
+    //           MAP           //
+    /////////////////////////////
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         //Initialize Google Play Services
+        initGooglePlay();
+
+        //Display all the fields of the database
+        displayFields();
+
+        //Activate listener for marker's info windows
+        mMap.setOnInfoWindowClickListener(this);
+
+        //Activate on map click listener
+        mMap.setOnMapClickListener(this);
+    }
+
+    /////////////////////////////
+    //      MAP - SERVICE      //
+    /////////////////////////////
+    private void initGooglePlay(){
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
@@ -100,12 +126,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
-
-        //Display all the fields of the database
-        displayFields();
-
-        //Activate listener for marker's info windows
-        mMap.setOnInfoWindowClickListener(this);
     }
 
     //Method to build the google API client
@@ -118,22 +138,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
         mGoogleApiClient.connect();
     }
 
-    //display all the fields on the map
-    private void displayFields(){
-        for( descri d:fieldDescriptions )
-        {
-            int id = d.getId();
-            field f = db.getField(id);
-            LatLng fLatLong = new LatLng(f.getLat(), f.getLong());
-            MarkerOptions fMarkOpt = new MarkerOptions()
-                    .position(fLatLong)
-                    .title(f.getLocation())
-                    .snippet(d.getDescr());
-            Marker fieldMarker = mMap.addMarker(fMarkOpt);
-            fieldMarker.setTag(d.getId());
-        }
-    }
-    //Method called when app connecter to google's api
+    //Method called when app connects to google's api
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest()
@@ -155,6 +160,32 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {}
 
+
+    /////////////////////////////
+    //      MAP - DISPLAY     //
+    /////////////////////////////
+
+    //display all the fields on the map
+    private void displayFields(){
+        for( descri d:fieldDescriptions )
+        {
+            int id = d.getId();
+            field f = db.getField(id);
+            LatLng fLatLong = new LatLng(f.getLat(), f.getLong());
+            MarkerOptions fMarkOpt = new MarkerOptions()
+                    .position(fLatLong)
+                    .title(f.getLocation())
+                    .snippet(d.getDescr());
+            Marker fieldMarker = mMap.addMarker(fMarkOpt);
+            fieldMarker.setTag(d.getId());
+        }
+    }
+
+
+
+    /////////////////////////////
+    //      MAP - LOCATION     //
+    /////////////////////////////
     //Method when location changes
     @Override
     public void onLocationChanged(Location location)
@@ -252,6 +283,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
     }
 
 
+
+    /////////////////////////////
+    //      MAP - LISTENERS    //
+    /////////////////////////////
+
     //called everytime a window is called
     @Override
     public void onInfoWindowClick(Marker marker) {
@@ -274,6 +310,21 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
         }
     }
 
+    @Override
+    public void onMapClick(LatLng position){
+        if(mClickedMark != null)
+            mClickedMark.remove();
+        mClickedMark = mMap.addMarker(new MarkerOptions()
+                        .position(position)
+                        .title("New field ?")
+                        .snippet("Click to add new field"));
+        mClickedMark.setTag(0);
+    }
+
+
+    /////////////////////////////
+    //      ACTION BUTTONS     //
+    /////////////////////////////
 
     //Add action buttons to the action bar
     @Override
