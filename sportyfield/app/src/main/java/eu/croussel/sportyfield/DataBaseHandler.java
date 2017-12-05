@@ -139,23 +139,45 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         f.setLong(c.getDouble(c.getColumnIndex(KEY_LONGITUDE)));
         f.setLocation(c.getString(c.getColumnIndex(KEY_LOCATION)));
         f.setDescription(c.getString(c.getColumnIndex(KEY_FIELDESCRIPTION)));
-        int aux = c.getColumnIndex(KEY_PRIVATE);
-        if (aux==1)
-            f.setPriv(true);
-        else
-            f.setPriv(false);
-        int aux2 = c.getColumnIndex(KEY_OUTDOOR);
-        if (aux2==1)
-            f.setOut(true);
-        else
-            f.setOut(false);
+        f.setPriv(c.getColumnIndex(KEY_PRIVATE) == 1);
+        f.setOut(c.getColumnIndex(KEY_OUTDOOR) == 1);
         return f;
+    }
+    /**
+     * getting all descr of that Field
+     * */
+    public List<Field> getAllFields() {
+        List<Field> fields = new ArrayList<Field>();
+
+        String selectQuery = "SELECT  * FROM " + FIELD ;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Field f = new Field();
+                f.setId(c.getColumnIndex(KEY_ID));
+                f.setLat(c.getDouble(c.getColumnIndex(KEY_LATITUDE)));
+                f.setLong(c.getDouble(c.getColumnIndex(KEY_LONGITUDE)));
+                f.setLocation(c.getString(c.getColumnIndex(KEY_LOCATION)));
+                f.setDescription(c.getString(c.getColumnIndex(KEY_FIELDESCRIPTION)));
+                f.setPriv(c.getColumnIndex(KEY_PRIVATE) == 1);
+                f.setOut(c.getColumnIndex(KEY_OUTDOOR) == 1);
+                // adding to description list
+                fields.add(f);
+            } while (c.moveToNext());
+        }
+        return fields;
     }
 
     /*
     * Creating Descr
     */
-    public void createDescr(Report d) {
+    public void createReport(Report d) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -170,8 +192,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     /**
      * getting all descr of that Field
      * */
-    public List<Report> getAllDescri(int i) {
-        List<Report> description = new ArrayList<Report>();
+    public List<Report> getAllReport(int i) {
+        List<Report> reports = new ArrayList<Report>();
 
         String selectQuery = "SELECT  * FROM " + DESCR + " WHERE " + KEY_FIELDID + " = " + i;
 
@@ -190,10 +212,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 t.setDate(c.getString(c.getColumnIndex(KEY_DATE)));
 
                 // adding to description list
-                description.add(t);
+                reports.add(t);
             } while (c.moveToNext());
         }
-        return description;
+        return reports;
     }
 
     /*

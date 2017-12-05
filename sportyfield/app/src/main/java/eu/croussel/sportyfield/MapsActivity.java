@@ -46,7 +46,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     Marker mClickedMark ;
     // Database Helper
     DataBaseHandler db;
-    List<Report> fieldDescriptions ;
+    List<Field> fieldList ;
 
 
 
@@ -63,12 +63,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         //get the DB
         db = new DataBaseHandler(this);
         Log.d("Insert:", "Inserting fields...");
-        db.createField(new Field("Milano Castle", 45.471944, 9.178889, false, true, 3));
-        db.createDescr(new Report("This is a castle, wow.",3,1,null));
-
-        db.createField(new Field("Duomo",45.464211, 9.191383, false, false, 1));
-        db.createDescr(new Report("This is Duomo - click to go on info", 1, 2, null));
-        fieldDescriptions = db.getAllDescri();
+        db.createField(new Field("Milano Castle", 45.471944, 9.178889, false, true, 3, "This is a castle, wow."));
+        db.createField(new Field("Duomo",45.464211, 9.191383, false, false, 1, "This is Duomo - click to go on info"));
+        fieldList = db.getAllFields();
     }
 
     @Override
@@ -164,17 +161,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 
     //display all the fields on the map
     private void displayFields(){
-        for( Report d:fieldDescriptions )
+        for( Field f:fieldList )
         {
-            int id = d.getId();
-            Field f = db.getField(id);
             LatLng fLatLong = new LatLng(f.getLat(), f.getLong());
             MarkerOptions fMarkOpt = new MarkerOptions()
                     .position(fLatLong)
                     .title(f.getLocation())
-                    .snippet(d.getDescr());
+                    .snippet(f.getDescription());
             Marker fieldMarker = mMap.addMarker(fMarkOpt);
-            fieldMarker.setTag(d.getId());
+            fieldMarker.setTag(f.getId());
         }
     }
 
