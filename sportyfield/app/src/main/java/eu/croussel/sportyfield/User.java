@@ -4,7 +4,7 @@ package eu.croussel.sportyfield;
  * Created by afonso on 03-12-2017.
  */
 
-public class user {
+public class User {
     String _userName;
     int _age;
     String _email;
@@ -13,12 +13,12 @@ public class user {
     String _favSport;
     String _type; //PRO USER OR AMATEUR USER
 
-    public user()
+    public User()
     {
 
     }
 
-    public user(String u, int a, String e,int p, int r, String f, String t)
+    public User(String u, int a, String e, int p, int r, String f, String t)
     {
         this._userName=u;
         this._age=a;

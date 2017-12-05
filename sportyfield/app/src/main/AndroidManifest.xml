@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".fieldInfo"></activity>
+        <activity android:name=".FieldInfo"></activity>
 
     </application>
 

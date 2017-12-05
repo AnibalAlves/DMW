@@ -4,9 +4,9 @@ package eu.croussel.sportyfield;
  * Created by afonso on 29-11-2017.
  */
 
-public class report {
+public class Report {
     String _descr;
-    int _fieldId; //secondary key that connects to field
+    int _fieldId; //secondary key that connects to Field
     int _number; //descr number primary key must be incremented automatically
     String _date;
 
@@ -14,12 +14,12 @@ public class report {
     // String date = sdf.format(new Date());
 
     //empty
-    public report()
+    public Report()
     {
 
     }
     //contructor
-    public report(String descr, int id, int number, String date)
+    public Report(String descr, int id, int number, String date)
     {
         this._descr=descr;
         this._fieldId=id;

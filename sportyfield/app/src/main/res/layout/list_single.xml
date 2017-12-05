@@ -2,18 +2,90 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    <TableRow>
+
+    <RelativeLayout>
+
         <ImageView
             android:id="@+id/img"
-            android:src="@drawable/img"
             android:layout_width="50dp"
-            android:layout_height="50dp"/>
+            android:layout_height="50dp"
+            android:layout_marginLeft="7dp"
+            android:src="@drawable/user_icon" />
 
         <TextView
             android:id="@+id/txt"
-            android:text="testeeeeee"
             android:layout_width="wrap_content"
-            android:layout_height="50dp" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/img"
+            android:layout_marginLeft="8dp"
+            android:text="PRO USER"
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="10dp" />
 
-</TableRow>
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/txt"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignTop="@+id/img"
+            android:layout_toEndOf="@+id/img"
+            android:text="SOME DATE"
+            android:textColor="@android:color/black"
+            android:textSize="10dp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textView"
+            android:layout_alignStart="@+id/textView"
+            android:text="Description"
+            android:textColor="@android:color/black"
+            android:textSize="10dp" />
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="105dp"
+            android:src="@drawable/broken_ring"
+            android:id="@+id/imageView" />
+
+        <ImageButton
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/imageView"
+            android:layout_marginEnd="33dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/arrow_up"
+            android:id="@+id/imageButton"
+            android:onClick="upArrow"
+            />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="24dp"
+            android:layout_height="15dp"
+            android:layout_alignStart="@+id/imageButton"
+            android:layout_centerVertical="true"
+            android:text="+12"
+            android:textColor="@android:color/black" />
+
+        <ImageButton
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="7dp"
+            android:background="@android:color/transparent"
+            android:layout_alignStart="@+id/textView3"
+            android:layout_alignTop="@+id/textView2"
+            android:src="@drawable/arrow_down"
+            android:onClick="downArrow"
+            />
+
+    </RelativeLayout>
 </TableLayout>

@@ -46,7 +46,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     Marker mClickedMark ;
     // Database Helper
     DataBaseHandler db;
-    List<report> fieldDescriptions ;
+    List<Report> fieldDescriptions ;
 
 
 
@@ -63,11 +63,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         //get the DB
         db = new DataBaseHandler(this);
         Log.d("Insert:", "Inserting fields...");
-        db.createField(new field("Milano Castle", 45.471944, 9.178889, false, true, 3));
-        db.createDescr(new report("This is a castle, wow.",3,1,null));
+        db.createField(new Field("Milano Castle", 45.471944, 9.178889, false, true, 3));
+        db.createDescr(new Report("This is a castle, wow.",3,1,null));
 
-        db.createField(new field("Duomo",45.464211, 9.191383, false, false, 1));
-        db.createDescr(new report("This is Duomo - click to go on info", 1, 2, null));
+        db.createField(new Field("Duomo",45.464211, 9.191383, false, false, 1));
+        db.createDescr(new Report("This is Duomo - click to go on info", 1, 2, null));
         fieldDescriptions = db.getAllDescri();
     }
 
@@ -164,10 +164,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 
     //display all the fields on the map
     private void displayFields(){
-        for( report d:fieldDescriptions )
+        for( Report d:fieldDescriptions )
         {
             int id = d.getId();
-            field f = db.getField(id);
+            Field f = db.getField(id);
             LatLng fLatLong = new LatLng(f.getLat(), f.getLong());
             MarkerOptions fMarkOpt = new MarkerOptions()
                     .position(fLatLong)
@@ -215,8 +215,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
+                // Show an explanation to the User *asynchronously* -- don't block
+                // this thread waiting for the User's response! After the User
                 // sees the explanation, try again to request the permission.
                 new AlertDialog.Builder(this)
                         .setTitle("Location Permission Needed")
@@ -224,7 +224,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
+                                //Prompt the User once explanation has been shown
                                 ActivityCompat.requestPermissions(MapsActivity.this,
                                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                         MY_PERMISSIONS_REQUEST_LOCATION );
@@ -291,9 +291,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         int tag = (int) marker.getTag();
         switch (tag) {
             case 1 :
-                Intent intent = new Intent(this, fieldInfo.class);
-                intent.putExtra("fieldID", 1); //added this to pass the field ID. You need
-                //to get it from the database. When somenone click on marker, get that id from db and send to fieldInfo
+                Intent intent = new Intent(this, FieldInfo.class);
+                intent.putExtra("fieldID", 1); //added this to pass the Field ID. You need
+                //to get it from the database. When somenone click on marker, get that id from db and send to FieldInfo
                 startActivity(intent);
                 break ;
             case 2 :
@@ -313,8 +313,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             mClickedMark.remove();
         mClickedMark = mMap.addMarker(new MarkerOptions()
                         .position(position)
-                        .title("New field ?")
-                        .snippet("Click to add new field"));
+                        .title("New Field ?")
+                        .snippet("Click to add new Field"));
         mClickedMark.setTag(0);
     }
 
@@ -338,10 +338,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         switch (item.getItemId()) {
             case R.id.action_addfield:
                 if(mClickedMark == null)
-                    Toast.makeText(this, "To add a field click on the map and click back here.",
+                    Toast.makeText(this, "To add a Field click on the map and click back here.",
                             Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(this, "Intent to add field on pos"+mClickedMark.getPosition(),
+                    Toast.makeText(this, "Intent to add Field on pos"+mClickedMark.getPosition(),
                             Toast.LENGTH_SHORT).show();
                 return true;
             default:

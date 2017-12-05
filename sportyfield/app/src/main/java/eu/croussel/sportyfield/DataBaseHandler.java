@@ -45,6 +45,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String KEY_LONGITUDE = "_long";
     private static final String KEY_PRIVATE = "_private";
     private static final String KEY_OUTDOOR = "_outdoor";
+    private static final String KEY_FIELDESCRIPTION = "_description";
 
     //DESCR table columns
     private static final String KEY_DESCRIPTION = "_descr";
@@ -67,7 +68,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     //fields TABLE
     private static final String CREATE_TABLE_FIELDS = "CREATE TABLE " + FIELD + "(" + KEY_ID + " INTEGER UNIQUE PRIMARY KEY, "
             + KEY_LOCATION + " TEXT, " + KEY_LATITUDE + " DOUBLE, " + KEY_LONGITUDE + " DOUBLE, " + KEY_PRIVATE + " BOOLEAN, "
-            + KEY_OUTDOOR + " BOOLEAN " + ")";
+            + KEY_OUTDOOR + " BOOLEAN, " + KEY_FIELDESCRIPTION + " TEXT " + ")";
     //descrip table
     private static final String CREATE_TABLE_DESCR = "CREATE TABLE " + DESCR + "(" + KEY_NUMBER + " INTEGER PRIMARY KEY, "
             + KEY_DESCRIPTION + " TEXT, " + KEY_FIELDID + " INTEGER, " + KEY_DATE + " DATETIME " + ")";
@@ -106,7 +107,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     /*
     * Creating a FIELD
     */
-    public void createField(field f) {
+    public void createField(Field f) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -116,11 +117,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_PRIVATE, f.getPriv());
         values.put(KEY_OUTDOOR, f.getOut());
         values.put(KEY_ID, f.getId());
+        values.put(KEY_FIELDESCRIPTION, f.getDescription());
         // insert row
         db.insertWithOnConflict(FIELD, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public field getField(Integer id)
+    public Field getField(Integer id)
     {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -131,11 +133,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(selectQuery, null);
         if (c != null)
             c.moveToFirst();
-        field f = new field();
+        Field f = new Field();
         f.setId(id);
         f.setLat(c.getDouble(c.getColumnIndex(KEY_LATITUDE)));
         f.setLong(c.getDouble(c.getColumnIndex(KEY_LONGITUDE)));
         f.setLocation(c.getString(c.getColumnIndex(KEY_LOCATION)));
+        f.setDescription(c.getString(c.getColumnIndex(KEY_FIELDESCRIPTION)));
         int aux = c.getColumnIndex(KEY_PRIVATE);
         if (aux==1)
             f.setPriv(true);
@@ -152,7 +155,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     /*
     * Creating Descr
     */
-    public void createDescr(report d) {
+    public void createDescr(Report d) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -165,12 +168,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * getting all descr of that field
+     * getting all descr of that Field
      * */
-    public List<report> getAllDescri() {
-        List<report> description = new ArrayList<report>();
+    public List<Report> getAllDescri(int i) {
+        List<Report> description = new ArrayList<Report>();
 
-        String selectQuery = "SELECT  * FROM " + DESCR;
+        String selectQuery = "SELECT  * FROM " + DESCR + " WHERE " + KEY_FIELDID + " = " + i;
 
         Log.e(LOG, selectQuery);
 
@@ -180,7 +183,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                report t = new report();
+                Report t = new Report();
                 t.setId(c.getInt(c.getColumnIndex(KEY_FIELDID)));
                 t.setDescr(c.getString(c.getColumnIndex(KEY_DESCRIPTION)));
                 t.setNumber(c.getInt(c.getColumnIndex(KEY_NUMBER)));
@@ -196,7 +199,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     /*
     * Creating a USER
     */
-    public void createUser(user u) {
+    public void createUser(User u) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -212,7 +215,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.insertWithOnConflict(USER, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public user getUser(String uName)
+    public User getUser(String uName)
     {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -223,7 +226,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(selectQuery, null);
         if (c != null)
             c.moveToFirst();
-        user u = new user();
+        User u = new User();
         u.setUserName(uName);
         u.setAge(c.getInt(c.getColumnIndex(KEY_AGE)));
         u.setEmail(c.getString(c.getColumnIndex(KEY_EMAIL)));
@@ -233,7 +236,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return u;
     }
 
-    public int updateUser(user u)
+    public int updateUser(User u)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -251,7 +254,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     /*
-    * Deleting a user
+    * Deleting a User
     */
     public void deleteUser(String uName) {
         SQLiteDatabase db = this.getWritableDatabase();

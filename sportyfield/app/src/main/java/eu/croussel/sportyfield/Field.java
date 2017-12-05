@@ -4,23 +4,24 @@ package eu.croussel.sportyfield;
  * Created by afonso on 29-11-2017.
  */
 
-public class field {
+public class Field {
     int _id; //primary_key
     String _location; //street name or something
     double _lat;
     double _long;
     boolean _private;
     boolean _outdor;
+    String _description;
     //something about the picture, maybe 2 pics into the res folder just to show to prof
 
 
     //Empty constructor
-    public field()
+    public Field()
     {
 
     }
     //COnstructor
-    public field(String location, double lat, double longi,boolean priv, boolean outd, int id)
+    public Field(String location, double lat, double longi, boolean priv, boolean outd, int id, String d)
     {
         this._location=location;
         this._lat=lat;
@@ -28,6 +29,7 @@ public class field {
         this._private=priv;
         this._outdor=outd;
         this._id = id;
+        this._description = d;
     }
 
     public int getId()
@@ -88,5 +90,15 @@ public class field {
     public void setOut(boolean o)
     {
         this._outdor=o;
+    }
+
+    public String getDescription()
+    {
+        return this._description;
+    }
+
+    public void setDescription(String d)
+    {
+        this._description=d;
     }
 }

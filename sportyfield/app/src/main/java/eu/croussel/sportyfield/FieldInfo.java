@@ -3,11 +3,11 @@ package eu.croussel.sportyfield;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class fieldInfo extends AppCompatActivity {
+public class FieldInfo extends AppCompatActivity {
 
     // Database Helper
     DataBaseHandler db;
@@ -22,9 +22,9 @@ public class fieldInfo extends AppCompatActivity {
         ImageView iv = (ImageView) findViewById(R.id.field_image);
 
         Intent intent = getIntent();
-        int fieldId = getIntent().getIntExtra("fieldID",0); //get the field id from Maps class
+        int fieldId = getIntent().getIntExtra("fieldID",0); //get the Field id from Maps class
         TextView field_loc = (TextView) findViewById(R.id.field_location);
-        field f = db.getField(fieldId);
+        Field f = db.getField(fieldId);
         String theLocation = f.getLocation();
         field_loc.setText(theLocation);
 
@@ -39,18 +39,28 @@ public class fieldInfo extends AppCompatActivity {
                 iv.setImageResource(R.drawable.field);
                 break;
         }
-        //Creating a test user
+        //Creating a test User
         /*
-        user u = new user("Test",25,"test@gmail.com",123456789,25,"Basketball");
+        User u = new User("Test",25,"test@gmail.com",123456789,25,"Basketball");
         db.createUser(u);
-        user f = db.getUser("Test");
+        User f = db.getUser("Test");
         System.out.println("Result - " + f.getEmail());
-        //Creating a field
-        field fi = new field("MIlanChina",25.2,25.2,true,true);
+        //Creating a Field
+        Field fi = new Field("MIlanChina",25.2,25.2,true,true);
         db.createField(fi);
-        field aux = db.getField(1);
+        Field aux = db.getField(1);
         System.out.println("Result - " + aux.getLocation());
         */
         db.closeDB();
+    }
+
+    public void upArrow(View v)
+    {
+
+    }
+
+    public void downArrow(View v)
+    {
+
     }
 }
