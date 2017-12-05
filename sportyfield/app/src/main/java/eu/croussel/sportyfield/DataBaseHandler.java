@@ -104,6 +104,19 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+
+    public void clearDb() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // on upgrade drop older tables
+        db.execSQL("DROP TABLE IF EXISTS " + FIELD);
+        db.execSQL("DROP TABLE IF EXISTS " + DESCR);
+        db.execSQL("DROP TABLE IF EXISTS " + USER);
+        db.execSQL("DROP TABLE IF EXISTS " + USER_DESCR);
+
+        // create new tables
+        onCreate(db);
+    }
+
     /*
     * Creating a FIELD
     */
@@ -160,7 +173,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Field f = new Field();
-                f.setId(c.getColumnIndex(KEY_ID));
+                f.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 f.setLat(c.getDouble(c.getColumnIndex(KEY_LATITUDE)));
                 f.setLong(c.getDouble(c.getColumnIndex(KEY_LONGITUDE)));
                 f.setLocation(c.getString(c.getColumnIndex(KEY_LOCATION)));

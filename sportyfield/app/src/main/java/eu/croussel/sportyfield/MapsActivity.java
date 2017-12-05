@@ -62,9 +62,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 
         //get the DB
         db = new DataBaseHandler(this);
+        db.clearDb();
+        
         Log.d("Insert:", "Inserting fields...");
         db.createField(new Field("Milano Castle", 45.471944, 9.178889, false, true, 3, "This is a castle, wow."));
-        db.createField(new Field("Duomo",45.464211, 9.191383, false, false, 1, "This is Duomo - click to go on info"));
+        db.createField(new Field("Duomo",45.464211, 9.191383, false, false, 2, "This is Duomo - click to go on info"));
         fieldList = db.getAllFields();
     }
 
@@ -96,9 +98,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 
         //Activate listener for marker's info windows
         mMap.setOnInfoWindowClickListener(this);
-
         //Activate on map click listener
         mMap.setOnMapClickListener(this);
+
     }
 
     /////////////////////////////
@@ -144,6 +146,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(
+                LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).getLatitude(),
+                        LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).getLongitude())
+                ,11));
     }
 
     //Method when google's api is suspended
@@ -194,9 +201,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 .title("Current Position")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
-        mCurrLocationMarker.setTag(2);
+        mCurrLocationMarker.setTag(1);
         //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
+       // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
 
     }
 
@@ -285,18 +292,21 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     public void onInfoWindowClick(Marker marker) {
         int tag = (int) marker.getTag();
         switch (tag) {
+            case 0 :
+                Toast.makeText(this, "Adding field at " + marker.getPosition(),
+                        Toast.LENGTH_SHORT).show();
             case 1 :
-                Intent intent = new Intent(this, FieldInfo.class);
-                intent.putExtra("fieldID", 1); //added this to pass the Field ID. You need
-                //to get it from the database. When somenone click on marker, get that id from db and send to FieldInfo
-                startActivity(intent);
-                break ;
-            case 2 :
                 Toast.makeText(this, "Clicked on you",
                         Toast.LENGTH_SHORT).show();
                 break;
+            case 2 :
+                Intent intent = new Intent(this, FieldInfo.class);
+                   intent.putExtra("fieldID", 2); //added this to pass the Field ID. You need
+                 //to get it from the database. When somenone click on marker, get that id from db and send to FieldInfo
+                   startActivity(intent);
+                   break ;
             default :
-                Toast.makeText(this, "Tag >2 clicked",
+                Toast.makeText(this, "Tag " + tag + " clicked",
                         Toast.LENGTH_SHORT).show();
                 break ;
         }

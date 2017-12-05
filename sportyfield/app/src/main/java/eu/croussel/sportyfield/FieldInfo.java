@@ -22,7 +22,7 @@ public class FieldInfo extends AppCompatActivity {
         ImageView iv = (ImageView) findViewById(R.id.field_image);
 
         Intent intent = getIntent();
-        int fieldId = getIntent().getIntExtra("fieldID",0); //get the Field id from Maps class
+        int fieldId = intent.getIntExtra("fieldID",0); //get the Field id from Maps class
         TextView field_loc = (TextView) findViewById(R.id.field_location);
         Field f = db.getField(fieldId);
         String theLocation = f.getLocation();
