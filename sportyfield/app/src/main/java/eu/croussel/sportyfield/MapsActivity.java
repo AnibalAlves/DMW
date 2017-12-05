@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +33,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.Calendar;
+import java.util.List;
+
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -41,7 +45,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-
+    // Database Helper
+    DataBaseHandler db;
+    List<descri> fieldDescriptions ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +58,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        //get the DB
+        db = new DataBaseHandler(this);
+        Log.d("Insert:", "Inserting field...");
+        db.createField(new field("Milano Castle", 45.471944, 9.178889, false, true, 3));
+        db.createDescr(new descri("This is a castle, wow.",3,1,null));
+
+        db.createField(new field("Duomo",45.464211, 9.191383, false, false, 1));
+        db.createDescr(new descri("This is Duomo - click to go on info", 1, 2, null));
+        fieldDescriptions = db.getAllDescri();
     }
 
     @Override
@@ -86,19 +101,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
             mMap.setMyLocationEnabled(true);
         }
 
-        // Add a marker in Milan and move the camera
-        LatLng milanLatlong = new LatLng(45.464211, 9.191383);
-        MarkerOptions milan = new MarkerOptions()
-                .position(milanLatlong)
-                .title("Marker in Milan")
-                .snippet("Erasmus in milano");
-
-        //Put the marker and give it a tag
-        Marker milanMarker = mMap.addMarker(milan);
-        milanMarker.setTag(1);
-
-        //Move the camera to Milan and zoom as city view
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milanLatlong, 14.0f));
+        //Display all the fields of the database
+        displayFields();
 
         //Activate listener for marker's info windows
         mMap.setOnInfoWindowClickListener(this);
@@ -114,6 +118,21 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnInfoW
         mGoogleApiClient.connect();
     }
 
+    //display all the fields on the map
+    private void displayFields(){
+        for( descri d:fieldDescriptions )
+        {
+            int id = d.getId();
+            field f = db.getField(id);
+            LatLng fLatLong = new LatLng(f.getLat(), f.getLong());
+            MarkerOptions fMarkOpt = new MarkerOptions()
+                    .position(fLatLong)
+                    .title(f.getLocation())
+                    .snippet(d.getDescr());
+            Marker fieldMarker = mMap.addMarker(fMarkOpt);
+            fieldMarker.setTag(d.getId());
+        }
+    }
     //Method called when app connecter to google's api
     @Override
     public void onConnected(Bundle bundle) {

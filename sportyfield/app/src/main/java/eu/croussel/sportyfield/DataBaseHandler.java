@@ -76,7 +76,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             KEY_AGE + " INTEGER, " + KEY_EMAIL + " TEXT, " + KEY_PHONE + " INTEGER, " + KEY_REPUTATION + " INTEGER, " + KEY_FAVSPORT + " TEXT " + ")";
 
     private static final String CREATE_TABLE_USER_DESCR = "CREATE TABLE " + USER_DESCR + "(" + KEY_USER_NAME + " TEXT PRIMARY KEY, " + KEY_DESCR
-            + " INTEGER, " + ")";
+            + " INTEGER " + ")";
 
     public DataBaseHandler(Context context) {
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -115,7 +115,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_LONGITUDE, f.getLong());
         values.put(KEY_PRIVATE, f.getPriv());
         values.put(KEY_OUTDOOR, f.getOut());
-
+        values.put(KEY_ID, f.getId());
         // insert row
         db.insertWithOnConflict(FIELD, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
@@ -159,7 +159,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_DESCRIPTION, d.getDescr());
         values.put(KEY_FIELDID, d.getId());
         values.put(KEY_DATE, String.valueOf(Calendar.getInstance().getTime()));
-
+        values.put(KEY_NUMBER, d.getNumber());
         // insert row
         db.insertWithOnConflict(DESCR, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
@@ -167,10 +167,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     /**
      * getting all descr of that field
      * */
-    public List<descri> getAllDescri(Integer id) {
+    public List<descri> getAllDescri() {
         List<descri> description = new ArrayList<descri>();
 
-        String selectQuery = "SELECT  * FROM " + DESCR + "WHERE" + KEY_FIELDID + "=" +id;
+        String selectQuery = "SELECT  * FROM " + DESCR;
 
         Log.e(LOG, selectQuery);
 
@@ -181,7 +181,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 descri t = new descri();
-                t.setId(id);
+                t.setId(c.getInt(c.getColumnIndex(KEY_FIELDID)));
                 t.setDescr(c.getString(c.getColumnIndex(KEY_DESCRIPTION)));
                 t.setNumber(c.getInt(c.getColumnIndex(KEY_NUMBER)));
                 t.setDate(c.getString(c.getColumnIndex(KEY_DATE)));

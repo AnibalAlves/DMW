@@ -20,13 +20,14 @@ public class field {
 
     }
     //COnstructor
-    public field(String location, double lat, double longi,boolean priv, boolean outd)
+    public field(String location, double lat, double longi,boolean priv, boolean outd, int id)
     {
         this._location=location;
         this._lat=lat;
         this._long=longi;
         this._private=priv;
         this._outdor=outd;
+        this._id = id;
     }
 
     public int getId()
