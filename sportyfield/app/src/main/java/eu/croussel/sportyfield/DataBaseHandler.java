@@ -206,7 +206,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
      * getting all descr of that Field
      * */
     public List<Report> getAllReport(int i) {
-        List<Report> reports = new ArrayList<Report>();
+        ArrayList<Report> reports = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + DESCR + " WHERE " + KEY_FIELDID + " = " + i;
 

@@ -5,12 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FieldInfo extends AppCompatActivity {
 
     // Database Helper
     DataBaseHandler db;
+    ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +28,8 @@ public class FieldInfo extends AppCompatActivity {
 
         Intent intent = getIntent();
         int fieldId = intent.getIntExtra("fieldID",0); //get the Field id from Maps class
+        System.out.println("field id is = " + fieldId);
+
         TextView field_loc = (TextView) findViewById(R.id.field_location);
         Field f = db.getField(fieldId);
         String theLocation = f.getLocation();
@@ -39,6 +46,20 @@ public class FieldInfo extends AppCompatActivity {
                 iv.setImageResource(R.drawable.field);
                 break;
         }
+
+        ArrayList<Report> reports = new ArrayList<Report>();
+        reports = (ArrayList<Report>) db.getAllReport(fieldId);
+        String[] repDate = new String[0];
+        String[] repDescr;
+        String[] userTy;
+        Integer[] userReput;
+        for (int i=0;i<reports.size();i++)
+        {
+            //repDate[i] = reports[i].getDate();
+
+        }
+        CustomList adapter = new CustomList(this, web, imageId);
+
         //Creating a test User
         /*
         User u = new User("Test",25,"test@gmail.com",123456789,25,"Basketball");
