@@ -142,8 +142,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest()
-                .setInterval(1000)
-                .setFastestInterval(1000)
+                .setInterval(10000)
+                .setFastestInterval(5000)
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -340,8 +340,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_addfield:
-                Toast.makeText(this, "Intent to add field",
-                        Toast.LENGTH_SHORT).show();
+                if(mClickedMark == null)
+                    Toast.makeText(this, "To add a field click on the map and click back here.",
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, "Intent to add field on pos"+mClickedMark.getPosition(),
+                            Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
