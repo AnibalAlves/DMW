@@ -49,7 +49,9 @@
             android:layout_alignTop="@+id/button2"
             android:layout_marginStart="50dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/img" />
+            android:src="@drawable/img"
+            android:onClick="getBackToMaps"
+            />
         <Button
             android:layout_marginTop="20dp"
             android:layout_marginRight="45dp"

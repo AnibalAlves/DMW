@@ -123,4 +123,9 @@ public class FieldInfo extends Activity {
         Intent newRe = new Intent(this,AddReport.class);
         startActivity(newRe);
     }
+
+    public void getBackToMaps(View view) {
+        Intent getBack = new Intent (this, MapsActivity.class);
+        startActivity(getBack);
+    }
 }
