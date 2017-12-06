@@ -9,6 +9,7 @@ public class Report {
     int _fieldId; //secondary key that connects to Field
     int _number; //descr number primary key must be incremented automatically
     String _date;
+    String _userName;
 
     //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     // String date = sdf.format(new Date());
@@ -19,12 +20,11 @@ public class Report {
 
     }
     //contructor
-    public Report(String descr, int id, int number, String date)
+    public Report(String descr, int id, String u)
     {
         this._descr=descr;
         this._fieldId=id;
-        this._number=number;
-        this._date=date;
+        this._userName=u;
     }
 
     public String getDescr()
@@ -64,5 +64,15 @@ public class Report {
     public void setDate(String d)
     {
         this._date=d;
+    }
+
+    public String getUserName()
+    {
+        return this._userName;
+    }
+
+    public void setUserName(String u)
+    {
+        this._userName=u;
     }
 }

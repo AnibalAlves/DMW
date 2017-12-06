@@ -51,6 +51,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String KEY_DESCRIPTION = "_descr";
     private static final String KEY_FIELDID = "_fieldId";
     private static final String KEY_DATE = "_date";
+    private static final String KEY_UNAMEREPORT = "_userName";
 
     //USER table columns
     private static final String KEY_AGE = "_age";
@@ -71,7 +72,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             + KEY_OUTDOOR + " BOOLEAN, " + KEY_FIELDESCRIPTION + " TEXT " + ")";
     //descrip table
     private static final String CREATE_TABLE_DESCR = "CREATE TABLE " + DESCR + "(" + KEY_NUMBER + " INTEGER PRIMARY KEY, "
-            + KEY_DESCRIPTION + " TEXT, " + KEY_FIELDID + " INTEGER, " + KEY_DATE + " DATETIME " + ")";
+            + KEY_DESCRIPTION + " TEXT, " + KEY_UNAMEREPORT + " TEXT, " + KEY_FIELDID + " INTEGER, " + KEY_DATE + " DATETIME " + ")";
 
     private static final String CREATE_TABLE_USER = "CREATE TABLE " + USER + "(" + KEY_USERNAME + " TEXT PRIMARY KEY, " +
             KEY_AGE + " INTEGER, " + KEY_EMAIL + " TEXT, " + KEY_PHONE + " INTEGER, " + KEY_REPUTATION + " INTEGER, "  + KEY_TYPE + " TEXT, " + KEY_FAVSPORT + " TEXT " + ")";
@@ -188,7 +189,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     /*
-    * Creating Descr
+    * Creating Report
     */
     public void createReport(Report d) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -197,13 +198,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_DESCRIPTION, d.getDescr());
         values.put(KEY_FIELDID, d.getId());
         values.put(KEY_DATE, String.valueOf(Calendar.getInstance().getTime()));
-        values.put(KEY_NUMBER, d.getNumber());
+        values.put(KEY_UNAMEREPORT,d.getUserName());
         // insert row
         db.insertWithOnConflict(DESCR, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     /**
-     * getting all descr of that Field
+     * getting all Reports of that Field
      * */
     public List<Report> getAllReport(int i) {
         ArrayList<Report> reports = new ArrayList<>();
@@ -223,7 +224,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 t.setDescr(c.getString(c.getColumnIndex(KEY_DESCRIPTION)));
                 t.setNumber(c.getInt(c.getColumnIndex(KEY_NUMBER)));
                 t.setDate(c.getString(c.getColumnIndex(KEY_DATE)));
-
+                t.setUserName(c.getString(c.getColumnIndex(KEY_UNAMEREPORT)));
                 // adding to description list
                 reports.add(t);
             } while (c.moveToNext());
