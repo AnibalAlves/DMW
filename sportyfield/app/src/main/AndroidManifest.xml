@@ -43,7 +43,10 @@
         <activity
             android:name=".FieldInfo"
             android:theme="@style/AppTheme"></activity>
-        <activity android:name=".AddReport" />
+        <activity
+            android:name=".AddReport"
+            android:theme="@style/AppTheme"></activity>
+            />
         <activity android:name=".AddFieldActivity"></activity>
     </application>
 
