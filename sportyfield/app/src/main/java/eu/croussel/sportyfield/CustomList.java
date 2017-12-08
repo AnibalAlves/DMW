@@ -2,6 +2,8 @@ package eu.croussel.sportyfield;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -12,6 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by afonso on 05-12-2017.
@@ -24,14 +29,16 @@ public class CustomList extends ArrayAdapter<String> {
     private final String[] date;
     private final String[] user_Descr;
     private final Integer[] user_reputation;
+    private final byte[][] repImage;
 
-    public CustomList(Activity context,String[] type_u, String[] da, String[] user_de, Integer[] user_rep) {
+    public CustomList(Activity context,String[] type_u, String[] da, String[] user_de, Integer[] user_rep, byte[][] rim) {
         super(context, R.layout.list_single, user_de);
         this.context = context;
         this.type_user = type_u;
         this.date = da;
         this.user_Descr = user_de;
         this.user_reputation = user_rep;
+        this.repImage=rim;
     }
 
     @Override
@@ -50,7 +57,9 @@ public class CustomList extends ArrayAdapter<String> {
 
         //change this to change the report image
         ImageView rep_im = rowView.findViewById(R.id.report_image);
-        rep_im.setImageResource(R.drawable.broken_ring);
+        Bitmap bmp = BitmapFactory.decodeByteArray(repImage[position], 0, repImage.length);
+        rep_im.setImageBitmap(Bitmap.createScaledBitmap(bmp, rep_im.getWidth(),
+                rep_im.getHeight(), false));
 
         ImageButton up_a = rowView.findViewById(R.id.imageButton);
         up_a.setImageResource(R.drawable.arrow_up);

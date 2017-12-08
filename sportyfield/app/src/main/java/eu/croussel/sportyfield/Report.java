@@ -10,6 +10,7 @@ public class Report {
     int _number; //descr number primary key must be incremented automatically
     String _date;
     String _userName;
+    byte[] _reportImage ;
 
     //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     // String date = sdf.format(new Date());
@@ -20,11 +21,12 @@ public class Report {
 
     }
     //contructor
-    public Report(String descr, int id, String u)
+    public Report(String descr, int id, String u, byte[] im)
     {
         this._descr=descr;
         this._fieldId=id;
         this._userName=u;
+        this._reportImage=im;
     }
 
     public String getDescr()
@@ -75,4 +77,7 @@ public class Report {
     {
         this._userName=u;
     }
+
+    public void setRepImage(byte[] image) { this._reportImage = image ;}
+    public byte[] getRepImage(){return this._reportImage ;}
 }

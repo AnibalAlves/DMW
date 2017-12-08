@@ -54,6 +54,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String KEY_FIELDID = "_fieldId";
     private static final String KEY_DATE = "_date";
     private static final String KEY_UNAMEREPORT = "_userName";
+    private static final String KEY_REPIMAGE = "_reportImage";
 
     //USER table columns
     private static final String KEY_AGE = "_age";
@@ -77,7 +78,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             + KEY_OUTDOOR + " BOOLEAN, " + KEY_FIELDESCRIPTION + " TEXT, " + KEY_IMAGE + " BLOB" + ")";
     //descrip table
     private static final String CREATE_TABLE_DESCR = "CREATE TABLE " + DESCR + "(" + KEY_NUMBER + " INTEGER PRIMARY KEY, "
-            + KEY_DESCRIPTION + " TEXT, " + KEY_UNAMEREPORT + " TEXT, " + KEY_FIELDID + " INTEGER, " + KEY_DATE + " DATETIME " + ")";
+            + KEY_DESCRIPTION + " TEXT, " + KEY_REPIMAGE + " BLOB, " + KEY_UNAMEREPORT + " TEXT, " + KEY_FIELDID + " INTEGER, " + KEY_DATE + " DATETIME " + ")";
 
     private static final String CREATE_TABLE_USER = "CREATE TABLE " + USER + "(" + KEY_USERNAME + " TEXT PRIMARY KEY, " +
             KEY_AGE + " INTEGER, " + KEY_EMAIL + " TEXT, " + KEY_PHONE + " INTEGER, " + KEY_REPUTATION + " INTEGER, "  + KEY_TYPE + " TEXT, " + KEY_FAVSPORT + " TEXT " + ")";
@@ -240,6 +241,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_FIELDID, d.getId());
         values.put(KEY_DATE, String.valueOf(Calendar.getInstance().getTime()));
         values.put(KEY_UNAMEREPORT,d.getUserName());
+        values.put(KEY_REPIMAGE, d.getRepImage());
         // insert row
         db.insertWithOnConflict(DESCR, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
@@ -266,6 +268,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 t.setNumber(c.getInt(c.getColumnIndex(KEY_NUMBER)));
                 t.setDate(c.getString(c.getColumnIndex(KEY_DATE)));
                 t.setUserName(c.getString(c.getColumnIndex(KEY_UNAMEREPORT)));
+                t.setRepImage(c.getBlob(c.getColumnIndex(KEY_REPIMAGE)));
                 // adding to description list
                 reports.add(t);
             } while (c.moveToNext());

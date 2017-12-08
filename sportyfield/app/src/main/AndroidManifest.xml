@@ -58,7 +58,6 @@
         <activity
             android:name=".AddReport"
             android:theme="@style/AppTheme"></activity>
-            />
         <activity android:name=".AddFieldActivity"></activity>
     </application>
 
