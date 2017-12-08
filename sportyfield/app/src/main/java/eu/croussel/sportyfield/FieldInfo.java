@@ -18,6 +18,8 @@ public class FieldInfo extends Activity {
 
     // Database Helper
     DataBaseHandler db;
+    int fieldId;
+    String testUsername = "Afonso";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,7 @@ public class FieldInfo extends Activity {
         ImageView iv = (ImageView) findViewById(R.id.field_image);
 
         Intent intent = getIntent();
-        int fieldId = intent.getIntExtra("fieldID",0); //get the Field id from Maps class
+        fieldId = intent.getIntExtra("fieldID",0); //get the Field id from Maps class
         System.out.println("field id is = " + fieldId);
 
         //CREATE SOME DB TABLES FOR TESTING
@@ -121,11 +123,15 @@ public class FieldInfo extends Activity {
 
     public void addRep(View view) {
         Intent newRe = new Intent(this,AddReport.class);
+        newRe.putExtra("fieldId",fieldId);
+        newRe.putExtra("uName",testUsername);
         startActivity(newRe);
+        finish();
     }
 
     public void getBackToMaps(View view) {
         Intent getBack = new Intent (this, MapsActivity.class);
+        finish();
         startActivity(getBack);
     }
 }
