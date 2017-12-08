@@ -32,6 +32,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String DESCR = "DESCR";
     private static final String USER = "USER";
     private static final String USER_DESCR = "USER_DESCR";
+    private static final String IDMAX = "ID_MAX";
 
     //Primary Keys NAMES
     private static final String KEY_ID = "_id";
@@ -65,6 +66,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String KEY_USER_NAME = "userName";
     private static final String KEY_DESCR = "descr";
 
+    //MAX IDs
+    private static final String KEY_IDMAXFIELD = "idMax";
+
     //Table create statements
     //fields TABLE
     private static final String CREATE_TABLE_FIELDS = "CREATE TABLE " + FIELD + "(" + KEY_ID + " INTEGER UNIQUE PRIMARY KEY, "
@@ -80,10 +84,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_USER_DESCR = "CREATE TABLE " + USER_DESCR + "(" + KEY_USER_NAME + " TEXT PRIMARY KEY, " + KEY_DESCR
             + " INTEGER " + ")";
 
+    private static final String CREATE_TABLE_IDMAX = "CREATE TABLE " + IDMAX + "(" + KEY_IDMAXFIELD + " INTEGER)";
+
     public DataBaseHandler(Context context) {
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
     }
 
+    public int fieldIdMax = 1;
     @Override
     public void onCreate(SQLiteDatabase db) {
         // creating required tables
@@ -91,6 +98,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_DESCR);
         db.execSQL(CREATE_TABLE_USER);
         db.execSQL(CREATE_TABLE_USER_DESCR);
+        db.execSQL(CREATE_TABLE_IDMAX);
+        init_IdMax();
     }
 
     @Override
@@ -100,6 +109,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DESCR);
         db.execSQL("DROP TABLE IF EXISTS " + USER);
         db.execSQL("DROP TABLE IF EXISTS " + USER_DESCR);
+        db.execSQL("DROP TABLE IF EXISTS " + IDMAX);
 
         // create new tables
         onCreate(db);
@@ -113,6 +123,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DESCR);
         db.execSQL("DROP TABLE IF EXISTS " + USER);
         db.execSQL("DROP TABLE IF EXISTS " + USER_DESCR);
+        db.execSQL("DROP TABLE IF EXISTS " + IDMAX);
 
         // create new tables
         onCreate(db);
@@ -130,12 +141,38 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_LONGITUDE, f.getLong());
         values.put(KEY_PRIVATE, f.getPriv());
         values.put(KEY_OUTDOOR, f.getOut());
-        values.put(KEY_ID, f.getId());
+        values.put(KEY_ID, updateFieldIdMax());
         values.put(KEY_FIELDESCRIPTION, f.getDescription());
         // insert row
         db.insertWithOnConflict(FIELD, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
+    private void init_IdMax(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_IDMAXFIELD, 2);
+        // insert row
+        db.insertWithOnConflict(IDMAX, null, values,SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    private int getFieldIdMax(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM "+ IDMAX;
+        Log.e(LOG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c != null)
+            c.moveToFirst();
+        return c.getInt(c.getColumnIndex(KEY_IDMAXFIELD));
+    }
+
+    private int updateFieldIdMax(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int newId = getFieldIdMax() + 1;
+        String updateQuery = "UPDATE "+ IDMAX +" SET "+ KEY_IDMAXFIELD+" = "+newId ;
+        db.execSQL(updateQuery);
+        return newId;
+    }
     public Field getField(Integer id)
     {
         SQLiteDatabase db = this.getReadableDatabase();

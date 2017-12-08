@@ -35,10 +35,10 @@ public class FieldInfo extends Activity {
         System.out.println("field id is = " + fieldId);
 
         //CREATE SOME DB TABLES FOR TESTING
-        //Creating a Field with id=2
-        Field fi = new Field("MILAN POLITECNICO",25.2,25.2,false
-                ,true,fieldId,"Great for 5vs5 football");
-        db.createField(fi);
+//        //Creating a Field with id=2
+//        Field fi = new Field("MILAN POLITECNICO",25.2,25.2,false
+//                ,true,fieldId,"Great for 5vs5 football");
+//        db.createField(fi);
         //CREATING USER
         User afon = new User("Afonso",22,"test@gmail.com"
                 ,123456789,25,"Basketball","PRO USER");
@@ -67,6 +67,9 @@ public class FieldInfo extends Activity {
                 iv.setImageResource(R.drawable.field);
                 break;
             case 3:
+                iv.setImageResource(R.drawable.field);
+                break;
+            default:
                 iv.setImageResource(R.drawable.field);
                 break;
         }
@@ -130,8 +133,6 @@ public class FieldInfo extends Activity {
     }
 
     public void getBackToMaps(View view) {
-        Intent getBack = new Intent (this, MapsActivity.class);
         finish();
-        startActivity(getBack);
     }
 }

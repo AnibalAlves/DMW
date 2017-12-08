@@ -42,7 +42,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-
+    Boolean mapConnected = false;
     Marker mClickedMark ;
     // Database Helper
     DataBaseHandler db;
@@ -65,21 +65,33 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         db.clearDb();
 
         Log.d("Insert:", "Inserting fields...");
-        db.createField(new Field("Milano Castle", 45.471944, 9.178889, false, true, 3, "This is a castle, wow."));
-        db.createField(new Field("Duomo",45.464211, 9.191383, false, false, 2, "This is Duomo - click to go on info"));
-        fieldList = db.getAllFields();
+        db.createField(new Field("Milano Castle", 45.471944, 9.178889, false, true, 0, "This is a castle, wow."));
+        db.createField(new Field("Duomo",45.464211, 9.191383, false, false, 0, "This is Duomo - click to go on info"));
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
+        Toast.makeText(this, "PAUSE",
+                Toast.LENGTH_SHORT).show();
         //stop location updates when Activity is no longer active
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        Toast.makeText(this, "RESUME",
+                Toast.LENGTH_SHORT).show();
+        fieldList = db.getAllFields();
+        if(mapConnected){
+            fieldList = db.getAllFields();
+            displayFields();
+        }
+    }
 
 
 
@@ -151,6 +163,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).getLatitude(),
                         LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).getLongitude())
                 ,11));
+        mapConnected = true ;
     }
 
     //Method when google's api is suspended
@@ -173,8 +186,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             LatLng fLatLong = new LatLng(f.getLat(), f.getLong());
             MarkerOptions fMarkOpt = new MarkerOptions()
                     .position(fLatLong)
-                    .title(f.getLocation())
-                    .snippet(f.getDescription());
+                    .title(f.getDescription())
+                    .snippet(f.getLocation());
             Marker fieldMarker = mMap.addMarker(fMarkOpt);
             fieldMarker.setTag(f.getId());
         }
@@ -294,33 +307,30 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         switch (tag) {
             case 0 :
                 LatLng clickedPos = marker.getPosition();
-                Toast.makeText(this, "Adding field at " + clickedPos,
-                        Toast.LENGTH_SHORT).show();
+
 
                 //to attach LatLong to the intent, we need a bundle
                 //https://stackoverflow.com/questions/16134682/how-to-send-a-latlng-instance-to-new-intent
                 Bundle args = new Bundle();
                 args.putParcelable("fieldPos", clickedPos);
 
+                mClickedMark.remove();
                 //Create the intent and launch it
                 Intent intent_addField = new Intent(this, AddFieldActivity.class);
                 intent_addField.putExtra("bundle",args);
                 startActivity(intent_addField);
 
+                break;
             case 1 :
                 Toast.makeText(this, "Clicked on you",
                         Toast.LENGTH_SHORT).show();
                 break;
-            case 2 :
+            default:
                 Intent intent = new Intent(this, FieldInfo.class);
-                   intent.putExtra("fieldID", 2); //added this to pass the Field ID. You need
+                   intent.putExtra("fieldID", tag); //added this to pass the Field ID. You need
                  //to get it from the database. When somenone click on marker, get that id from db and send to FieldInfo
                    startActivity(intent);
                    break ;
-            default :
-                Toast.makeText(this, "Tag " + tag + " clicked",
-                        Toast.LENGTH_SHORT).show();
-                break ;
         }
     }
 
