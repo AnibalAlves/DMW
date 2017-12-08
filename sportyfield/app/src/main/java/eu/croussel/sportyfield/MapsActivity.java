@@ -293,8 +293,20 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         int tag = (int) marker.getTag();
         switch (tag) {
             case 0 :
-                Toast.makeText(this, "Adding field at " + marker.getPosition(),
+                LatLng clickedPos = marker.getPosition();
+                Toast.makeText(this, "Adding field at " + clickedPos,
                         Toast.LENGTH_SHORT).show();
+
+                //to attach LatLong to the intent, we need a bundle
+                //https://stackoverflow.com/questions/16134682/how-to-send-a-latlng-instance-to-new-intent
+                Bundle args = new Bundle();
+                args.putParcelable("fieldPos", clickedPos);
+
+                //Create the intent and launch it
+                Intent intent_addField = new Intent(this, AddFieldActivity.class);
+                intent_addField.putExtra("bundle",args);
+                startActivity(intent_addField);
+
             case 1 :
                 Toast.makeText(this, "Clicked on you",
                         Toast.LENGTH_SHORT).show();

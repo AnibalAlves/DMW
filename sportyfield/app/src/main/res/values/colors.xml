@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="gray">#D3D3C3</color>
+    <color name="clicked">#5f64c8ff</color>
 </resources>
