@@ -65,8 +65,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         db.clearDb();
 
         Log.d("Insert:", "Inserting fields...");
-        db.createField(new Field("Milano Castle", 45.471944, 9.178889, false, true, 0, "This is a castle, wow."));
-        db.createField(new Field("Duomo",45.464211, 9.191383, false, false, 0, "This is Duomo - click to go on info"));
+        db.createField(new Field("Milano Castle", 45.471944, 9.178889, false, true, 0, "This is a castle, wow.", null));
+        db.createField(new Field("Duomo",45.464211, 9.191383, false, false, 0, "This is Duomo - click to go on info", null));
 
     }
 

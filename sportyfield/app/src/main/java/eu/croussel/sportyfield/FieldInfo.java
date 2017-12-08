@@ -2,6 +2,8 @@ package eu.croussel.sportyfield;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -56,23 +58,26 @@ public class FieldInfo extends Activity {
         TextView field_loc = (TextView) findViewById(R.id.field_location);
         Field f = db.getField(fieldId);
         System.out.println("field info + " + f.getLocation());
+        byte[] image = f.getImage();
+        if(image == null) iv.setImageResource(R.drawable.field);
+        else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
         String theLocation = f.getLocation();
         field_loc.setText(theLocation);
 
-        switch (fieldId) {
-            case 1:
-                iv.setImageResource(R.drawable.field);
-                break;
-            case 2:
-                iv.setImageResource(R.drawable.field);
-                break;
-            case 3:
-                iv.setImageResource(R.drawable.field);
-                break;
-            default:
-                iv.setImageResource(R.drawable.field);
-                break;
-        }
+//        switch (fieldId) {
+//            case 1:
+//                iv.setImageResource(R.drawable.field);
+//                break;
+//            case 2:
+//                iv.setImageResource(R.drawable.field);
+//                break;
+//            case 3:
+//                iv.setImageResource(R.drawable.field);
+//                break;
+//            default:
+//                iv.setImageResource(R.drawable.field);
+//                break;
+//        }
 
         List<Report> reports = db.getAllReport(fieldId);
         System.out.println("number of reports is " + reports.size());

@@ -47,6 +47,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String KEY_PRIVATE = "_private";
     private static final String KEY_OUTDOOR = "_outdoor";
     private static final String KEY_FIELDESCRIPTION = "_description";
+    private static final String KEY_IMAGE = "_image";
 
     //DESCR table columns
     private static final String KEY_DESCRIPTION = "_descr";
@@ -73,7 +74,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     //fields TABLE
     private static final String CREATE_TABLE_FIELDS = "CREATE TABLE " + FIELD + "(" + KEY_ID + " INTEGER UNIQUE PRIMARY KEY, "
             + KEY_LOCATION + " TEXT, " + KEY_LATITUDE + " DOUBLE, " + KEY_LONGITUDE + " DOUBLE, " + KEY_PRIVATE + " BOOLEAN, "
-            + KEY_OUTDOOR + " BOOLEAN, " + KEY_FIELDESCRIPTION + " TEXT " + ")";
+            + KEY_OUTDOOR + " BOOLEAN, " + KEY_FIELDESCRIPTION + " TEXT, " + KEY_IMAGE + " BLOB" + ")";
     //descrip table
     private static final String CREATE_TABLE_DESCR = "CREATE TABLE " + DESCR + "(" + KEY_NUMBER + " INTEGER PRIMARY KEY, "
             + KEY_DESCRIPTION + " TEXT, " + KEY_UNAMEREPORT + " TEXT, " + KEY_FIELDID + " INTEGER, " + KEY_DATE + " DATETIME " + ")";
@@ -143,6 +144,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_OUTDOOR, f.getOut());
         values.put(KEY_ID, updateFieldIdMax());
         values.put(KEY_FIELDESCRIPTION, f.getDescription());
+        values.put(KEY_IMAGE, f.getImage());
         // insert row
         db.insertWithOnConflict(FIELD, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
@@ -192,6 +194,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         f.setDescription(c.getString(c.getColumnIndex(KEY_FIELDESCRIPTION)));
         f.setPriv(c.getColumnIndex(KEY_PRIVATE) == 1);
         f.setOut(c.getColumnIndex(KEY_OUTDOOR) == 1);
+        f.setImage(c.getBlob(c.getColumnIndex(KEY_IMAGE)));
         return f;
     }
     /**
@@ -218,6 +221,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 f.setDescription(c.getString(c.getColumnIndex(KEY_FIELDESCRIPTION)));
                 f.setPriv(c.getColumnIndex(KEY_PRIVATE) == 1);
                 f.setOut(c.getColumnIndex(KEY_OUTDOOR) == 1);
+                f.setImage(c.getBlob(c.getColumnIndex(KEY_IMAGE)));
                 // adding to description list
                 fields.add(f);
             } while (c.moveToNext());

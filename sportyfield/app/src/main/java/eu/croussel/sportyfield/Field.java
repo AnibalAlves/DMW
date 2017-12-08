@@ -12,6 +12,7 @@ public class Field {
     boolean _private;
     boolean _outdor;
     String _description;
+    byte[] _image ;
     //something about the picture, maybe 2 pics into the res folder just to show to prof
 
 
@@ -21,7 +22,7 @@ public class Field {
 
     }
     //COnstructor
-    public Field(String location, double lat, double longi, boolean priv, boolean outd, int id, String d)
+    public Field(String location, double lat, double longi, boolean priv, boolean outd, int id, String d, byte[] im)
     {
         this._location=location;
         this._lat=lat;
@@ -30,6 +31,7 @@ public class Field {
         this._outdor=outd;
         this._id = id;
         this._description = d;
+        this._image = im ;
     }
 
     public int getId()
@@ -111,4 +113,8 @@ public class Field {
     {
         this._description=d;
     }
+
+    public void setImage(byte[] image) { this._image = image ;}
+    public byte[] getImage(){return this._image ;}
 }
+
