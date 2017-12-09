@@ -329,8 +329,19 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_TYPE, u.getType());
 
         // updating row
-        return db.update(USER, values, KEY_ID + " = ?",
+        return db.update(USER, values, KEY_USERNAME + " = ?",
                 new String[] { String.valueOf(u.getUserName()) });
+    }
+
+    public int updateUserRep(String uName, Integer i)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_REPUTATION, i);
+        // updating row
+        return db.update(USER, values, KEY_USERNAME + " = ?",
+                new String[] { String.valueOf(uName) });
     }
 
     /*

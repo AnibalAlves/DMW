@@ -9,8 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -100,16 +105,6 @@ public class FieldInfo extends Activity {
         db.closeDB();
     }
 
-    public void upArrow(View v)
-    {
-
-    }
-
-    public void downArrow(View v)
-    {
-
-    }
-
     public void addRep(View view) {
         Intent newRe = new Intent(this,AddReport.class);
         newRe.putExtra("fieldId",fieldId);
@@ -119,5 +114,43 @@ public class FieldInfo extends Activity {
 
     public void getBackToMaps(View view) {
         finish();
+    }
+
+    public void upArrow(View view) {
+        //get the row the clicked button is in
+        RelativeLayout vwParentRow = (RelativeLayout) view.getParent();
+        ImageButton btnChild = (ImageButton)vwParentRow.getChildAt(5);
+        ImageButton btnChildd = (ImageButton)vwParentRow.getChildAt(7);
+        TextView rep = (TextView) vwParentRow.getChildAt(6);
+        String repu = (String) rep.getText();
+        String splitt = repu.substring(1);
+        Integer aux = Integer.parseInt(splitt);
+        aux++;
+        db.updateUserRep(testUsername,aux);
+        if (aux>=0)
+            rep.setText("+" + aux);
+        else
+            rep.setText("-" + aux);
+        btnChild.setClickable(false);
+        btnChildd.setClickable(false);
+    }
+
+    public void downArrow(View view) {
+        //get the row the clicked button is in
+        RelativeLayout vwParentRow = (RelativeLayout) view.getParent();
+        ImageButton btnChildu = (ImageButton)vwParentRow.getChildAt(5);
+        ImageButton btnChild = (ImageButton)vwParentRow.getChildAt(7);
+        TextView rep = (TextView) vwParentRow.getChildAt(6);
+        String repu = (String) rep.getText();
+        String splitt = repu.substring(1);
+        Integer aux = Integer.parseInt(splitt);
+        aux--;
+        db.updateUserRep(testUsername,aux);
+        if (aux>=0)
+            rep.setText("+" + aux);
+        else
+            rep.setText("-" + aux);
+        btnChildu.setClickable(false);
+        btnChild.setClickable(false);
     }
 }

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
-    <RelativeLayout>
 
         <ImageView
             android:id="@+id/user_image"
@@ -46,14 +44,14 @@
             android:textColor="@android:color/black"
             android:textSize="10dp" />
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="70dp"
-            android:src="@drawable/broken_ring"
-            android:id="@+id/report_image" />
+    <ImageView
+        android:id="@+id/report_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignTop="@+id/date"
+        android:layout_marginEnd="24dp"
+        android:layout_toStartOf="@+id/imageButton"
+        android:src="@drawable/broken_ring" />
 
         <ImageButton
             android:layout_width="24dp"
@@ -67,26 +65,24 @@
             android:onClick="upArrow"
             />
 
-        <TextView
-            android:id="@+id/reputation"
-            android:layout_width="24dp"
-            android:layout_height="15dp"
-            android:layout_alignStart="@+id/imageButton"
-            android:layout_centerVertical="true"
-            android:text="+12"
-            android:textColor="@android:color/black" />
+    <TextView
+        android:id="@+id/reputation"
+        android:layout_width="24dp"
+        android:layout_height="15dp"
+        android:layout_alignBaseline="@+id/descr"
+        android:layout_alignBottom="@+id/descr"
+        android:layout_alignStart="@+id/imageButton"
+        android:text="+12"
+        android:textColor="@android:color/black" />
 
-        <ImageButton
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="7dp"
-            android:background="@android:color/transparent"
-            android:layout_alignStart="@+id/reputation"
-            android:layout_alignTop="@+id/descr"
-            android:src="@drawable/arrow_down"
-            android:onClick="downArrow"
-            android:id="@+id/down"
-            />
+    <ImageButton
+        android:id="@+id/down"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignStart="@+id/reputation"
+        android:layout_below="@+id/date"
+        android:background="@android:color/transparent"
+        android:onClick="downArrow"
+        android:src="@drawable/arrow_down" />
 
-    </RelativeLayout>
-</TableLayout>
+</RelativeLayout>
