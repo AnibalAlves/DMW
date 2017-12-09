@@ -43,14 +43,13 @@ public class FieldInfo extends Activity {
         User afon = new User("Afonso",22,"test@gmail.com"
                 ,123456789,25,"Basketball","PRO USER");
         db.createUser(afon);
+
         //CREATING SOME REPORTS OF THE FIELD
         Bitmap src=BitmapFactory.decodeFile("/storage/emulated/0/Download/download.jpeg");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         src.compress(Bitmap.CompressFormat.PNG, 100, baos);
         Report newRe = new Report("Net with some holes", fieldId, "Afonso", baos.toByteArray());
         db.createReport(newRe);
-        
-        onResume();
 
         TextView field_loc = (TextView) findViewById(R.id.field_location);
         Field f = db.getField(fieldId);
@@ -58,37 +57,45 @@ public class FieldInfo extends Activity {
         byte[] image = f.getImage();
         if(image == null) iv.setImageResource(R.drawable.field);
         else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
+
         String theLocation = f.getLocation();
         field_loc.setText(theLocation);
+        onResume();
+    }
 
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
         List<Report> reports = db.getAllReport(fieldId);
         System.out.println("number of reports is " + reports.size());
 
-        String[] repDate = new String[reports.size()];
-        String[] repDescr = new String[reports.size()];
-        String[] userTy = new String[reports.size()];
-        Integer[] userReput = new Integer[reports.size()];
-        byte[][] repImage = new byte[reports.size()][];
-        for (int i=0;i<reports.size();i++)
+        if (reports.size()>0)
         {
-            repDate[i] = reports.get(i).getDate();
-            repDescr[i] = reports.get(i).getDescr();
-            repImage[i] = reports.get(i).getRepImage();
-            String uNameToReport = reports.get(i).getUserName();
-            userTy[i] = db.getUser(uNameToReport).getType();
-            userReput[i] = db.getUser(uNameToReport).getReputatio();
+            String[] repDate = new String[reports.size()];
+            String[] repDescr = new String[reports.size()];
+            String[] userTy = new String[reports.size()];
+            Integer[] userReput = new Integer[reports.size()];
+            byte[][] repImage = new byte[reports.size()][];
+            for (int i = 0; i < reports.size(); i++) {
+                repDate[i] = reports.get(i).getDate();
+                repDescr[i] = reports.get(i).getDescr();
+                repImage[i] = reports.get(i).getRepImage();
+                String uNameToReport = reports.get(i).getUserName();
+                userTy[i] = db.getUser(uNameToReport).getType();
+                userReput[i] = db.getUser(uNameToReport).getReputatio();
+            }
+
+            CustomList adapter = new CustomList(FieldInfo.this, userTy, repDate, repDescr, userReput, repImage);
+
+            ListView rep = (ListView) findViewById(R.id.reports);
+            rep.setAdapter(adapter);
+            rep.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                }
+            });
         }
-
-        CustomList adapter = new CustomList(FieldInfo.this, userTy,repDate,repDescr,userReput,repImage);
-        ListView rep = (ListView) findViewById(R.id.reports);
-        System.out.println("CHECKING WHERE THE APP IS CRASHING!!!!!!!!!!!!!!!!! ");
-        rep.setAdapter(adapter);
-        rep.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                        @Override
-                                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        }
-                                    });
-
         db.closeDB();
     }
 

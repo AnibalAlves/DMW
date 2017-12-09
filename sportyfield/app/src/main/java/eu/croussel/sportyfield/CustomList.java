@@ -57,9 +57,8 @@ public class CustomList extends ArrayAdapter<String> {
 
         //change this to change the report image
         ImageView rep_im = rowView.findViewById(R.id.report_image);
-        Bitmap bmp = BitmapFactory.decodeByteArray(repImage[position], 0, repImage.length);
-        rep_im.setImageBitmap(Bitmap.createScaledBitmap(bmp, rep_im.getWidth(),
-                rep_im.getHeight(), false));
+        Bitmap bmp = BitmapFactory.decodeByteArray(repImage[position], 0, repImage[position].length);
+        rep_im.setImageBitmap(bmp);
 
         ImageButton up_a = rowView.findViewById(R.id.imageButton);
         up_a.setImageResource(R.drawable.arrow_up);
