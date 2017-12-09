@@ -99,13 +99,10 @@ public class Field {
         return this._description;
     }
     public String getComment() {
-        String res = new String() ;
-
-        if(this._outdor) res.concat("Outdour ");
-        else res.concat("Indour :");
-        res.concat(this._description);
-        res.concat(" field.");
-        return res;
+        String comment;
+        if(this.getOut()) comment = "Outdoor "+ this.getDescription()+ " field";
+        else comment = "Indoor "+ this.getDescription()+ " field";
+        return comment;
     }
 
 

@@ -7,7 +7,7 @@
     tools:context="eu.croussel.sportyfield.AddFieldActivity">
 
     <ImageView
-        android:id="@+id/addFieldImView"
+        android:id="@+id/infowindowImView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:scaleType="center"
@@ -65,7 +65,7 @@
         android:layout_marginTop="8dp"
         android:text="Add location : \n Latitude : \n Longitude : "
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addFieldImView" />
+        app:layout_constraintTop_toBottomOf="@+id/infowindowImView" />
 
     <CheckBox
         android:id="@+id/checkBox_Outdoor"

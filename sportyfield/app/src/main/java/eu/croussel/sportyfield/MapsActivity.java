@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -112,6 +116,51 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         mMap.setOnInfoWindowClickListener(this);
         //Activate on map click listener
         mMap.setOnMapClickListener(this);
+        // Setting a custom info window adapter for the google map
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            // Use default InfoWindow frame
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            // Defines the contents of the InfoWindow
+            @Override
+            public View getInfoContents(Marker arg0) {
+                int tag = (int) arg0.getTag();
+                // Getting view from the layout file info_window_layout
+                View v = getLayoutInflater().inflate(R.layout.windowlayout, null);
+
+                // Getting reference to the TextViews and ImageView
+                TextView tvTitle = (TextView) v.findViewById(R.id.infoWindowTitle);
+                TextView tvText = (TextView) v.findViewById(R.id.infoWindowText);
+                ImageView iv = (ImageView) v.findViewById(R.id.infowindowImView);
+
+                switch(tag){
+                    //click marker
+                    case 0 :
+                        tvTitle.setText(getString(R.string.clickedMarkerTitle));
+                        tvText.setText(getString(R.string.clickedMarkerText));
+                        break;
+                    case 1 :
+                        tvTitle.setText(getString(R.string.youMarkerTitle));
+                        tvText.setText(getString(R.string.youMarkerText));
+                        break;
+                    default:
+                        Field f = db.getField(tag);
+                        tvTitle.setText(f.getComment());
+                        tvText.setText(f.getLocation());
+                        byte[] image = f.getImage();
+                        if(image == null) iv.setImageResource(R.drawable.field);
+                        else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
+                        break;
+                }
+                // Returning the view containing InfoWindow contents
+                return v;
+
+            }
+        });
 
     }
 

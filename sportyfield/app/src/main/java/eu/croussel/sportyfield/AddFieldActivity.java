@@ -1,6 +1,5 @@
 package eu.croussel.sportyfield;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -65,7 +64,7 @@ public class AddFieldActivity extends AppCompatActivity {
         fieldPos = bundle.getParcelable("fieldPos");
 
         //Image view
-        photoView = (ImageView) findViewById(R.id.addFieldImView);
+        photoView = (ImageView) findViewById(R.id.infowindowImView);
         photoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,9 +98,7 @@ public class AddFieldActivity extends AppCompatActivity {
                 Boolean isOutdoor = ((CheckBox) findViewById(R.id.checkBox_Outdoor)).isChecked();
                 Boolean isPrivate = ((CheckBox) findViewById(R.id.checkBox_Private)).isChecked();
 
-                String description;
-                if(isOutdoor) description = "Outdoor "+ selectedFromList+ " field";
-                else description = "Indoor "+ selectedFromList+ " field";
+
 
                 Field newField = new Field(getAddress(),
                         fieldPos.latitude,
@@ -109,12 +106,10 @@ public class AddFieldActivity extends AppCompatActivity {
                         isPrivate,
                         isOutdoor,
                         0,
-                        description,
+                        selectedFromList,
                         getBytesFromBitmap(photoBitmap)
                 );
                 db.createField(newField);
-                Toast.makeText(getBaseContext(), description,
-                        Toast.LENGTH_SHORT).show();
                 finish();
             }
         });

@@ -4,4 +4,9 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
     <string name="reports">report</string>
+    <string name="clickedMarkerTitle">Add new field ?</string>
+    <string name="clickedMarkerText">Click to add new field.</string>
+    <string name="youMarkerTitle">You</string>
+    <string name="youMarkerText">You are here.</string>
+
 </resources>

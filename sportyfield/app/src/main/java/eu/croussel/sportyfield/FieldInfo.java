@@ -46,11 +46,12 @@ public class FieldInfo extends Activity {
 
         //CREATING SOME REPORTS OF THE FIELD
         Bitmap src=BitmapFactory.decodeFile("/storage/emulated/0/Download/download.jpeg");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        src.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        Report newRe = new Report("Net with some holes", fieldId, "Afonso", baos.toByteArray());
-        db.createReport(newRe);
-
+        if(src != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            src.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            Report newRe = new Report("Net with some holes", fieldId, "Afonso", baos.toByteArray());
+            db.createReport(newRe);
+        }
         TextView field_loc = (TextView) findViewById(R.id.field_location);
         Field f = db.getField(fieldId);
         System.out.println("field info + " + f.getLocation());
