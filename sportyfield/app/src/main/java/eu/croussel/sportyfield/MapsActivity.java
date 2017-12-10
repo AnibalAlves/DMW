@@ -1,6 +1,7 @@
 package eu.croussel.sportyfield;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -41,6 +42,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    Filter appliedFilter ;
+    private static final int REQUEST_FILTER = 1 ;
     private GoogleMap mMap;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
@@ -90,15 +93,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         super.onResume();
         Toast.makeText(this, "RESUME",
                 Toast.LENGTH_SHORT).show();
-        fieldList = db.getAllFields();
+        fieldList = getFields();
         if(mapConnected){
-            fieldList = db.getAllFields();
+            mMap.clear();
             displayFields();
+            onLocationChanged(mLastLocation);
         }
     }
 
-
-
+    private List<Field> getFields(){
+        if(appliedFilter == null) return db.getAllFields();
+        else return db.getAllFieldsWithFilter(appliedFilter);
+    }
     /////////////////////////////
     //           MAP           //
     /////////////////////////////
@@ -199,8 +205,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest()
-                .setInterval(10000)
-                .setFastestInterval(5000)
+                .setInterval(1000)
+                .setFastestInterval(500)
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -268,6 +274,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
        // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
 
     }
+
+    //Put marker on current location
 
     //Check of Location permision (Fine location here)
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -419,9 +427,27 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 else
                     Toast.makeText(this, "Intent to add Field on pos"+mClickedMark.getPosition(),
                             Toast.LENGTH_SHORT).show();
+
+                Intent filterIntent = new Intent(this, FilterActivity.class);
+                startActivityForResult(filterIntent, REQUEST_FILTER);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == Activity.RESULT_OK){
+            switch(requestCode){
+                case REQUEST_FILTER :
+                    appliedFilter = (Filter) data.getSerializableExtra("filter");
+                    Toast.makeText(this, appliedFilter.getFieldType(),
+                            Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
 }

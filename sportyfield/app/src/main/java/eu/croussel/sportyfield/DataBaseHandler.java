@@ -229,6 +229,49 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         }
         return fields;
     }
+    public List<Field> getAllFieldsWithFilter(Filter filter) {
+
+        String fieldType = filter.getFieldType();
+        if(fieldType == null){
+            return getAllFields();
+        }
+        Boolean isOutdoor = filter.getOutdoor();
+        Boolean isIndoor = filter.getIndoor();
+        Boolean isPrivate = filter.getPrivate();
+        Boolean isPublic = filter.getPublic();
+        String selectQuery = "SELECT  * FROM " + FIELD + " WHERE "
+                + KEY_FIELDESCRIPTION + " = '" + fieldType + "'";
+        if(isOutdoor && !isIndoor) selectQuery = selectQuery.concat(" AND " + KEY_OUTDOOR + " = 1");
+        if(isIndoor && !isOutdoor) selectQuery = selectQuery.concat(" AND " + KEY_OUTDOOR + " = 0");
+        if(isPrivate && !isPublic) selectQuery = selectQuery.concat(" AND " + KEY_PRIVATE + " = 1");
+        if(!isPrivate && isPublic) selectQuery = selectQuery.concat(" AND " + KEY_PRIVATE + " = 0");
+
+
+        List<Field> fields = new ArrayList<Field>();
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Field f = new Field();
+                f.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                f.setLat(c.getDouble(c.getColumnIndex(KEY_LATITUDE)));
+                f.setLong(c.getDouble(c.getColumnIndex(KEY_LONGITUDE)));
+                f.setLocation(c.getString(c.getColumnIndex(KEY_LOCATION)));
+                f.setDescription(c.getString(c.getColumnIndex(KEY_FIELDESCRIPTION)));
+                f.setPriv(c.getColumnIndex(KEY_PRIVATE) == 1);
+                f.setOut(c.getColumnIndex(KEY_OUTDOOR) == 1);
+                f.setImage(c.getBlob(c.getColumnIndex(KEY_IMAGE)));
+                // adding to description list
+                fields.add(f);
+            } while (c.moveToNext());
+        }
+        return fields;
+    }
 
     /*
     * Creating Report

@@ -46,8 +46,7 @@ public class AddFieldActivity extends AppCompatActivity {
     private String[] sports = {"Basketball", "Football", "Tennis", "Pingpong", "Handball"};
     private ListView sportsList;
     private String selectedFromList = new String();
-    //lastItemSelected
-    private int lastSport = 0;
+
 
     ImageView photoView ;
     @Override

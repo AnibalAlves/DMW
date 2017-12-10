@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="eu.croussel.sportyfield.FilterActivity">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="City :"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="4dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="City's Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textSelect_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:text="Select sportfield type :"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="@+id/editText"
+        app:layout_constraintTop_toBottomOf="@+id/editText" />
+
+    <ListView
+        android:id="@+id/listViewSports_filter"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:choiceMode="singleChoice"
+        android:listSelector="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@+id/textAttributes_filter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textSelect_filter"
+        app:layout_constraintTop_toTopOf="@+id/textSelect_filter">
+
+    </ListView>
+
+    <CheckBox
+        android:id="@+id/checkBox_Outdoor_filter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="8dp"
+        android:text="Outdoor"
+        app:layout_constraintStart_toStartOf="@+id/textAttributes_filter"
+        app:layout_constraintTop_toBottomOf="@+id/textAttributes_filter" />
+
+    <CheckBox
+        android:id="@+id/checkBox_Indoor_filter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Indoor"
+        app:layout_constraintStart_toStartOf="@+id/checkBox_Outdoor_filter"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox_Outdoor_filter" />
+
+    <CheckBox
+        android:id="@+id/checkBox_Private_filter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="Private"
+        app:layout_constraintStart_toEndOf="@+id/checkBox_Outdoor_filter"
+        app:layout_constraintTop_toTopOf="@+id/checkBox_Outdoor_filter" />
+
+    <CheckBox
+        android:id="@+id/checkBox_Public_filter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Public"
+        app:layout_constraintStart_toStartOf="@+id/checkBox_Private_filter"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox_Private_filter" />
+
+    <TextView
+        android:id="@+id/textAttributes_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="128dp"
+        android:text="Select attributes :"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="@+id/textSelect_filter"
+        app:layout_constraintTop_toBottomOf="@+id/textSelect_filter" />
+    <Button
+        android:id="@+id/button_addField_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="Apply filter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/listViewSports_filter" />
+
+
+</android.support.constraint.ConstraintLayout>
