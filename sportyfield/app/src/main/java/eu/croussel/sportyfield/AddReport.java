@@ -66,11 +66,18 @@ public class AddReport extends Activity {
         //add report to the db, but first get info from image and edit text
         EditText descr = (EditText) findViewById(R.id.descr);
         String des = descr.getText().toString();
-        Bitmap bitmap = ((BitmapDrawable) im.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageInByte = baos.toByteArray();
+        byte[] imageInByte;
+        try {
+            Bitmap bitmap = ((BitmapDrawable) im.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            imageInByte = baos.toByteArray();
+        }
+        catch(NullPointerException ex){
+            imageInByte = null;
+        }
         Report r = new Report(des,fieldId,userName,imageInByte);
+
         db.createReport(r);
         finish();
     }

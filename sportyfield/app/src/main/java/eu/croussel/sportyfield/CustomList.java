@@ -56,10 +56,12 @@ public class CustomList extends ArrayAdapter<String> {
         descrip.setText(user_Descr[position]);
 
         //change this to change the report image
-        ImageView rep_im = rowView.findViewById(R.id.report_image);
-        Bitmap bmp = BitmapFactory.decodeByteArray(repImage[position], 0, repImage[position].length);
-        rep_im.setImageBitmap(bmp);
-
+        try {
+            ImageView rep_im = rowView.findViewById(R.id.report_image);
+            Bitmap bmp = BitmapFactory.decodeByteArray(repImage[position], 0, repImage[position].length);
+            rep_im.setImageBitmap(bmp);
+        }
+        catch (NullPointerException ex) {}
         ImageButton up_a = rowView.findViewById(R.id.imageButton);
         up_a.setImageResource(R.drawable.arrow_up);
         ImageButton down_a;
