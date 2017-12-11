@@ -91,8 +91,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     @Override
     public void onResume(){
         super.onResume();
-        Toast.makeText(this, "RESUME",
-                Toast.LENGTH_SHORT).show();
         fieldList = getFields();
         if(mapConnected){
             mMap.clear();
@@ -420,16 +418,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_addfield:
-                if(mClickedMark == null)
-                    Toast.makeText(this, "To add a Field click on the map and click back here.",
-                            Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(this, "Intent to add Field on pos"+mClickedMark.getPosition(),
-                            Toast.LENGTH_SHORT).show();
-
+            case R.id.action_addFilter:
                 Intent filterIntent = new Intent(this, FilterActivity.class);
                 startActivityForResult(filterIntent, REQUEST_FILTER);
+                return true;
+            case R.id.action_resetFilter :
+                appliedFilter = null;
+                this.onResume();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

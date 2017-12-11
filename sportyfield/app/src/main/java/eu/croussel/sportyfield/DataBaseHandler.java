@@ -101,7 +101,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_USER);
         db.execSQL(CREATE_TABLE_USER_DESCR);
         db.execSQL(CREATE_TABLE_IDMAX);
-        init_IdMax();
+        init_IdMax(db);
     }
 
     @Override
@@ -126,7 +126,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + USER);
         db.execSQL("DROP TABLE IF EXISTS " + USER_DESCR);
         db.execSQL("DROP TABLE IF EXISTS " + IDMAX);
-
         // create new tables
         onCreate(db);
     }
@@ -150,8 +149,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.insertWithOnConflict(FIELD, null, values,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    private void init_IdMax(){
-        SQLiteDatabase db = this.getWritableDatabase();
+    private void init_IdMax(SQLiteDatabase db){
+//        SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_IDMAXFIELD, 2);
