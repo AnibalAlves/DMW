@@ -94,6 +94,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         fieldList = getFields();
         if(mapConnected){
             mMap.clear();
+            displayCurrPos(new LatLng(mLastLocation.getLatitude(),
+                    mLastLocation.getLongitude()));
             displayFields();
             onLocationChanged(mLastLocation);
         }
@@ -211,11 +213,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                     .setFastestInterval(500)
                     .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            LatLng firstLatLng = new LatLng(mLastLocation.getLatitude(),
+                    mLastLocation.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(
-                            LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).getLatitude(),
-                            LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).getLongitude())
-                    , 11));
+                    firstLatLng,
+                            11)
+                    );
+            displayCurrPos(firstLatLng);
+
             mapConnected = true;
         }
     }
@@ -256,22 +262,26 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     @Override
     public void onLocationChanged(Location location)
     {
-        mLastLocation = location;
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
-        }
         if(location != null) {
-            //Place current location marker
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .position(latLng)
-                    .title("Current Position")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-            mCurrLocationMarker = mMap.addMarker(markerOptions);
-            mCurrLocationMarker.setTag(1);
+            mLastLocation = location;
+            if (mCurrLocationMarker != null) {
+                mCurrLocationMarker.remove();
+            }
+            displayCurrPos(new LatLng(mLastLocation.getLatitude(),
+                    mLastLocation.getLongitude()));
         }
     }
 
+    //displays curr position
+    void displayCurrPos(LatLng latLng){
+        //Place current location marker
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(latLng)
+                .title("Current Position")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        mCurrLocationMarker = mMap.addMarker(markerOptions);
+        mCurrLocationMarker.setTag(1);
+    }
     //Put marker on current location
 
     //Check of Location permision (Fine location here)
