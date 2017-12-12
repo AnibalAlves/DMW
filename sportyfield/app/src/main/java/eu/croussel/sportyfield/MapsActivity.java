@@ -213,14 +213,16 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                     .setFastestInterval(500)
                     .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            LatLng firstLatLng = new LatLng(mLastLocation.getLatitude(),
-                    mLastLocation.getLongitude());
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    firstLatLng,
-                            11)
-                    );
-            displayCurrPos(firstLatLng);
+            try {
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                LatLng firstLatLng = new LatLng(mLastLocation.getLatitude(),
+                        mLastLocation.getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        firstLatLng,
+                        11)
+                );
+                displayCurrPos(firstLatLng);
+            }catch(NullPointerException ex){};
 
             mapConnected = true;
         }
@@ -274,6 +276,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 
     //displays curr position
     void displayCurrPos(LatLng latLng){
+    try {
         //Place current location marker
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
@@ -281,6 +284,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
         mCurrLocationMarker.setTag(1);
+    }
+    catch(NullPointerException ex){}
     }
     //Put marker on current location
 
