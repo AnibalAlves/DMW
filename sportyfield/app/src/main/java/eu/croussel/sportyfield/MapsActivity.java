@@ -158,7 +158,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                         tvTitle.setText(f.getComment());
                         tvText.setText(f.getLocation());
                         byte[] image = f.getImage();
-                        if(image == null) iv.setImageResource(R.drawable.field);
+                        if(image == null) iv.setImageResource(R.drawable.basket_field);
                         else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
                         break;
                 }

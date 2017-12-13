@@ -6,24 +6,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
-import java.sql.Blob;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FieldInfo extends Activity {
@@ -87,7 +79,7 @@ public class FieldInfo extends Activity {
         Field f = db.getField(fieldId);
         System.out.println("field info + " + f.getLocation());
         byte[] image = f.getImage();
-        if(image == null) iv.setImageResource(R.drawable.field);
+        if(image == null) iv.setImageResource(R.drawable.basket_field);
         else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
 
         String theLocation = f.getLocation();
