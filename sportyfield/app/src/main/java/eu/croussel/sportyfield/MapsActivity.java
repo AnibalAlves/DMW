@@ -74,7 +74,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         Log.d("Insert:", "Inserting fields...");
         db.createField(new Field("Milano Castle", 45.471944, 9.178889, false, true, 0, "This is a castle, wow.", null));
         db.createField(new Field("Duomo",45.464211, 9.191383, false, false, 0, "This is Duomo - click to go on info", null));
-
+        db.createField(new Field("Giardino Oriana Fallaci",45.4534, 9.1944, false, false, 0, "A good basketball field", null));
+        db.createField(new Field("Giardino Roberto Bazlen",45.4541, 9.1974, false, false, 0, "Good field near park", null));
+        db.createField(new Field("Polisportiva Cimiano",45.497188, 9.243009, false, false, 0, "Great field", null));
+        db.createField(new Field("Parco della Resistenza",44.2162, 12.0485, false, false, 0, "A lot of space", null));
+        db.createField(new Field("Angelo Mauri ",45.46518503, 9.16155997, false, false, 0, "Near the road", null));
+        db.createField(new Field("Dezza",45.46146776, 9.16018903, false, false, 0, "Near the road", null));
+        db.createField(new Field("Argelati",45.44999507, 9.172334, false, false, 0, "Near the road", null));
+        db.createField(new Field("Marsala",45.47856593, 9.18897651, false, false, 0, "Near the road", null));
     }
 
     @Override
