@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,7 +31,7 @@ public class FieldInfo extends Activity {
     // Database Helper
     DataBaseHandler db;
     int fieldId;
-    String testUsername = "Afonso";
+    String testUsername = "John";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class FieldInfo extends Activity {
         System.out.println("field id is = " + fieldId);
 
         //CREATING USER
-        User afon = new User("Afonso",22,"test@gmail.com"
+        User afon = new User("John",22,"test@gmail.com"
                 ,123456789,25,"Basketball","PRO USER");
         db.createUser(afon);
 
@@ -54,8 +56,32 @@ public class FieldInfo extends Activity {
         if(src != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             src.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            Report newRe = new Report("Net with some holes", fieldId, "Afonso", baos.toByteArray());
+            Report newRe = new Report("Net with some holes", fieldId, "John", baos.toByteArray());
             db.createReport(newRe);
+
+            ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
+            src.compress(Bitmap.CompressFormat.PNG, 100, baos1);
+            Report newRe1 = new Report("Net with some holes", fieldId, "John", baos.toByteArray());
+            db.createReport(newRe1);
+
+
+
+            Drawable d = getResources().getDrawable(R.drawable.broken_ring); // the drawable
+            Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapdata = stream.toByteArray();
+
+
+            ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+            src.compress(Bitmap.CompressFormat.PNG, 100, baos2);
+            Report newRe2 = new Report("Ring is broken", fieldId, "John", bitmapdata);
+            db.createReport(newRe2);
+
+            ByteArrayOutputStream baos3 = new ByteArrayOutputStream();
+            src.compress(Bitmap.CompressFormat.PNG, 100, baos3);
+            Report newRe3 = new Report("Ring is broken", fieldId, "John", bitmapdata);
+            db.createReport(newRe3);
         }
         TextView field_loc = (TextView) findViewById(R.id.field_location);
         Field f = db.getField(fieldId);
