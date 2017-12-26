@@ -40,7 +40,7 @@ public class FieldInfo extends Activity {
 
         //CREATING USER
         User afon = new User("John",22,"test@gmail.com"
-                ,123456789,25,"Basketball","PRO USER");
+                ,123456789,25,"Basketball","PRO USER","");
         db.createUser(afon);
 
         //CREATING SOME REPORTS OF THE FIELD
@@ -107,7 +107,7 @@ public class FieldInfo extends Activity {
                 repImage[i] = reports.get(i).getRepImage();
                 String uNameToReport = reports.get(i).getUserName();
                 userTy[i] = db.getUser(uNameToReport).getType();
-                userReput[i] = db.getUser(uNameToReport).getReputatio();
+                userReput[i] = db.getUser(uNameToReport).getReputation();
             }
 
             CustomList adapter = new CustomList(FieldInfo.this, userTy, repDate, repDescr, userReput, repImage);

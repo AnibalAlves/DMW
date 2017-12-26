@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "449062613669",
+    "firebase_url": "https://sportyfield.firebaseio.com",
+    "project_id": "sportyfield",
+    "storage_bucket": "sportyfield.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:449062613669:android:b6a58945a5f01af9",
+        "android_client_info": {
+          "package_name": "eu.croussel.sportyfield"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "449062613669-u0443svrgucegqcs2rkj98kh1ot0ln0h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eu.croussel.sportyfield",
+            "certificate_hash": "2232c4245461a1b840d7138f9518d513212693a3"
+          }
+        },
+        {
+          "client_id": "449062613669-9d6d1coubph2h92spgtsfiqtgl6im4nf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJVpKmn24Q-hrmM2jDlJnP3BQuEAJWnoU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "449062613669-9d6d1coubph2h92spgtsfiqtgl6im4nf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

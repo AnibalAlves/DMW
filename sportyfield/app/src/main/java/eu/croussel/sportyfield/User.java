@@ -6,6 +6,7 @@ package eu.croussel.sportyfield;
 
 public class User {
     String _userName;
+    String _pass;
     int _age;
     String _email;
     int _phone;
@@ -18,7 +19,7 @@ public class User {
 
     }
 
-    public User(String u, int a, String e, int p, int r, String f, String t)
+    public User(String u, int a, String e, int p, int r, String f, String t, String pw)
     {
         this._userName=u;
         this._age=a;
@@ -27,6 +28,7 @@ public class User {
         this._reputation=r;
         this._favSport=f;
         this._type=t;
+        this._pass=pw;
     }
 
     public String getUserName()
@@ -69,7 +71,7 @@ public class User {
         this._phone=p;
     }
 
-    public int getReputatio()
+    public int getReputation()
     {
         return this._reputation;
     }
@@ -97,5 +99,15 @@ public class User {
     public void setType(String t)
     {
         this._type=t;
+    }
+
+    public String getPw()
+    {
+        return this._pass;
+    }
+
+    public void setPw(String f)
+    {
+        this._pass=f;
     }
 }

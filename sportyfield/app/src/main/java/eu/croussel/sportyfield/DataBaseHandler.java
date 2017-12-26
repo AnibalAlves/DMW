@@ -330,7 +330,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_AGE, u.getAge());
         values.put(KEY_EMAIL, u.getEmail());
         values.put(KEY_PHONE, u.getPhone());
-        values.put(KEY_REPUTATION, u.getReputatio());
+        values.put(KEY_REPUTATION, u.getReputation());
         values.put(KEY_FAVSPORT, u.getFavSport());
 
         // insert row
@@ -366,7 +366,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_AGE, u.getAge());
         values.put(KEY_EMAIL, u.getEmail());
         values.put(KEY_PHONE, u.getPhone());
-        values.put(KEY_REPUTATION, u.getReputatio());
+        values.put(KEY_REPUTATION, u.getReputation());
         values.put(KEY_FAVSPORT, u.getFavSport());
         values.put(KEY_TYPE, u.getType());
 
