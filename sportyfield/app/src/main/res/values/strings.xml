@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">sportyfield</string>
     <string name="action_addFilter">Add filter</string>
+    <string name="change_profile">Submit</string>
     <string name="action_rmFilter">Remove filter</string>
+    <string name="action_returnMap">Return to Map</string>
+    <string name="action_addReport">Add a report</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_fieldInfo">Field Information</string>
     <string name="reports">report</string>
     <string name="clickedMarkerTitle">Add new field ?</string>
     <string name="clickedMarkerText">Click to add new field.</string>
@@ -13,6 +17,8 @@
     <string name="fb_login_protocol_scheme">fb933583286797124</string>
 
     <string name="loading">Loading</string>
+    <string name="open_drawer">Opening</string>
+    <string name="close_drawer">Closing</string>
 
     <string name="action_sign_in_short">Register</string>
     <string name="email">Email</string>
@@ -45,5 +51,10 @@
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
+    <string name="title_activity_menu">MenuActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_change_profile">ChangeProfileActivity</string>
 
 </resources>

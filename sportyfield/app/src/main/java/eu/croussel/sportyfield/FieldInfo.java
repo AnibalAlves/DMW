@@ -7,6 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -16,9 +20,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
-public class FieldInfo extends Activity {
+public class FieldInfo extends AppCompatActivity {
 
     // Database Helper
     DataBaseHandler db;
@@ -30,6 +35,17 @@ public class FieldInfo extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_info);
 
+        //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
+        //that will use the drawer menu
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        try {
+            DrawerUtil.getDrawer(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         db = new DataBaseHandler(getApplicationContext());
 
         ImageView iv = (ImageView) findViewById(R.id.field_image);
@@ -40,7 +56,7 @@ public class FieldInfo extends Activity {
 
         //CREATING USER
         User afon = new User("John",22,"test@gmail.com"
-                ,123456789,25,"Basketball","PRO USER","");
+                ,123456789,25,"Basketball","PRO USER","","");
         db.createUser(afon);
 
         //CREATING SOME REPORTS OF THE FIELD
@@ -121,17 +137,11 @@ public class FieldInfo extends Activity {
             });
         }
         db.closeDB();
-    }
-
-    public void addRep(View view) {
-        Intent newRe = new Intent(this,AddReport.class);
-        newRe.putExtra("fieldId",fieldId);
-        newRe.putExtra("uName",testUsername);
-        startActivity(newRe);
-    }
-
-    public void getBackToMaps(View view) {
-        finish();
+        try {
+            DrawerUtil.getDrawer(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void upArrow(View view) {
@@ -170,5 +180,51 @@ public class FieldInfo extends Activity {
             rep.setText("-" + aux);
         btnChildu.setClickable(false);
         btnChild.setClickable(false);
+    }
+
+    /////////////////////////////
+    //      ACTION BUTTONS     //
+    /////////////////////////////
+
+    //Add action buttons to the action bar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.field_info_actionbuttons, menu);
+        return true ;
+    }
+
+    //Called when one of the action button is called
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_addReport:
+                Intent newRe = new Intent(this,AddReport.class);
+                newRe.putExtra("fieldId",fieldId);
+                newRe.putExtra("uName",testUsername);
+                startActivity(newRe);
+                return true;
+            case R.id.action_backMap :
+                finish();
+                return true;
+            case android.R.id.home:
+                if (DrawerUtil.result.isDrawerOpen())
+                {
+                    DrawerUtil.result.closeDrawer();
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setHomeButtonEnabled(false);
+                }
+                else {
+                    DrawerUtil.result.openDrawer();
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_arrow);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setHomeButtonEnabled(false);
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -13,13 +13,14 @@ public class User {
     int _reputation;
     String _favSport;
     String _type; //PRO USER OR AMATEUR USER
+    String _photo;
 
     public User()
     {
 
     }
 
-    public User(String u, int a, String e, int p, int r, String f, String t, String pw)
+    public User(String u, int a, String e, int p, int r, String f, String t, String pw, String ph)
     {
         this._userName=u;
         this._age=a;
@@ -29,6 +30,7 @@ public class User {
         this._favSport=f;
         this._type=t;
         this._pass=pw;
+        this._photo=ph;
     }
 
     public String getUserName()
@@ -110,4 +112,8 @@ public class User {
     {
         this._pass=f;
     }
+
+    public String getPhoto(){ return this._photo; }
+
+    public void setPhoto(String p){ this._photo=p;}
 }

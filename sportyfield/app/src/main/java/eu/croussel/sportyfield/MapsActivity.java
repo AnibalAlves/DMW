@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,8 +36,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+import java.io.IOException;
 import java.util.List;
+
+import butterknife.ButterKnife;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -54,14 +60,24 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     // Database Helper
     DataBaseHandler db;
     List<Field> fieldList ;
-
-
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_maps);
 
+        //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
+        //that will use the drawer menu
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        try {
+            DrawerUtil.getDrawer(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //Fragment of the Maps API
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -105,6 +121,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                     mLastLocation.getLongitude()));
             displayFields();
             onLocationChanged(mLastLocation);
+        }
+        try {
+            DrawerUtil.getDrawer(this);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -447,6 +468,21 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 appliedFilter = null;
                 this.onResume();
                 return true;
+            case android.R.id.home:
+                if (DrawerUtil.result.isDrawerOpen())
+                {
+                    DrawerUtil.result.closeDrawer();
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setHomeButtonEnabled(false);
+                }
+                else {
+                    DrawerUtil.result.openDrawer();
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_arrow);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setHomeButtonEnabled(false);
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -465,5 +501,4 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             }
         }
     }
-
 }

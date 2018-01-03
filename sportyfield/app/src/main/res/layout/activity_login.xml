@@ -72,11 +72,16 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"/>
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
         <Button
             android:id="@+id/btn_reset_password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
             android:background="@null"
             android:text="@string/btn_forgot_password"
             android:textAllCaps="false"
@@ -88,7 +93,7 @@
             android:id="@+id/btn_signup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
+            android:layout_marginTop="10dip"
             android:background="@null"
             android:text="@string/btn_link_to_register"
             android:textAllCaps="false"

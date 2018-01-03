@@ -127,6 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_marginStart="35dp"
+                    android:background="@android:color/white"
                     android:layout_toEndOf="@+id/textSelect_filter"
                     android:layout_alignBaseline="@id/textSelect_filter"
                     android:listSelector="@android:color/darker_gray"
@@ -135,6 +136,31 @@
                 </Spinner>
 
             </RelativeLayout>
+
+            <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp" />
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:background="@android:color/transparent"
+                android:layout_marginEnd="15dp"
+                android:onClick="imageSearch"
+                android:src="@drawable/ic_add_circle_white_36dp"
+                />
+        </RelativeLayout>
 
             <Button
                 android:id="@+id/sign_up_button"
