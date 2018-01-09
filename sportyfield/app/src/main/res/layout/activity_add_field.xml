@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="eu.croussel.sportyfield.AddFieldActivity">
+    tools:context="eu.croussel.sportyfield.Activities.AddFieldActivity">
 
     <ImageView
         android:id="@+id/infowindowImView"

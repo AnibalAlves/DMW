@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import eu.croussel.sportyfield.DB_classes.Field;
+import eu.croussel.sportyfield.DB_classes.Filter;
+import eu.croussel.sportyfield.DB_classes.Report;
+import eu.croussel.sportyfield.DB_classes.User;
+
 /**
  * Created by afonso on 29-11-2017.
  */

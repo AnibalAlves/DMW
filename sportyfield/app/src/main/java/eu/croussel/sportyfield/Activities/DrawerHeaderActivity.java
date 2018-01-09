@@ -1,4 +1,4 @@
-package eu.croussel.sportyfield;
+package eu.croussel.sportyfield.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -14,6 +14,8 @@ import com.mindorks.placeholderview.annotations.Resolve;
 import com.mindorks.placeholderview.annotations.View;
 import com.squareup.picasso.Picasso;
 
+import eu.croussel.sportyfield.R;
+
 /**
  * Created by afonso on 26-12-2017.
  */
@@ -21,7 +23,7 @@ import com.squareup.picasso.Picasso;
 @NonReusable
 @Layout(R.layout.drawer_header)
 
-public class DrawerHeader extends AppCompatActivity {
+public class DrawerHeaderActivity extends AppCompatActivity {
     private FirebaseAuth auth;
 
     @View(R.id.profileImageView)
@@ -33,7 +35,7 @@ public class DrawerHeader extends AppCompatActivity {
     @View(R.id.emailTxt)
     private TextView email;
 
-    public DrawerHeader() {
+    public DrawerHeaderActivity() {
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
         FirebaseUser u = auth.getInstance().getCurrentUser();

@@ -1,6 +1,5 @@
-package eu.croussel.sportyfield;
+package eu.croussel.sportyfield.Activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,7 +22,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class FieldInfo extends AppCompatActivity {
+import eu.croussel.sportyfield.CustomList;
+import eu.croussel.sportyfield.DB_classes.Field;
+import eu.croussel.sportyfield.DB_classes.Report;
+import eu.croussel.sportyfield.DB_classes.User;
+import eu.croussel.sportyfield.DataBaseHandler;
+import eu.croussel.sportyfield.R;
+
+public class FieldInfoActivity extends AppCompatActivity {
 
     // Database Helper
     DataBaseHandler db;
@@ -41,7 +47,7 @@ public class FieldInfo extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
         try {
-            DrawerUtil.getDrawer(this);
+            DrawerUtilActivity.getDrawer(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -126,7 +132,7 @@ public class FieldInfo extends AppCompatActivity {
                 userReput[i] = db.getUser(uNameToReport).getReputation();
             }
 
-            CustomList adapter = new CustomList(FieldInfo.this, userTy, repDate, repDescr, userReput, repImage);
+            CustomList adapter = new CustomList(FieldInfoActivity.this, userTy, repDate, repDescr, userReput, repImage);
 
             ListView rep = (ListView) findViewById(R.id.reports);
             rep.setAdapter(adapter);
@@ -138,7 +144,7 @@ public class FieldInfo extends AppCompatActivity {
         }
         db.closeDB();
         try {
-            DrawerUtil.getDrawer(this);
+            DrawerUtilActivity.getDrawer(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -200,7 +206,7 @@ public class FieldInfo extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_addReport:
-                Intent newRe = new Intent(this,AddReport.class);
+                Intent newRe = new Intent(this,AddReportActivity.class);
                 newRe.putExtra("fieldId",fieldId);
                 newRe.putExtra("uName",testUsername);
                 startActivity(newRe);
@@ -209,15 +215,15 @@ public class FieldInfo extends AppCompatActivity {
                 finish();
                 return true;
             case android.R.id.home:
-                if (DrawerUtil.result.isDrawerOpen())
+                if (DrawerUtilActivity.result.isDrawerOpen())
                 {
-                    DrawerUtil.result.closeDrawer();
+                    DrawerUtilActivity.result.closeDrawer();
                     getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     getSupportActionBar().setHomeButtonEnabled(false);
                 }
                 else {
-                    DrawerUtil.result.openDrawer();
+                    DrawerUtilActivity.result.openDrawer();
                     getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_arrow);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     getSupportActionBar().setHomeButtonEnabled(false);

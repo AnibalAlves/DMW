@@ -1,4 +1,4 @@
-package eu.croussel.sportyfield;
+package eu.croussel.sportyfield.Activities;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,14 +13,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -29,13 +26,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.ByteArrayOutputStream;
+
+import eu.croussel.sportyfield.DB_classes.User;
+import eu.croussel.sportyfield.R;
 
 public class SignupActivity extends AppCompatActivity {
 

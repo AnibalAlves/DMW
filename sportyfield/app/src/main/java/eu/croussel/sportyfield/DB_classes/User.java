@@ -1,4 +1,4 @@
-package eu.croussel.sportyfield;
+package eu.croussel.sportyfield.DB_classes;
 
 /**
  * Created by afonso on 03-12-2017.

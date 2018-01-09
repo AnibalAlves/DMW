@@ -1,4 +1,4 @@
-package eu.croussel.sportyfield;
+package eu.croussel.sportyfield.Activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,7 +19,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -29,6 +28,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import eu.croussel.sportyfield.DB_classes.Field;
+import eu.croussel.sportyfield.DataBaseHandler;
+import eu.croussel.sportyfield.R;
 
 import static java.text.DateFormat.getDateInstance;
 

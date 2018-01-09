@@ -1,4 +1,4 @@
-package eu.croussel.sportyfield;
+package eu.croussel.sportyfield.Activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,12 +36,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.ButterKnife;
+import eu.croussel.sportyfield.DB_classes.Field;
+import eu.croussel.sportyfield.DB_classes.Filter;
+import eu.croussel.sportyfield.DataBaseHandler;
+import eu.croussel.sportyfield.R;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -74,7 +75,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
         try {
-            DrawerUtil.getDrawer(this);
+            DrawerUtilActivity.getDrawer(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -123,7 +124,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             onLocationChanged(mLastLocation);
         }
         try {
-            DrawerUtil.getDrawer(this);
+            DrawerUtilActivity.getDrawer(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -423,9 +424,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                         Toast.LENGTH_SHORT).show();
                 break;
             default:
-                Intent intent = new Intent(this, FieldInfo.class);
+                Intent intent = new Intent(this, FieldInfoActivity.class);
                    intent.putExtra("fieldID", tag); //added this to pass the Field ID. You need
-                 //to get it from the database. When somenone click on marker, get that id from db and send to FieldInfo
+                 //to get it from the database. When somenone click on marker, get that id from db and send to FieldInfoActivity
                    startActivity(intent);
                    break ;
         }
@@ -469,15 +470,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 this.onResume();
                 return true;
             case android.R.id.home:
-                if (DrawerUtil.result.isDrawerOpen())
+                if (DrawerUtilActivity.result.isDrawerOpen())
                 {
-                    DrawerUtil.result.closeDrawer();
+                    DrawerUtilActivity.result.closeDrawer();
                     getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     getSupportActionBar().setHomeButtonEnabled(false);
                 }
                 else {
-                    DrawerUtil.result.openDrawer();
+                    DrawerUtilActivity.result.openDrawer();
                     getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_arrow);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     getSupportActionBar().setHomeButtonEnabled(false);

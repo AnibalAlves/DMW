@@ -1,4 +1,4 @@
-package eu.croussel.sportyfield;
+package eu.croussel.sportyfield.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -16,7 +15,11 @@ import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
 
-public class AddReport extends Activity {
+import eu.croussel.sportyfield.DB_classes.Report;
+import eu.croussel.sportyfield.DataBaseHandler;
+import eu.croussel.sportyfield.R;
+
+public class AddReportActivity extends Activity {
 
     DataBaseHandler db;
     int fieldId;

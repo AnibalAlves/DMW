@@ -69,27 +69,27 @@
             android:value="AIzaSyB1ouLmMNqpcnRm3gjRKQ8MFYL45KiTdjo" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".Activities.MapsActivity"
             android:label="@string/title_activity_maps"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".FieldInfo"
+            android:name=".Activities.FieldInfoActivity"
             android:label="@string/title_activity_fieldInfo"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".AddReport"
+            android:name=".Activities.AddReportActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".AddFieldActivity" />
-        <activity android:name=".FilterActivity" />
+        <activity android:name=".Activities.AddFieldActivity" />
+        <activity android:name=".Activities.FilterActivity" />
         <activity
-            android:name=".SignupActivity"
+            android:name=".Activities.SignupActivity"
             android:label="Signup" />
         <activity
-            android:name=".ResetPasswordActivity"
+            android:name=".Activities.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activities.LoginActivity"
             android:label="@string/title_activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -98,7 +98,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ChangeProfileActivity"
+            android:name=".Activities.ChangeProfileActivity"
             android:label="@string/title_activity_change_profile"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

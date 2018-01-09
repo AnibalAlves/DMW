@@ -1,4 +1,4 @@
-package eu.croussel.sportyfield;
+package eu.croussel.sportyfield.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
+
+import eu.croussel.sportyfield.DB_classes.Filter;
+import eu.croussel.sportyfield.R;
 
 public class FilterActivity extends AppCompatActivity {
     //List of type of sportfields
