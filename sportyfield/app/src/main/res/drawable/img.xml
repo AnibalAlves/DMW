@@ -9,5 +9,5 @@
             <solid android:color="@color/colorPrimary" />
         </shape>
     </item>
-    <item android:drawable="@drawable/nav_arrow"/>
+    <item android:drawable="@drawable/ic_navigation_white_24dp"/>
 </layer-list>
