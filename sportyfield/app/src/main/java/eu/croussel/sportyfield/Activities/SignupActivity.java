@@ -1,18 +1,22 @@
 package eu.croussel.sportyfield.Activities;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,11 +27,18 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
@@ -44,14 +55,19 @@ public class SignupActivity extends AppCompatActivity {
     private Spinner sportsList;
     private String selectedFromList = new String();
     private DatabaseReference mDatabase;
+    private StorageReference imageReference;
+    private StorageReference fileRef;
     private static int RESULT_LOAD_IMAGE = 1;
+    private Uri selectedImage;
     ImageView im;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -123,6 +139,11 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (im.getDrawable()==null)
+                {
+                    Toast.makeText(getApplicationContext(),"Select a profile image!", Toast.LENGTH_SHORT).show();
+                }
+
                 progressBar.setVisibility(View.VISIBLE);
 
                 final User u = new User();
@@ -134,6 +155,39 @@ public class SignupActivity extends AppCompatActivity {
                 u.setPw(password);
                 u.setReputation(0);
                 u.setType("Amateur");
+                final String usName = inputUserName.getText().toString().trim();
+                u.setUserName(usName);
+
+                imageReference = FirebaseStorage.getInstance().getReference().child("images");
+                fileRef = imageReference.child(usName + "." + getFileExtension(selectedImage));
+
+                fileRef.putFile(selectedImage)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                String url = taskSnapshot.getDownloadUrl().toString();
+
+                                // use Firebase Realtime Database to store [name + url]
+                                writeNewImageInfoToDB(u.getEmail(), url);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // ...
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            }
+                        })
+                        .addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                                // ...
+                            }
+                        });
 
                 Bitmap bitmap = ((BitmapDrawable) im.getDrawable()).getBitmap();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -141,9 +195,6 @@ public class SignupActivity extends AppCompatActivity {
                 byte[] byteFormat = stream.toByteArray();
                 final String encodedImage = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
                 u.setPhoto(encodedImage);
-
-                final String usName = inputUserName.getText().toString().trim();
-                u.setUserName(usName);
 
                 //create user
                 auth.createUserWithEmailAndPassword(email, password)
@@ -154,7 +205,7 @@ public class SignupActivity extends AppCompatActivity {
                                 writeNewUser(u,usName);
                                 mDatabase.child("email_ids").child(usName).setValue(email);
                                 String replacedEmail = encodeUserEmail(email);
-                                mDatabase.child("user_photos").child(replacedEmail).setValue(encodedImage);
+                                mDatabase.child("userName_ids").child(replacedEmail).setValue(u.getUserName());
                                 // If sign in fails, display a message to the user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
@@ -177,9 +228,18 @@ public class SignupActivity extends AppCompatActivity {
     private void writeNewUser(User u, String uName)
     {
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference users = database.getReference("users"); //users is a node in your Firebase Database.
-        users.push().setValue(u);
+        mDatabase.child("users").child(uName).setValue(u);
+    }
+
+    private void writeNewImageInfoToDB(String name, String url) {
+        try {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference imgs = database.getReference("images");
+            mDatabase.child("user_photos_test").child(encodeUserEmail(name)).setValue(url);
+        }catch (Exception e)
+        {
+            System.out.println("Exception is: " + e);
+        }
     }
 
     @Override
@@ -199,7 +259,8 @@ public class SignupActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
+            selectedImage = data.getData();
+
             String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
             Cursor cursor = getContentResolver().query(selectedImage,
@@ -211,6 +272,13 @@ public class SignupActivity extends AppCompatActivity {
             cursor.close();
             im.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         }
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+
+        return mime.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
     public static String encodeUserEmail(String userEmail) {

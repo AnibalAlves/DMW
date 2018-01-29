@@ -212,32 +212,11 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null)
-        FirebaseUser currentUser = auth.getCurrentUser();
+        /*FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser!=null) {
             Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
             startActivity(intent);
-        }
-        /*
-        else
-            // Check for existing Google Sign In account, if the user is already signed in
-            // the GoogleSignInAccount will be non-null.
-            {
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-                if (account!=null)
-                {
-                    mGoogleSignInClient.signOut()
-                            .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    // ...
-                                }
-                            });
-
-                }
-                System.out.println("No user logged in");
-                //auth.signOut();
-                //updateUI(currentUser);
-            }*/
+        }*/
     }
 
     //FaceBook
