@@ -123,6 +123,10 @@ public class SignupActivity extends AppCompatActivity {
 
                 final String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+                String uName = inputUserName.getText().toString().trim();
+                String phone = inputPhone.getText().toString().trim();
+                String age = inputAge.getText().toString().trim();
+                selectedFromList=sportsList.getSelectedItem().toString();
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
@@ -138,7 +142,14 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                System.out.println("IMAGE SELECTED IS: " + im.getDrawable());
                 if (im.getDrawable()==null)
+                {
+                    Toast.makeText(getApplicationContext(),"Select a profile image!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (uName.equals(null) || phone.equals(null) || age.equals(null))
                 {
                     Toast.makeText(getApplicationContext(),"Select a profile image!", Toast.LENGTH_SHORT).show();
                     return;
