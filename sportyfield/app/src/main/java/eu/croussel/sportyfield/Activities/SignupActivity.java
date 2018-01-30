@@ -32,6 +32,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -47,6 +50,7 @@ import eu.croussel.sportyfield.R;
 
 public class SignupActivity extends AppCompatActivity {
 
+    private static final String TAG = "SIGNUP.";
     private EditText inputEmail, inputPassword, inputUserName, inputPhone, inputAge;
     private Button btnSignIn, btnSignUp, btnResetPassword;
     private ProgressBar progressBar;
@@ -142,16 +146,9 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                System.out.println("IMAGE SELECTED IS: " + im.getDrawable());
-                if (im.getDrawable()==null)
+                if (uName.length() < 1 || phone.length() < 1 || age.length() < 1)
                 {
-                    Toast.makeText(getApplicationContext(),"Select a profile image!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (uName.equals(null) || phone.equals(null) || age.equals(null))
-                {
-                    Toast.makeText(getApplicationContext(),"Select a profile image!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Please fill all the parameters!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -169,37 +166,46 @@ public class SignupActivity extends AppCompatActivity {
                 final String usName = inputUserName.getText().toString().trim();
                 u.setUserName(usName);
 
+                if (selectedImage==null)
+                {
+                    selectedImage = Uri.parse("android.resource://"+getPackageName()+"/drawable/ic_person_outline_black_36dp");
+                }
+
                 imageReference = FirebaseStorage.getInstance().getReference().child("images");
                 fileRef = imageReference.child(usName + "." + getFileExtension(selectedImage));
 
-                fileRef.putFile(selectedImage)
-                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                String url = taskSnapshot.getDownloadUrl().toString();
+                try {
+                    fileRef.putFile(selectedImage)
+                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    String url = taskSnapshot.getDownloadUrl().toString();
 
-                                // use Firebase Realtime Database to store [name + url]
-                                writeNewImageInfoToDB(u.getEmail(), url);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // ...
-                            }
-                        })
-                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            }
-                        })
-                        .addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                                // ...
-                            }
-                        });
-
+                                    // use Firebase Realtime Database to store [name + url]
+                                    writeNewImageInfoToDB(u.getEmail(), url);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // ...
+                                }
+                            })
+                            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                }
+                            })
+                            .addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                                    // ...
+                                }
+                            });
+                }catch (Exception e)
+                {
+                    Log.i(TAG,"Exception uploading photo is: " + e);
+                }
                 Bitmap bitmap = ((BitmapDrawable) im.getDrawable()).getBitmap();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -221,9 +227,20 @@ public class SignupActivity extends AppCompatActivity {
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
                                 if (!task.isSuccessful()) {
-                                    Toast.makeText(SignupActivity.this, "Authentication failed!" + task.getException(),
+                                    try {
+                                        throw task.getException();
+                                    } catch(FirebaseAuthWeakPasswordException e) {
+                                        Toast.makeText(SignupActivity.this, "Password too weak!", Toast.LENGTH_SHORT).show();
+                                    } catch(FirebaseAuthInvalidCredentialsException e) {
+                                        Toast.makeText(SignupActivity.this, "Invalid credentials!", Toast.LENGTH_SHORT).show();
+                                    } catch(FirebaseAuthUserCollisionException e) {
+                                        Toast.makeText(SignupActivity.this, "The email address is already in use by another account!" , Toast.LENGTH_SHORT).show();
+                                    } catch(Exception e) {
+                                        Log.e(TAG, e.getMessage());
+                                    }
+                                    /*Toast.makeText(SignupActivity.this, "Authentication failed!" + task.getException(),
                                             Toast.LENGTH_SHORT).show();
-                                    System.out.println("SIGNUP EXCEPTION IS: " + task.getException());
+                                    System.out.println("SIGNUP EXCEPTION IS: " + task.getException());*/
                                 } else {
                                     Toast.makeText(SignupActivity.this, "User created with success!", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(SignupActivity.this, LoginActivity.class));
