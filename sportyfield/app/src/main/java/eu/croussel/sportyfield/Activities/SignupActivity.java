@@ -138,10 +138,10 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 if (im.getDrawable()==null)
                 {
                     Toast.makeText(getApplicationContext(),"Select a profile image!", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
                 progressBar.setVisibility(View.VISIBLE);

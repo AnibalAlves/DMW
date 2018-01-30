@@ -89,6 +89,8 @@ public class DrawerUtilActivity extends AppCompatActivity{
         auth = FirebaseAuth.getInstance();
         // Check if user is signed in (non-null)
         FirebaseUser u = auth.getCurrentUser();
+        u.getEmail();
+
         aux = new ImageView(activity);
         aux.setTag(target);
         mDatabase = FirebaseDatabase.getInstance().getReference();
