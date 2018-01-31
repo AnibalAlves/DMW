@@ -43,21 +43,21 @@ public class FieldInfoActivity extends AppCompatActivity {
 
         //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
         //that will use the drawer menu
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(false);
-        try {
-            DrawerUtilActivity.getDrawer(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(false);
+//        try {
+//            DrawerUtilActivity.getDrawer(this);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         db = new DataBaseHandler(getApplicationContext());
 
         ImageView iv = (ImageView) findViewById(R.id.field_image);
 
         Intent intent = getIntent();
-        fieldId = intent.getIntExtra("fieldID",0); //get the Field id from Maps class
+        fieldId = intent.getIntExtra("fieldID", 0); //get the Field id from Maps class
         System.out.println("field id is = " + fieldId);
 
         //CREATING USER

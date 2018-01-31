@@ -31,6 +31,7 @@ import java.util.List;
 
 import eu.croussel.sportyfield.DB_classes.Field;
 import eu.croussel.sportyfield.DataBaseHandler;
+import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 
 import static java.text.DateFormat.getDateInstance;
@@ -50,6 +51,7 @@ public class AddFieldActivity extends AppCompatActivity {
     private ListView sportsList;
     private String selectedFromList = new String();
 
+    private FirebaseDBhandler mDatabase;
 
     ImageView photoView ;
     @Override
@@ -59,6 +61,7 @@ public class AddFieldActivity extends AppCompatActivity {
 
         //Call the db
         db = new DataBaseHandler(this);
+        mDatabase = new FirebaseDBhandler();
 
         //Recover the intent
         Intent intent = getIntent();
@@ -111,7 +114,7 @@ public class AddFieldActivity extends AppCompatActivity {
                         selectedFromList,
                         getBytesFromBitmap(photoBitmap)
                 );
-                db.createField(newField);
+                mDatabase.createField(newField);
                 finish();
             }
         });
