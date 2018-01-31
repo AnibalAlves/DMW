@@ -5,14 +5,14 @@ package eu.croussel.sportyfield.DB_classes;
  */
 
 public class Field {
-    int _id; //primary_key
-    String _location; //street name or something
-    double _lat;
-    double _long;
-    boolean _private;
-    boolean _outdor;
-    String _description;
-    byte[] _image ;
+    private int _id; //primary_key
+    private String _location; //street name or something
+    private double _lat;
+    private double _long;
+    private boolean _private;
+    private boolean _outdor;
+    private String _description;
+    private byte[] _image ;
     //something about the picture, maybe 2 pics into the res folder just to show to prof
 
 

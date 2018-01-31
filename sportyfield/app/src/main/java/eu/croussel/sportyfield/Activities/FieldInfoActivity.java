@@ -43,60 +43,23 @@ public class FieldInfoActivity extends AppCompatActivity {
 
         //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
         //that will use the drawer menu
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(false);
-        try {
-            DrawerUtilActivity.getDrawer(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(false);
+//        try {
+//            DrawerUtilActivity.getDrawer(this);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         db = new DataBaseHandler(getApplicationContext());
 
         ImageView iv = (ImageView) findViewById(R.id.field_image);
 
         Intent intent = getIntent();
-        fieldId = intent.getIntExtra("fieldID",0); //get the Field id from Maps class
+        fieldId = intent.getIntExtra("fieldID", 0); //get the Field id from Maps class
         System.out.println("field id is = " + fieldId);
 
-        //CREATING USER
-        User afon = new User("John",22,"test@gmail.com"
-                ,123456789,25,"Basketball","PRO USER","","");
-        db.createUser(afon);
-
-        //CREATING SOME REPORTS OF THE FIELD
-        Bitmap src=BitmapFactory.decodeFile("/storage/emulated/0/Download/download.jpeg");
-        if(src != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            src.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            Report newRe = new Report("Net with some holes", fieldId, "John", baos.toByteArray());
-            db.createReport(newRe);
-
-            ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
-            src.compress(Bitmap.CompressFormat.PNG, 100, baos1);
-            Report newRe1 = new Report("Net with some holes", fieldId, "John", baos.toByteArray());
-            db.createReport(newRe1);
-
-
-
-            Drawable d = getResources().getDrawable(R.drawable.broken_ring); // the drawable
-            Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            byte[] bitmapdata = stream.toByteArray();
-
-
-            ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
-            src.compress(Bitmap.CompressFormat.PNG, 100, baos2);
-            Report newRe2 = new Report("Ring is broken", fieldId, "John", bitmapdata);
-            db.createReport(newRe2);
-
-            ByteArrayOutputStream baos3 = new ByteArrayOutputStream();
-            src.compress(Bitmap.CompressFormat.PNG, 100, baos3);
-            Report newRe3 = new Report("Ring is broken", fieldId, "John", bitmapdata);
-            db.createReport(newRe3);
-        }
         TextView field_loc = (TextView) findViewById(R.id.field_location);
         Field f = db.getField(fieldId);
         System.out.println("field info + " + f.getLocation());

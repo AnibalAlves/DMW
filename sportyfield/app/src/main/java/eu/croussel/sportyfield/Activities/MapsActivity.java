@@ -9,11 +9,11 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,38 +37,59 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.croussel.sportyfield.DB_classes.Field;
 import eu.croussel.sportyfield.DB_classes.Filter;
-import eu.croussel.sportyfield.DataBaseHandler;
+import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapClickListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    Filter appliedFilter ;
     private static final int REQUEST_FILTER = 1 ;
+
+    // Maps vars
     private GoogleMap mMap;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
+    Boolean mapConnected = false;
+
     Location mLastLocation;
     Marker mCurrLocationMarker;
-    Boolean mapConnected = false;
     Marker mClickedMark ;
-    // Database Helper
-    DataBaseHandler db;
-    List<Field> fieldList ;
-    private FirebaseAuth auth;
 
+    // Database Helper
+    private FirebaseAuth auth;
+    private FirebaseDBhandler mDatabase;
+
+    //Fields acquisition vars
+    List<Field> fieldList ;
+    Filter appliedFilter ;
+    int oldFieldListSize = 0;
+    private Handler handlerFields ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_maps);
 
+        //Every sec we check if the list has changed
+        handlerFields = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if(fieldList.size() != oldFieldListSize){
+                    oldFieldListSize = fieldList.size();
+                    displayFields();
+                    handlerFields.postDelayed(this,1000);
+                }
+            }
+        };
+        handlerFields.postDelayed(runnable, 1000);
+
+        
         //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
         //that will use the drawer menu
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
@@ -76,29 +97,24 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         getSupportActionBar().setHomeButtonEnabled(false);
         try {
             DrawerUtilActivity.getDrawer(this);
-        } catch (IOException e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
+
         //Fragment of the Maps API
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //get the DB
-        db = new DataBaseHandler(this);
-        db.clearDb();
 
-        Log.d("Insert:", "Inserting fields...");
-        db.createField(new Field("Milano Castle", 45.471944, 9.178889, false, true, 0, "This is a castle, wow.", null));
-        db.createField(new Field("Duomo",45.464211, 9.191383, false, false, 0, "This is Duomo - click to go on info", null));
-        db.createField(new Field("Giardino Oriana Fallaci",45.4534, 9.1944, false, false, 0, "A good basketball field", null));
-        db.createField(new Field("Giardino Roberto Bazlen",45.4541, 9.1974, false, false, 0, "Good field near park", null));
-        db.createField(new Field("Polisportiva Cimiano",45.497188, 9.243009, false, false, 0, "Great field", null));
-        db.createField(new Field("Parco della Resistenza",44.2162, 12.0485, false, false, 0, "A lot of space", null));
-        db.createField(new Field("Angelo Mauri ",45.46518503, 9.16155997, false, false, 0, "Near the road", null));
-        db.createField(new Field("Dezza",45.46146776, 9.16018903, false, false, 0, "Near the road", null));
-        db.createField(new Field("Argelati",45.44999507, 9.172334, false, false, 0, "Near the road", null));
-        db.createField(new Field("Marsala",45.47856593, 9.18897651, false, false, 0, "Near the road", null));
+        mDatabase = new FirebaseDBhandler();
+//        db.createField(new Field("Marsala",45.47856593, 9.18897651, false, false, 0, "Near the road", null));
+        //Init the field list which will be modified over time
+        fieldList = new ArrayList<Field>();
+        mDatabase.getAllFieldsListener(fieldList);
+
+
     }
 
     @Override
@@ -115,7 +131,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     @Override
     public void onResume(){
         super.onResume();
-        fieldList = getFields();
+//        fieldList = getFields();
         if(mapConnected){
             mMap.clear();
             displayCurrPos(new LatLng(mLastLocation.getLatitude(),
@@ -123,16 +139,16 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             displayFields();
             onLocationChanged(mLastLocation);
         }
-        try {
-            DrawerUtilActivity.getDrawer(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            DrawerUtilActivity.getDrawer(this);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
-    private List<Field> getFields(){
-        if(appliedFilter == null) return db.getAllFields();
-        else return db.getAllFieldsWithFilter(appliedFilter);
+    private void getFields(List<Field> fieldList){
+        if(appliedFilter == null)  mDatabase.getAllFieldsListener(fieldList);
+        //else return mDatabase.getAllFieldsWithFilter(fieldList, appliedFilter);
     }
     /////////////////////////////
     //           MAP           //
@@ -143,9 +159,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 
         //Initialize Google Play Services
         initGooglePlay();
-
-        //Display all the fields of the database
-        displayFields();
 
         //Activate listener for marker's info windows
         mMap.setOnInfoWindowClickListener(this);
@@ -183,7 +196,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                         tvText.setText(getString(R.string.youMarkerText));
                         break;
                     default:
-                        Field f = db.getField(tag);
+                        Field f = fieldList.get(tag - 2);
                         tvTitle.setText(f.getComment());
                         tvText.setText(f.getLocation());
                         byte[] image = f.getImage();
@@ -280,7 +293,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                     .title(f.getDescription())
                     .snippet(f.getLocation());
             Marker fieldMarker = mMap.addMarker(fMarkOpt);
-            fieldMarker.setTag(f.getId());
+            fieldMarker.setTag(f.getId()+1);
         }
     }
 
@@ -461,14 +474,17 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
+            //Add a filter
             case R.id.action_addFilter:
                 Intent filterIntent = new Intent(this, FilterActivity.class);
                 startActivityForResult(filterIntent, REQUEST_FILTER);
                 return true;
+            //Remove filter
             case R.id.action_resetFilter :
                 appliedFilter = null;
                 this.onResume();
                 return true;
+            //Drawer nav.
             case android.R.id.home:
                 if (DrawerUtilActivity.result.isDrawerOpen())
                 {
@@ -484,19 +500,25 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                     getSupportActionBar().setHomeButtonEnabled(false);
                 }
                 return true;
+
+            //Default, do nothing
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    //Callback after end of activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == Activity.RESULT_OK){
             switch(requestCode){
+                //Retrieve filter
                 case REQUEST_FILTER :
                     appliedFilter = (Filter) data.getSerializableExtra("filter");
                     Toast.makeText(this, appliedFilter.getFieldType(),
                             Toast.LENGTH_SHORT).show();
                     break;
+
                 default:
                     break;
             }
