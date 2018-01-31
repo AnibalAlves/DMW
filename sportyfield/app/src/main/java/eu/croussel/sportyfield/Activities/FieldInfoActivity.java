@@ -62,7 +62,7 @@ public class FieldInfoActivity extends AppCompatActivity {
 
         //CREATING USER
         User afon = new User("John",22,"test@gmail.com"
-                ,123456789,25,"Basketball","PRO USER","","");
+                ,123456789,25,"Basketball","PRO USER");
         db.createUser(afon);
 
         //CREATING SOME REPORTS OF THE FIELD

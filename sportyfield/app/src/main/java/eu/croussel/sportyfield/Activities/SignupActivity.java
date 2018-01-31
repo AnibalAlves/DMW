@@ -160,7 +160,6 @@ public class SignupActivity extends AppCompatActivity {
                 selectedFromList=sportsList.getSelectedItem().toString();
                 u.setFavSport(selectedFromList);
                 u.setPhone(Integer.parseInt(String.valueOf(inputPhone.getText())));
-                u.setPw(password);
                 u.setReputation(0);
                 u.setType("Amateur");
                 final String usName = inputUserName.getText().toString().trim();
@@ -206,12 +205,6 @@ public class SignupActivity extends AppCompatActivity {
                 {
                     Log.i(TAG,"Exception uploading photo is: " + e);
                 }
-                Bitmap bitmap = ((BitmapDrawable) im.getDrawable()).getBitmap();
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte[] byteFormat = stream.toByteArray();
-                final String encodedImage = Base64.encodeToString(byteFormat, Base64.NO_WRAP);
-                u.setPhoto(encodedImage);
 
                 //create user
                 auth.createUserWithEmailAndPassword(email, password)
@@ -256,7 +249,7 @@ public class SignupActivity extends AppCompatActivity {
     private void writeNewUser(User u, String uName)
     {
 
-        mDatabase.child("users").child(uName).setValue(u);
+        mDatabase.child("users").child(encodeUserEmail(u.getEmail())).setValue(u);
     }
 
     private void writeNewImageInfoToDB(String name, String url) {

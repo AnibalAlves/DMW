@@ -40,12 +40,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
+import eu.croussel.sportyfield.DB_classes.User;
 import eu.croussel.sportyfield.R;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String TAG = "Afonso---------TESTING";
+    private static final String TAG = "LoginActivity ---  ";
     private EditText inputEmail, inputPassword;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
@@ -256,17 +258,44 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = auth.getCurrentUser();
-                            Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-                            startActivity(intent);
+                            final FirebaseUser user = auth.getCurrentUser();
+                            final String email = user.getEmail();
+                            mDatabase.child("users").child(decodeUserEmail(email))
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            System.out.println("Datasnapshot is: " + dataSnapshot);
+                                            if (dataSnapshot != null) {
+                                                Log.i(TAG, "Inside login with facebook - Table already exists!");
+                                                Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+                                                startActivity(intent);
+                                            }
+                                            else
+                                            {
+                                                Log.i(TAG, "Inside login with facebook - Creating table!");
+                                                final User u = new User();
+                                                u.setAge(Integer.parseInt(null));
+                                                u.setEmail(user.getEmail());
+                                                u.setFavSport(null);
+                                                u.setPhone(Integer.parseInt(null));
+                                                u.setReputation(0);
+                                                u.setType("Amateur");
+                                                u.setUserName(user.getDisplayName());
+                                                mDatabase.child("users").child(decodeUserEmail(u.getEmail())).setValue(u);
+                                            }
+                                        }
+                                        @Override
+                                        public void onCancelled(DatabaseError firebaseError) {
+
+                                        }
+                                    });
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-
-                        // ...
                     }
                 });
     }
@@ -282,9 +311,33 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = auth.getCurrentUser();
-                            Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-                            startActivity(intent);
+                            final FirebaseUser user = auth.getCurrentUser();
+                            mDatabase.child("users").child(decodeUserEmail(email))
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot != null) {
+                                                Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+                                                startActivity(intent);
+                                            }
+                                            else
+                                            {
+                                                final User u = new User();
+                                                u.setAge(Integer.parseInt(null));
+                                                u.setEmail(user.getEmail());
+                                                u.setFavSport(null);
+                                                u.setPhone(Integer.parseInt(null));
+                                                u.setReputation(0);
+                                                u.setType("Amateur");
+                                                u.setUserName(user.getDisplayName());
+                                                mDatabase.child("users").child(decodeUserEmail(u.getEmail())).setValue(u);
+                                            }
+                                        }
+                                        @Override
+                                        public void onCancelled(DatabaseError firebaseError) {
+
+                                        }
+                                    });
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -299,6 +352,10 @@ public class LoginActivity extends AppCompatActivity {
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    public static String decodeUserEmail(String userEmail) {
+        return userEmail.replace(".", ",");
     }
 
 }

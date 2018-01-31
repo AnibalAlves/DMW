@@ -6,21 +6,19 @@ package eu.croussel.sportyfield.DB_classes;
 
 public class User {
     String _userName;
-    String _pass;
     int _age;
     String _email;
     int _phone;
     int _reputation;
     String _favSport;
     String _type; //PRO USER OR AMATEUR USER
-    String _photo;
 
     public User()
     {
 
     }
 
-    public User(String u, int a, String e, int p, int r, String f, String t, String pw, String ph)
+    public User(String u, int a, String e, int p, int r, String f, String t)
     {
         this._userName=u;
         this._age=a;
@@ -29,8 +27,6 @@ public class User {
         this._reputation=r;
         this._favSport=f;
         this._type=t;
-        this._pass=pw;
-        this._photo=ph;
     }
 
     public String getUserName()
@@ -103,17 +99,4 @@ public class User {
         this._type=t;
     }
 
-    public String getPw()
-    {
-        return this._pass;
-    }
-
-    public void setPw(String f)
-    {
-        this._pass=f;
-    }
-
-    public String getPhoto(){ return this._photo; }
-
-    public void setPhoto(String p){ this._photo=p;}
 }
