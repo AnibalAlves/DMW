@@ -180,10 +180,13 @@ public class ChangeProfileActivity extends AppCompatActivity {
                                     pw.setText("Password");
                                     uName.setText(user.getDisplayName());
                                     utilizador = user.getDisplayName();
-                                    phone.setText(dataSnapshot.child("phone").getValue().toString());
-                                    age.setText(dataSnapshot.child("age").getValue().toString());
-                                    favSport.setText(dataSnapshot.child("favSport").getValue().toString());
-                                    repu.setText(dataSnapshot.child("reputation").getValue().toString());
+                                    try {
+                                        phone.setText(dataSnapshot.child("phone").getValue().toString());
+                                        age.setText(dataSnapshot.child("age").getValue().toString());
+                                        favSport.setText(dataSnapshot.child("favSport").getValue().toString());
+                                        repu.setText(dataSnapshot.child("reputation").getValue().toString());
+                                    }
+                                    catch(Exception e){}
                                 }
                                 else
                                 {
