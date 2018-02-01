@@ -214,11 +214,11 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null)
-        /*FirebaseUser currentUser = auth.getCurrentUser();
+        FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser!=null) {
             Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
             startActivity(intent);
-        }*/
+        }
     }
 
     //FaceBook

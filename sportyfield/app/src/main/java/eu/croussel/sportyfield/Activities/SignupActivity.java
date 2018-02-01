@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -229,6 +230,8 @@ public class SignupActivity extends AppCompatActivity {
                                     System.out.println("SIGNUP EXCEPTION IS: " + task.getException());*/
                                 } else {
                                     Toast.makeText(SignupActivity.this, "User created with success!", Toast.LENGTH_SHORT).show();
+                                    FirebaseUser currentUser = auth.getCurrentUser();
+                                    FirebaseAuth.getInstance().signOut();
                                     startActivity(new Intent(SignupActivity.this, LoginActivity.class));
                                     finish();
                                 }
