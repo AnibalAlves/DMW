@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:id="@+id/parent"
         android:orientation="vertical">
 
 
@@ -34,9 +35,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/profilePic"
-                android:layout_alignEnd="@+id/profilePic"
+                android:layout_marginStart="19dp"
+                android:layout_toEndOf="@+id/profilePic"
                 android:background="@android:color/transparent"
-                android:onClick="imageSearch"
                 android:src="@drawable/ic_edit_white_24dp" />
         </RelativeLayout>
 
@@ -61,7 +62,6 @@
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="asddfdgfdgdsdfsdfsdgdfg"
                 android:gravity="center"
                 android:textColor="@color/darkGray"
                 android:textSize="18sp"
@@ -75,11 +75,11 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="8dp"
                 android:background="@android:color/transparent"
-                android:onClick="imageSearch"
                 android:src="@drawable/ic_edit_black_24dp" />
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/passGone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -100,7 +100,6 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="asddfdgfdgdsdfs"
                 android:gravity="center"
                 android:textColor="@color/darkGray"
                 android:textSize="18sp"
@@ -115,7 +114,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="8dp"
                 android:background="@android:color/transparent"
-                android:onClick="imageSearch"
                 android:src="@drawable/ic_edit_black_24dp" />
         </RelativeLayout>
 
@@ -140,7 +138,6 @@
                 android:id="@+id/uName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="asddfdgfdgdsdfs"
                 android:gravity="center"
                 android:textColor="@color/darkGray"
                 android:textSize="18sp"
@@ -154,7 +151,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="8dp"
                 android:background="@android:color/transparent"
-                android:onClick="imageSearch"
                 android:src="@drawable/ic_edit_black_24dp" />
         </RelativeLayout>
 
@@ -179,7 +175,6 @@
                 android:id="@+id/phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="123"
                 android:gravity="center"
                 android:textColor="@color/darkGray"
                 android:textSize="18sp"
@@ -194,7 +189,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="8dp"
                 android:background="@android:color/transparent"
-                android:onClick="imageSearch"
                 android:src="@drawable/ic_edit_black_24dp" />
         </RelativeLayout>
 
@@ -219,7 +213,6 @@
                 android:id="@+id/age"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="22"
                 android:gravity="center"
                 android:textColor="@color/darkGray"
                 android:textSize="18sp"
@@ -234,7 +227,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="8dp"
                 android:background="@android:color/transparent"
-                android:onClick="imageSearch"
                 android:src="@drawable/ic_edit_black_24dp" />
         </RelativeLayout>
 
@@ -249,7 +241,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Favourite Sport:"
+                android:text="Sport:"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
                 android:layout_alignLeft="@+id/favSport"
@@ -259,7 +251,6 @@
                 android:id="@+id/favSport"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="sleep"
                 android:gravity="center"
                 android:textColor="@color/darkGray"
                 android:textSize="18sp"
@@ -273,8 +264,36 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="8dp"
                 android:background="@android:color/transparent"
-                android:onClick="imageSearch"
                 android:src="@drawable/ic_edit_black_24dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reputation:"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:layout_alignLeft="@+id/rep"
+                />
+
+            <TextView
+                android:id="@+id/rep"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:gravity="center"
+                android:textColor="@color/darkGray"
+                android:textSize="18sp"
+                android:inputType="number"
+                />
         </RelativeLayout>
 
     </LinearLayout>

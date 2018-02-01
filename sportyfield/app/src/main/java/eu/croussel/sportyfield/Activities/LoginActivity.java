@@ -265,23 +265,30 @@ public class LoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             System.out.println("Datasnapshot is: " + dataSnapshot);
-                                            if (dataSnapshot != null) {
-                                                Log.i(TAG, "Inside login with facebook - Table already exists!");
+                                            if (dataSnapshot.getValue() != null) {
+                                                Log.i(TAG, "Inside login with facebook - Table already exists! " + dataSnapshot.child("type").getValue());
                                                 Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                                                 startActivity(intent);
                                             }
                                             else
                                             {
-                                                Log.i(TAG, "Inside login with facebook - Creating table!");
-                                                final User u = new User();
-                                                u.setAge(Integer.parseInt(null));
-                                                u.setEmail(user.getEmail());
-                                                u.setFavSport(null);
-                                                u.setPhone(Integer.parseInt(null));
-                                                u.setReputation(0);
-                                                u.setType("Amateur");
-                                                u.setUserName(user.getDisplayName());
-                                                mDatabase.child("users").child(decodeUserEmail(u.getEmail())).setValue(u);
+                                                try {
+                                                    Log.i(TAG, "Inside login with facebook - Creating table!");
+                                                    final User u = new User();
+                                                    u.setAge(0);
+                                                    u.setEmail(user.getEmail());
+                                                    u.setFavSport("");
+                                                    u.setPhone(0);
+                                                    u.setReputation(0);
+                                                    u.setType("Amateur");
+                                                    u.setUserName(user.getDisplayName());
+                                                    mDatabase.child("users").child(decodeUserEmail(u.getEmail())).setValue(u);
+                                                    Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+                                                    startActivity(intent);
+                                                }catch (Exception e)
+                                                {
+                                                    Log.i(TAG,"Exception creating fb table is: " +e);
+                                                }
                                             }
                                         }
                                         @Override
@@ -312,25 +319,33 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             final FirebaseUser user = auth.getCurrentUser();
+                            final String email = user.getEmail();
                             mDatabase.child("users").child(decodeUserEmail(email))
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                            if (dataSnapshot != null) {
+                                            if (dataSnapshot.getValue() != null) {
                                                 Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                                                 startActivity(intent);
                                             }
                                             else
                                             {
-                                                final User u = new User();
-                                                u.setAge(Integer.parseInt(null));
-                                                u.setEmail(user.getEmail());
-                                                u.setFavSport(null);
-                                                u.setPhone(Integer.parseInt(null));
-                                                u.setReputation(0);
-                                                u.setType("Amateur");
-                                                u.setUserName(user.getDisplayName());
-                                                mDatabase.child("users").child(decodeUserEmail(u.getEmail())).setValue(u);
+                                                try {
+                                                    final User u = new User();
+                                                    u.setAge(0);
+                                                    u.setEmail(user.getEmail());
+                                                    u.setFavSport("");
+                                                    u.setPhone(0);
+                                                    u.setReputation(0);
+                                                    u.setType("Amateur");
+                                                    u.setUserName(user.getDisplayName());
+                                                    mDatabase.child("users").child(decodeUserEmail(u.getEmail())).setValue(u);
+                                                    Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+                                                    startActivity(intent);
+                                                }catch (Exception e)
+                                                {
+                                                    Log.i(TAG,"Creating google table exception: " + e);
+                                                }
                                             }
                                         }
                                         @Override
@@ -341,7 +356,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
                         }
 
                         // ...
