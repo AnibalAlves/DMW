@@ -1,7 +1,14 @@
 package eu.croussel.sportyfield;
 
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.ImageView;
 
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
@@ -12,6 +19,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,11 +43,14 @@ import static java.lang.Thread.sleep;
  */
 
 public class FirebaseDBhandler {
-    public DatabaseReference db;
+    private DatabaseReference db;
     private int id ;
+    private StorageReference storage ;
+
 
     public FirebaseDBhandler() {
         db = FirebaseDatabase.getInstance().getReference();
+        storage = FirebaseStorage.getInstance().getReference();
     }
 
     public void getAllFieldsListener(final List<Field> fields) {
@@ -48,8 +62,28 @@ public class FirebaseDBhandler {
                                 try {
                                     fields.clear();
                                     for (DataSnapshot snap: dataSnapshot.getChildren()) {
-                                        Field fi = snap.getValue(Field.class);
-                                        fields.add(fi);
+                                        final Field fi = snap.getValue(Field.class);
+                                        StorageReference imRef = storage.child("images/field/"+fi.getId());
+                                        final long ONE_MEGABYTE = 1024*1024;
+                                        Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
+                                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                    @Override
+                                                    public void onSuccess(byte[] bytes) {
+                                                        fi.setImage(bytes);
+                                                        fields.add(fi);
+                                                        Log.d("DL IMAGE", "SUCCESS");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        fi.setImage(null);
+                                                        fields.add(fi);
+                                                        Log.d("DL IMAGE", "FAIL");
+
+                                                    }
+                                                });
+
                                         Log.d("DEBUG getAllfields ", "Here is the field id found : "+ fi.getId());
                                     }
                                 }
@@ -101,7 +135,12 @@ public class FirebaseDBhandler {
                                             Log.d("DEBUG", "Id : " + id);
                                             f.setId(id + 1);
                                             Log.d("Set id :", " id = "+ f.getId());
+                                            if(f.getImage() != null) {
+                                                putFieldPic(f.getId(), f.getImage());
+                                                f.setImage(null);
+                                            }
                                             db.child("field").push().setValue(f);
+
                                     }
                                 }
                                 catch(NullPointerException e){
@@ -151,7 +190,43 @@ public class FirebaseDBhandler {
 //            return id;
 //    }
 
+    public Task<byte[]> downloadFieldImTask(int fieldId, final ImageView iv){
+        StorageReference imRef = storage.child("images/field/"+fieldId);
+        final long ONE_MEGABYTE = 1024*1024;
+        Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                iv.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0 ,bytes.length));
+                Log.d("DL IMAGE", "SUCCESS");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("DL IMAGE", "FAIL");
 
+                    }
+                });
+        return downloadTask;
+    }
+    private void putFieldPic(int fieldId, byte[] image) {
+        StorageReference imRef = storage.child("images/field/"+fieldId);
+        UploadTask uploadTask = imRef.putBytes(image);
 
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        })
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+            }
+        });
+    }
 
 }

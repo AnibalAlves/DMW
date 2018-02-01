@@ -38,6 +38,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
     static String facebookUserId = "";
     static String photoUrl;
     private static ImageView profilePic;
+    private static String uname="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
         // Check if user is signed in (non-null)
         FirebaseUser u = auth.getCurrentUser();
         u.getEmail();
+        String decodedEmail = decodeUserEmail(u.getEmail());
 
         for (final UserInfo user : FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
             // check if the provider id matches "facebook.com"

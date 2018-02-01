@@ -10,10 +10,12 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,7 +37,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +96,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         };
         handlerFields.postDelayed(runnable, 1000);
 
-        
+
         //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
         //that will use the drawer menu
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
@@ -183,7 +190,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 // Getting reference to the TextViews and ImageView
                 TextView tvTitle = (TextView) v.findViewById(R.id.infoWindowTitle);
                 TextView tvText = (TextView) v.findViewById(R.id.infoWindowText);
-                ImageView iv = (ImageView) v.findViewById(R.id.infowindowImView);
+                final ImageView iv = (ImageView) v.findViewById(R.id.infowindowImView);
 
                 switch(tag){
                     //click marker
@@ -199,6 +206,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                         Field f = fieldList.get(tag - 2);
                         tvTitle.setText(f.getComment());
                         tvText.setText(f.getLocation());
+//                        mDatabase.downloadFieldImTask(f.getId(), iv);
                         byte[] image = f.getImage();
                         if(image == null) iv.setImageResource(R.drawable.basket_field);
                         else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
