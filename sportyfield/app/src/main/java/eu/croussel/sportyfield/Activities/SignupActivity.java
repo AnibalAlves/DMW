@@ -72,7 +72,6 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -107,12 +106,6 @@ public class SignupActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
             }
         };
-        btnResetPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SignupActivity.this, ResetPasswordActivity.class));
-            }
-        });
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override

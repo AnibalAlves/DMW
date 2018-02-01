@@ -190,7 +190,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
                 public boolean onItemClick(final View view, int position, IDrawerItem drawerItem) {
                     if (drawerItem.getIdentifier() == 4) {
                         // load change profile activity
-                        Intent intent = new Intent(activity, MapsActivity.class);
+                        Intent intent = new Intent(activity, ChangeProfileActivity.class);
                         view.getContext().startActivity(intent);
                     }
                     if (drawerItem.getIdentifier() == 5) {
