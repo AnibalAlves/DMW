@@ -90,8 +90,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 if(fieldList.size() != oldFieldListSize){
                     oldFieldListSize = fieldList.size();
                     displayFields();
-                    handlerFields.postDelayed(this,1000);
                 }
+                handlerFields.postDelayed(this,1000);
             }
         };
         handlerFields.postDelayed(runnable, 1000);
@@ -134,7 +134,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
     }
-
+    @Override
+    public void onStop(){
+        super.onStop();
+        handlerFields.removeCallbacksAndMessages(null);
+    }
     @Override
     public void onResume(){
         super.onResume();

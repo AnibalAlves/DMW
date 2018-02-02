@@ -6,7 +6,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,52 +20,92 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.croussel.sportyfield.CustomList;
 import eu.croussel.sportyfield.DB_classes.Field;
+import eu.croussel.sportyfield.DB_classes.Filter;
 import eu.croussel.sportyfield.DB_classes.Report;
 import eu.croussel.sportyfield.DB_classes.User;
 import eu.croussel.sportyfield.DataBaseHandler;
+import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 
 public class FieldInfoActivity extends AppCompatActivity {
 
     // Database Helper
-    DataBaseHandler db;
+//    DataBaseHandler db;
     int fieldId;
     String testUsername = "John";
 
+    // Database Helper
+    private FirebaseAuth auth;
+    private FirebaseDBhandler mDatabase;
+
+    //Fields acquisition vars
+    List<Report> reports ;
+    int oldReportListSize = -1;
+    private Handler handlerReports ;
+    private Runnable runnable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_info);
+        mDatabase = new FirebaseDBhandler();
+        //Every sec we check if the list has changed
+        handlerReports = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                Log.d("Number of reports", reports.size() + " field ID : "+fieldId);
+                if(reports.size() != oldReportListSize){
+                    oldReportListSize = reports.size();
+                    System.out.println("number of reports is " + reports.size());
 
-        //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
-        //that will use the drawer menu
-//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeButtonEnabled(false);
-//        try {
-//            DrawerUtilActivity.getDrawer(this);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+                    if (reports.size()>0)
+                    {
+                        String[] repDate = new String[reports.size()];
+                        String[] repDescr = new String[reports.size()];
+                        String[] userTy = new String[reports.size()];
+                        Integer[] userReput = new Integer[reports.size()];
+                        byte[][] repImage = new byte[reports.size()][];
+                        for (int i = 0; i < reports.size(); i++) {
+                            repDate[i] = reports.get(i).getDate();
+                            repDescr[i] = reports.get(i).getDescr();
+                            repImage[i] = reports.get(i).getRepImage();
+                            String uNameToReport = reports.get(i).getUserName();
+                            //userTy[i] = db.getUser(uNameToReport).getType();
+//                            userReput[i] = db.getUser(uNameToReport).getReputation();
+                        }
 
-        db = new DataBaseHandler(getApplicationContext());
+                        CustomList adapter = new CustomList(FieldInfoActivity.this, userTy, repDate, repDescr, userReput, repImage);
 
-        ImageView iv = (ImageView) findViewById(R.id.field_image);
+                        ListView rep = (ListView) findViewById(R.id.reports);
+                        rep.setAdapter(adapter);
+                        rep.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            }
+                        });
+                }
+            }
+            handlerReports.postDelayed(this,2000);
+
+            }};
+        handlerReports.postDelayed(runnable, 1000);
 
         Intent intent = getIntent();
         fieldId = intent.getIntExtra("fieldID", 0); //get the Field id from Maps class
         System.out.println("field id is = " + fieldId);
 
-        //CREATING USER
-        User afon = new User("John",22,"test@gmail.com"
-                ,123456789,25,"Basketball","PRO USER");
-        db.createUser(afon);
+
+        reports = new ArrayList<Report>();
+        mDatabase.getAllReportsListener(reports, fieldId);
 
         //CREATING SOME REPORTS OF THE FIELD
         Bitmap src=BitmapFactory.decodeFile("/storage/emulated/0/Download/download.jpeg");
@@ -71,78 +113,31 @@ public class FieldInfoActivity extends AppCompatActivity {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             src.compress(Bitmap.CompressFormat.PNG, 100, baos);
             Report newRe = new Report("Net with some holes", fieldId, "John", baos.toByteArray());
-            db.createReport(newRe);
-
-            ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
-            src.compress(Bitmap.CompressFormat.PNG, 100, baos1);
-            Report newRe1 = new Report("Net with some holes", fieldId, "John", baos.toByteArray());
-            db.createReport(newRe1);
-
-
-
-            Drawable d = getResources().getDrawable(R.drawable.broken_ring); // the drawable
-            Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            byte[] bitmapdata = stream.toByteArray();
-
-
-            ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
-            src.compress(Bitmap.CompressFormat.PNG, 100, baos2);
-            Report newRe2 = new Report("Ring is broken", fieldId, "John", bitmapdata);
-            db.createReport(newRe2);
-
-            ByteArrayOutputStream baos3 = new ByteArrayOutputStream();
-            src.compress(Bitmap.CompressFormat.PNG, 100, baos3);
-            Report newRe3 = new Report("Ring is broken", fieldId, "John", bitmapdata);
-            db.createReport(newRe3);
+            mDatabase.createReport(newRe);
         }
-        TextView field_loc = (TextView) findViewById(R.id.field_location);
-        Field f = db.getField(fieldId);
-        System.out.println("field info + " + f.getLocation());
-        byte[] image = f.getImage();
-        if(image == null) iv.setImageResource(R.drawable.basket_field);
-        else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
-
-        String theLocation = f.getLocation();
-        field_loc.setText(theLocation);
+//        ImageView iv = (ImageView) findViewById(R.id.field_image);
+//
+//        TextView field_loc = (TextView) findViewById(R.id.field_location);
+//        Field f = db.getField(fieldId);
+//        System.out.println("field info + " + f.getLocation());
+//        byte[] image = f.getImage();
+//        if(image == null) iv.setImageResource(R.drawable.basket_field);
+//        else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
+//
+//        String theLocation = f.getLocation();
+//        field_loc.setText(theLocation);
         onResume();
     }
 
     @Override
+    public void onStop(){
+        super.onStop();
+        handlerReports.removeCallbacksAndMessages(null);
+    }
+    @Override
     public void onResume()
     {  // After a pause OR at startup
         super.onResume();
-        List<Report> reports = db.getAllReport(fieldId);
-        System.out.println("number of reports is " + reports.size());
-
-        if (reports.size()>0)
-        {
-            String[] repDate = new String[reports.size()];
-            String[] repDescr = new String[reports.size()];
-            String[] userTy = new String[reports.size()];
-            Integer[] userReput = new Integer[reports.size()];
-            byte[][] repImage = new byte[reports.size()][];
-            for (int i = 0; i < reports.size(); i++) {
-                repDate[i] = reports.get(i).getDate();
-                repDescr[i] = reports.get(i).getDescr();
-                repImage[i] = reports.get(i).getRepImage();
-                String uNameToReport = reports.get(i).getUserName();
-                userTy[i] = db.getUser(uNameToReport).getType();
-                userReput[i] = db.getUser(uNameToReport).getReputation();
-            }
-
-            CustomList adapter = new CustomList(FieldInfoActivity.this, userTy, repDate, repDescr, userReput, repImage);
-
-            ListView rep = (ListView) findViewById(R.id.reports);
-            rep.setAdapter(adapter);
-            rep.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                }
-            });
-        }
-        db.closeDB();
         try {
             DrawerUtilActivity.getDrawer(this);
         } catch (IOException e) {
@@ -160,7 +155,7 @@ public class FieldInfoActivity extends AppCompatActivity {
         String splitt = repu.substring(1);
         Integer aux = Integer.parseInt(splitt);
         aux++;
-        db.updateUserRep(testUsername,aux);
+//        db.updateUserRep(testUsername,aux);
         if (aux>=0)
             rep.setText("+" + aux);
         else
@@ -179,7 +174,7 @@ public class FieldInfoActivity extends AppCompatActivity {
         String splitt = repu.substring(1);
         Integer aux = Integer.parseInt(splitt);
         aux--;
-        db.updateUserRep(testUsername,aux);
+//        db.updateUserRep(testUsername,aux);
         if (aux>=0)
             rep.setText("+" + aux);
         else
