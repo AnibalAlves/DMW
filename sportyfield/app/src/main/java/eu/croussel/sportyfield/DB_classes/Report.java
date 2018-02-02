@@ -5,12 +5,12 @@ package eu.croussel.sportyfield.DB_classes;
  */
 
 public class Report {
-    String _descr;
-    int _fieldId; //secondary key that connects to Field
-    int _number; //descr number primary key must be incremented automatically
-    String _date;
-    String _userName;
-    byte[] _reportImage ;
+    private String _descr;
+    private int _fieldId; //secondary key that connects to Field
+    private int _reportId; //descr number primary key must be incremented automatically
+    private String _date;
+    private String _userName;
+    private byte[] _reportImage ;
 
     //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     // String date = sdf.format(new Date());
@@ -21,12 +21,12 @@ public class Report {
 
     }
     //contructor
-    public Report(String descr, int id, String u, byte[] im)
+    public Report(String descr, int fieldId, String userName, byte[] reportImage)
     {
         this._descr=descr;
-        this._fieldId=id;
-        this._userName=u;
-        this._reportImage=im;
+        this._fieldId=fieldId;
+        this._userName=userName;
+        this._reportImage=reportImage;
     }
 
     public String getDescr()
@@ -34,28 +34,28 @@ public class Report {
         return this._descr;
     }
 
-    public void setDescr(String d)
+    public void setDescr(String descr)
     {
-        this._descr=d;
+        this._descr=descr;
     }
 
     public int getId()
     {
         return this._fieldId;
     }
-    public void setId(int i)
+    public void setId(int fieldId)
     {
-        this._fieldId=i;
+        this._fieldId=fieldId;
     }
 
-    public int getNumber()
+    public int getreportId()
     {
-        return this._number;
+        return this._reportId;
     }
 
-    public void setNumber(int n)
+    public void setreportId(int reportId)
     {
-        this._number=n;
+        this._reportId=reportId;
     }
 
     public String getDate()
@@ -63,9 +63,9 @@ public class Report {
         return this._date;
     }
 
-    public void setDate(String d)
+    public void setDate(String date)
     {
-        this._date=d;
+        this._date=date;
     }
 
     public String getUserName()
@@ -73,11 +73,11 @@ public class Report {
         return this._userName;
     }
 
-    public void setUserName(String u)
+    public void setUserName(String userName)
     {
-        this._userName=u;
+        this._userName=userName;
     }
 
-    public void setRepImage(byte[] image) { this._reportImage = image ;}
+    public void setRepImage(byte[] reportImage) { this._reportImage = reportImage ;}
     public byte[] getRepImage(){return this._reportImage ;}
 }

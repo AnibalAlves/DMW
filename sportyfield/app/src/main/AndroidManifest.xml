@@ -69,6 +69,10 @@
             android:value="AIzaSyB1ouLmMNqpcnRm3gjRKQ8MFYL45KiTdjo" />
 
         <activity
+            android:name=".Activities.MapsActivity"
+            android:label="@string/title_activity_maps"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".Activities.FieldInfoActivity"
             android:label="@string/title_activity_fieldInfo"
             android:theme="@style/AppTheme" />
@@ -87,6 +91,11 @@
         <activity
             android:name=".Activities.LoginActivity"
             android:label="@string/title_activity_login">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activities.MapsActivity"
@@ -98,11 +107,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activities.CreateEventActivity"
             android:label="Create a new event">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

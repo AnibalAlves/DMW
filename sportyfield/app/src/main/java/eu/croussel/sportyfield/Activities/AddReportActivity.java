@@ -13,10 +13,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.io.ByteArrayOutputStream;
 
 import eu.croussel.sportyfield.DB_classes.Report;
 import eu.croussel.sportyfield.DataBaseHandler;
+import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 
 public class AddReportActivity extends Activity {
@@ -27,11 +30,16 @@ public class AddReportActivity extends Activity {
     private static int RESULT_LOAD_IMAGE = 1;
     ImageView im;
 
+    // Database Helper
+    private FirebaseAuth auth;
+    private FirebaseDBhandler mDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_report);
-        db = new DataBaseHandler(getApplicationContext());
+        mDatabase = new FirebaseDBhandler();
+//        db = new DataBaseHandler(getApplicationContext());
         im = (ImageView) findViewById(R.id.imageView);
         Intent mIntent = getIntent();
         fieldId = mIntent.getIntExtra("fieldId", 0);
@@ -81,7 +89,7 @@ public class AddReportActivity extends Activity {
         }
         Report r = new Report(des,fieldId,userName,imageInByte);
 
-        db.createReport(r);
+        mDatabase.createReport(r);
         finish();
     }
 }

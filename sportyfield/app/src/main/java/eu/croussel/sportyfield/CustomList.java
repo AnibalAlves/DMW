@@ -69,10 +69,12 @@ public class CustomList extends ArrayAdapter<String> {
         down_a.setImageResource(R.drawable.arrow_down);
 
         TextView reput = rowView.findViewById(R.id.reputation);
-        if (user_reputation[position]>=0)
-            reput.setText("+" + user_reputation[position].toString());
-        else
-            reput.setText("-" + user_reputation[position].toString());
+        if(user_reputation[position] != null) {
+            if (user_reputation[position] >= 0)
+                reput.setText("+" + user_reputation[position].toString());
+            else
+                reput.setText("-" + user_reputation[position].toString());
+        }
         return rowView;
     }
 }

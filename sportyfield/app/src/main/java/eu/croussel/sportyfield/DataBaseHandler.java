@@ -298,28 +298,28 @@ public class DataBaseHandler extends SQLiteOpenHelper {
      * */
     public List<Report> getAllReport(int i) {
         ArrayList<Report> reports = new ArrayList<>();
-
-        String selectQuery = "SELECT  * FROM " + DESCR + " WHERE " + KEY_FIELDID + " = " + i;
-
-        Log.e(LOG, selectQuery);
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (c.moveToFirst()) {
-            do {
-                Report t = new Report();
-                t.setId(c.getInt(c.getColumnIndex(KEY_FIELDID)));
-                t.setDescr(c.getString(c.getColumnIndex(KEY_DESCRIPTION)));
-                t.setNumber(c.getInt(c.getColumnIndex(KEY_NUMBER)));
-                t.setDate(c.getString(c.getColumnIndex(KEY_DATE)));
-                t.setUserName(c.getString(c.getColumnIndex(KEY_UNAMEREPORT)));
-                t.setRepImage(c.getBlob(c.getColumnIndex(KEY_REPIMAGE)));
-                // adding to description list
-                reports.add(t);
-            } while (c.moveToNext());
-        }
+//
+//        String selectQuery = "SELECT  * FROM " + DESCR + " WHERE " + KEY_FIELDID + " = " + i;
+//
+//        Log.e(LOG, selectQuery);
+//
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor c = db.rawQuery(selectQuery, null);
+//
+//        // looping through all rows and adding to list
+//        if (c.moveToFirst()) {
+//            do {
+//                Report t = new Report();
+//                t.setId(c.getInt(c.getColumnIndex(KEY_FIELDID)));
+//                t.setDescr(c.getString(c.getColumnIndex(KEY_DESCRIPTION)));
+//                t.setNumber(c.getInt(c.getColumnIndex(KEY_NUMBER)));
+//                t.setDate(c.getString(c.getColumnIndex(KEY_DATE)));
+//                t.setUserName(c.getString(c.getColumnIndex(KEY_UNAMEREPORT)));
+//                t.setRepImage(c.getBlob(c.getColumnIndex(KEY_REPIMAGE)));
+//                // adding to description list
+//                reports.add(t);
+//            } while (c.moveToNext());
+//        }
         return reports;
     }
 

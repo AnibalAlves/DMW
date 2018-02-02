@@ -35,6 +35,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 import eu.croussel.sportyfield.DB_classes.Field;
+import eu.croussel.sportyfield.DB_classes.Report;
 
 import static java.lang.Thread.sleep;
 
@@ -99,30 +100,9 @@ public class FirebaseDBhandler {
                         }
                 );
     }
-    private Field fi;
-    public void createField(final Field f){
 
-//                .runTransaction(new Transaction.Handler() {
-//            @Override
-//            public Transaction.Result doTransaction(MutableData mutableData) {
-//                for(MutableData m : mutableData.getChildren())
-//                {
-//                    for(MutableData m2 : m.getChildren()) {
-//                        id = ((Field) m2.getValue(Field.class)).getId();
-//                        Log.d("FAFZAZ2", " blarf " + id + "field : " + fi);
-//                    }
-//                }
-//                //f.setId(id + 1);
-//                //Log.d("Set id :", " id = "+ f.getId());
-//                //db.child("field").push().setValue(f);
-//                return Transaction.success(mutableData);
-//            }
-//
-//            @Override
-//            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-//
-//            }
-//        });
+
+    public void createField(final Field f){
         db.child("field").orderByChild("id").limitToLast(1)
                 .addListenerForSingleValueEvent(
                         new ValueEventListener() {
@@ -157,59 +137,8 @@ public class FirebaseDBhandler {
                             }
                         }
                 );
-
-
     }
-//
-//    public int getFieldId(){
-//
-//        db.child("field").orderByChild("id").limitToLast(1)
-//                .addValueEventListener(
-//                        new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(DataSnapshot dataSnapshot) {
-//                                try {
-//                                    for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-//                                        Field f = postSnapshot.getValue(Field.class);
-//                                        id = f.getId();
-//                                        Log.d("FAFZAZ", " blarf " + f.getId());
-//
-//                                    }
-//                                }
-//                                catch(NullPointerException e){
-//                                    id = 0;
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onCancelled(DatabaseError databaseError) {
-//
-//                            }
-//                        }
-//                );
-//            return id;
-//    }
 
-    public Task<byte[]> downloadFieldImTask(int fieldId, final ImageView iv){
-        StorageReference imRef = storage.child("images/field/"+fieldId);
-        final long ONE_MEGABYTE = 1024*1024;
-        Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                iv.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0 ,bytes.length));
-                Log.d("DL IMAGE", "SUCCESS");
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("DL IMAGE", "FAIL");
-
-                    }
-                });
-        return downloadTask;
-    }
     private void putFieldPic(int fieldId, byte[] image) {
         StorageReference imRef = storage.child("images/field/"+fieldId);
         UploadTask uploadTask = imRef.putBytes(image);
@@ -229,4 +158,98 @@ public class FirebaseDBhandler {
         });
     }
 
+    public void createReport(final Report report){
+        db.child("report").orderByChild("reportId").limitToLast(1)
+                .addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int maxRepId = 0;
+                                try {
+                                    for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                                        Report r = snap.getValue(Report.class);
+                                        maxRepId = r.getreportId();
+                                    }
+                                }
+                                catch(NullPointerException e){
+
+                                }
+                                if(report.getRepImage() != null) {
+                                    putReportPic(report.getreportId(), report.getRepImage());
+                                    report.setRepImage(null);
+                                }
+                                report.setreportId(maxRepId+1);
+                                db.child("report").push().setValue(report);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d("BUG","Didn't get data");
+                            }
+                        }
+                );
+    }
+    private void putReportPic(int reportId, byte[] image) {
+        StorageReference imRef = storage.child("images/report/"+reportId);
+        UploadTask uploadTask = imRef.putBytes(image);
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        })
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    }
+                });
+    }
+    public void getAllReportsListener(final List<Report> reports, int fieldId) {
+        db.child("report").orderByChild("id").equalTo(fieldId)
+                .addValueEventListener(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                try {
+                                    reports.clear();
+                                    for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                                        final Report r = snap.getValue(Report.class);
+                                        StorageReference imRef = storage.child("images/report/"+r.getreportId());
+                                        final long ONE_MEGABYTE = 1024*1024;
+                                        Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
+                                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                    @Override
+                                                    public void onSuccess(byte[] bytes) {
+                                                        r.setRepImage(bytes);
+                                                        reports.add(r);
+                                                        Log.d("DL IMAGE", "SUCCESS");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        r.setRepImage(null);
+                                                        reports.add(r);
+                                                        Log.d("DL IMAGE", "FAIL");
+
+                                                    }
+                                                });
+                                    }
+                                }
+                                catch(NullPointerException e){
+                                    reports.clear();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d("BUG","Didn't get data");
+                            }
+                        }
+                );
+    }
 }
+
