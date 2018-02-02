@@ -43,6 +43,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import eu.croussel.sportyfield.DB_classes.User;
+import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -53,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private Button btnSignup, btnLogin, btnReset;
     private DatabaseReference mDatabase;
+    private FirebaseDBhandler db;
     private ProgressDialog mProgressDialog;
     String email,name,first_name,last_name;
     CallbackManager callbackManager;
@@ -72,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
+        db = new FirebaseDBhandler();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(R.layout.activity_login);
         inputEmail = findViewById(R.id.email);
@@ -104,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
+                db.logIn(loginResult.getAccessToken(), getBaseContext());
             }
 
             @Override
@@ -153,60 +155,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 progressBar.setVisibility(View.VISIBLE);
 
-                //  Check if it is an email or not
-                if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    performLogin(email, password);
-                }else {
-                    //get the emailId associated with the username
-                    mDatabase.child("email_ids").child(email)
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot != null) {
-                                        String userId = dataSnapshot.getValue(String.class);
-                                        System.out.println("UserId: " + userId);
-                                        if (userId!=null) {
-                                            performLogin(userId, password);
-                                        }
-                                        else
-                                        {
-                                            progressBar.setVisibility(View.GONE);
-                                            Toast.makeText(LoginActivity.this,"Username or password incorrect", Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError firebaseError) {
+                db.logIn(email, password, progressBar, getBaseContext());
 
-                                }
-                            });
-                }
             }
         });
-    }
-    private void performLogin(String emailId, final String pas) {
-        auth.signInWithEmailAndPassword(emailId, pas)
-                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        progressBar.setVisibility(View.GONE);
-                        if (!task.isSuccessful()) {
-                            // there was an error
-                            if (pas.length() < 6) {
-                                inputPassword.setError(getString(R.string.minimum_password));
-                            } else {
-                                Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-                            startActivity(intent);
-                        }
-                    }
-                });
     }
 
     // [START on_start_check_user]
@@ -233,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
+//                firebaseAuthWithGoogle(account);
 
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed", e);
@@ -247,122 +200,64 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void handleFacebookAccessToken(AccessToken token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
 
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            final FirebaseUser user = auth.getCurrentUser();
-                            final String email = user.getEmail();
-                            mDatabase.child("users").child(decodeUserEmail(email))
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            System.out.println("Datasnapshot is: " + dataSnapshot);
-                                            if (dataSnapshot.getValue() != null) {
-                                                Log.i(TAG, "Inside login with facebook - Table already exists! " + dataSnapshot.child("type").getValue());
-                                                Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-                                                startActivity(intent);
-                                            }
-                                            else
-                                            {
-                                                try {
-                                                    Log.i(TAG, "Inside login with facebook - Creating table!");
-                                                    final User u = new User();
-                                                    u.setAge(0);
-                                                    u.setEmail(user.getEmail());
-                                                    u.setFavSport("");
-                                                    u.setPhone(0);
-                                                    u.setReputation(0);
-                                                    u.setType("Amateur");
-                                                    u.setUserName(user.getDisplayName());
-                                                    mDatabase.child("users").child(decodeUserEmail(u.getEmail())).setValue(u);
-                                                    Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-                                                    startActivity(intent);
-                                                }catch (Exception e)
-                                                {
-                                                    Log.i(TAG,"Exception creating fb table is: " +e);
-                                                }
-                                            }
-                                        }
-                                        @Override
-                                        public void onCancelled(DatabaseError firebaseError) {
 
-                                        }
-                                    });
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            final FirebaseUser user = auth.getCurrentUser();
-                            final String email = user.getEmail();
-                            mDatabase.child("users").child(decodeUserEmail(email))
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            if (dataSnapshot.getValue() != null) {
-                                                Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-                                                startActivity(intent);
-                                            }
-                                            else
-                                            {
-                                                try {
-                                                    final User u = new User();
-                                                    u.setAge(0);
-                                                    u.setEmail(user.getEmail());
-                                                    u.setFavSport("");
-                                                    u.setPhone(0);
-                                                    u.setReputation(0);
-                                                    u.setType("Amateur");
-                                                    u.setUserName(user.getDisplayName());
-                                                    mDatabase.child("users").child(decodeUserEmail(u.getEmail())).setValue(u);
-                                                    Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-                                                    startActivity(intent);
-                                                }catch (Exception e)
-                                                {
-                                                    Log.i(TAG,"Creating google table exception: " + e);
-                                                }
-                                            }
-                                        }
-                                        @Override
-                                        public void onCancelled(DatabaseError firebaseError) {
-
-                                        }
-                                    });
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
-                    }
-                });
-    }
+//    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+//        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+//
+//        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+//        auth.signInWithCredential(credential)
+//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            // Sign in success, update UI with the signed-in user's information
+//                            Log.d(TAG, "signInWithCredential:success");
+//                            final FirebaseUser user = auth.getCurrentUser();
+//                            final String email = user.getEmail();
+//                            mDatabase.child("users").child(decodeUserEmail(email))
+//                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+//                                        @Override
+//                                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                                            if (dataSnapshot.getValue() != null) {
+//                                                Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+//                                                startActivity(intent);
+//                                            }
+//                                            else
+//                                            {
+//                                                try {
+//                                                    final User u = new User();
+//                                                    u.setAge(0);
+//                                                    u.setEmail(user.getEmail());
+//                                                    u.setFavSport("");
+//                                                    u.setPhone(0);
+//                                                    u.setReputation(0);
+//                                                    u.setType("Amateur");
+//                                                    u.setUserName(user.getDisplayName());
+//                                                    mDatabase.child("users").child(decodeUserEmail(u.getEmail())).setValue(u);
+//                                                    Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+//                                                    startActivity(intent);
+//                                                }catch (Exception e)
+//                                                {
+//                                                    Log.i(TAG,"Creating google table exception: " + e);
+//                                                }
+//                                            }
+//                                        }
+//                                        @Override
+//                                        public void onCancelled(DatabaseError firebaseError) {
+//
+//                                        }
+//                                    });
+//                        } else {
+//                            // If sign in fails, display a message to the user.
+//                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+//                            Toast.makeText(LoginActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                        // ...
+//                    }
+//                });
+//    }
 
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();

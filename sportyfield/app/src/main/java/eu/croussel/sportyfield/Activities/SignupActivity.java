@@ -1,20 +1,30 @@
 package eu.croussel.sportyfield.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.nfc.Tag;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
@@ -24,6 +34,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,10 +54,20 @@ import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.vansuita.pickimage.bean.PickResult;
+import com.vansuita.pickimage.bundle.PickSetup;
+import com.vansuita.pickimage.dialog.PickImageDialog;
+import com.vansuita.pickimage.listeners.IPickResult;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import eu.croussel.sportyfield.DB_classes.User;
+import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 
 public class SignupActivity extends AppCompatActivity {
@@ -59,15 +80,11 @@ public class SignupActivity extends AppCompatActivity {
     private String[] sports = {"Basketball", "Football", "Tennis", "Pingpong", "Handball"};
     private Spinner sportsList;
     private String selectedFromList = new String();
-    private DatabaseReference mDatabase;
-    private StorageReference imageReference;
-    private StorageReference fileRef;
-    private static int RESULT_LOAD_IMAGE = 1;
     private Uri selectedImage;
     ImageView im;
 
-
-
+    private FirebaseDBhandler db;
+    Bitmap photoBitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +92,7 @@ public class SignupActivity extends AppCompatActivity {
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        db = new FirebaseDBhandler();
 
         btnSignIn = (Button) findViewById(R.id.sign_in_button);
         btnSignUp = (Button) findViewById(R.id.sign_up_button);
@@ -115,6 +132,20 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+        im.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PickImageDialog.build(new PickSetup().setWidth(im.getMaxWidth()).setHeight(im.getMaxHeight()))
+                        .setOnPickResult(new IPickResult() {
+                            @Override
+                            public void onPickResult(PickResult pickResult) {
+                                Log.d("PATH",pickResult.getPath() +"-"+pickResult);
+//                                setPic(pickResult.getPath());
+                                im.setImageBitmap(pickResult.getBitmap());
+                            }
+                        }).show(SignupActivity.this);
+            }
+        });
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,111 +184,29 @@ public class SignupActivity extends AppCompatActivity {
                 u.setEmail(email);
                 selectedFromList=sportsList.getSelectedItem().toString();
                 u.setFavSport(selectedFromList);
-                u.setPhone(Integer.parseInt(String.valueOf(inputPhone.getText())));
+//                u.setPhone(Integer.parseInt(String.valueOf(inputPhone.getText())));
                 u.setReputation(0);
                 u.setType("Amateur");
                 final String usName = inputUserName.getText().toString().trim();
                 u.setUserName(usName);
 
-                if (selectedImage==null)
-                {
-                    selectedImage = Uri.parse("android.resource://"+getPackageName()+"/drawable/ic_person_outline_black_36dp");
-                }
-
-                imageReference = FirebaseStorage.getInstance().getReference().child("images");
-                fileRef = imageReference.child(usName + "." + getFileExtension(selectedImage));
-
+                byte[] imageInByte;
                 try {
-                    fileRef.putFile(selectedImage)
-                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    String url = taskSnapshot.getDownloadUrl().toString();
-
-                                    // use Firebase Realtime Database to store [name + url]
-                                    writeNewImageInfoToDB(u.getEmail(), url);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    // ...
-                                }
-                            })
-                            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                }
-                            })
-                            .addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                                    // ...
-                                }
-                            });
-                }catch (Exception e)
-                {
-                    Log.i(TAG,"Exception uploading photo is: " + e);
+                    Bitmap bitmap = ((BitmapDrawable) im.getDrawable()).getBitmap();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    imageInByte = baos.toByteArray();
                 }
-
+                catch(NullPointerException ex){
+                    imageInByte = null;
+                }
                 //create user
-                auth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
-                                writeNewUser(u,usName);
-                                mDatabase.child("email_ids").child(usName).setValue(email);
-                                String replacedEmail = encodeUserEmail(email);
-                                mDatabase.child("userName_ids").child(replacedEmail).setValue(u.getUserName());
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                if (!task.isSuccessful()) {
-                                    try {
-                                        throw task.getException();
-                                    } catch(FirebaseAuthWeakPasswordException e) {
-                                        Toast.makeText(SignupActivity.this, "Password too weak!", Toast.LENGTH_SHORT).show();
-                                    } catch(FirebaseAuthInvalidCredentialsException e) {
-                                        Toast.makeText(SignupActivity.this, "Invalid credentials!", Toast.LENGTH_SHORT).show();
-                                    } catch(FirebaseAuthUserCollisionException e) {
-                                        Toast.makeText(SignupActivity.this, "The email address is already in use by another account!" , Toast.LENGTH_SHORT).show();
-                                    } catch(Exception e) {
-                                        Log.e(TAG, e.getMessage());
-                                    }
-                                    /*Toast.makeText(SignupActivity.this, "Authentication failed!" + task.getException(),
-                                            Toast.LENGTH_SHORT).show();
-                                    System.out.println("SIGNUP EXCEPTION IS: " + task.getException());*/
-                                } else {
-                                    Toast.makeText(SignupActivity.this, "User created with success!", Toast.LENGTH_SHORT).show();
-                                    FirebaseUser currentUser = auth.getCurrentUser();
-                                    FirebaseAuth.getInstance().signOut();
-                                    startActivity(new Intent(SignupActivity.this, LoginActivity.class));
-                                    finish();
-                                }
-                            }
-                        });
+                db.createUser(u, imageInByte, u.getEmail(),password,progressBar,getBaseContext());
 
             }
         });
     }
 
-    private void writeNewUser(User u, String uName)
-    {
-
-        mDatabase.child("users").child(encodeUserEmail(u.getEmail())).setValue(u);
-    }
-
-    private void writeNewImageInfoToDB(String name, String url) {
-        try {
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference imgs = database.getReference("images");
-            mDatabase.child("user_photos_test").child(encodeUserEmail(name)).setValue(url);
-        }catch (Exception e)
-        {
-            System.out.println("Exception is: " + e);
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -265,40 +214,31 @@ public class SignupActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
     }
 
-    public void imageSearch(View view) {
-        Intent i = new Intent(
-                Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(i, RESULT_LOAD_IMAGE);
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-            selectedImage = data.getData();
 
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
-            Cursor cursor = getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-            cursor.moveToFirst();
+    private void setPic(String mCurrentPhotoPath) {
+        // Get the dimensions of the View
+        int targetW = im.getWidth();
+        int targetH = im.getHeight();
 
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            im.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-        }
-    }
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
 
-    private String getFileExtension(Uri uri) {
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
 
-        return mime.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
 
-    public static String encodeUserEmail(String userEmail) {
-        return userEmail.replace(".", ",");
+        photoBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        im.setImageBitmap(photoBitmap);
     }
 }
