@@ -35,6 +35,7 @@ public class FieldInfoActivity extends AppCompatActivity {
     DataBaseHandler db;
     int fieldId;
     String testUsername = "John";
+    String theLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +105,7 @@ public class FieldInfoActivity extends AppCompatActivity {
         if(image == null) iv.setImageResource(R.drawable.basket_field);
         else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
 
-        String theLocation = f.getLocation();
+        theLocation = f.getLocation();
         field_loc.setText(theLocation);
         onResume();
     }
@@ -213,6 +214,12 @@ public class FieldInfoActivity extends AppCompatActivity {
                 return true;
             case R.id.action_backMap :
                 finish();
+                return true;
+            case R.id.createEvent:
+                Intent s = new Intent(this,AddReportActivity.class);
+                s.putExtra("fieldId",fieldId);
+                s.putExtra("location",theLocation);
+                startActivity(s);
                 return true;
             case android.R.id.home:
                 if (DrawerUtilActivity.result.isDrawerOpen())

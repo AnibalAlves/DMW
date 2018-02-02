@@ -4,6 +4,7 @@
     <string name="change_profile">Submit</string>
     <string name="action_rmFilter">Remove filter</string>
     <string name="action_returnMap">Return to Map</string>
+    <string name="action_createEvent">Create event</string>
     <string name="action_addReport">Add a report</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
