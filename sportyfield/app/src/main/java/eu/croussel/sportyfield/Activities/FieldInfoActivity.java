@@ -42,6 +42,7 @@ public class FieldInfoActivity extends AppCompatActivity {
 //    DataBaseHandler db;
     int fieldId;
     String testUsername = "John";
+    String theLocation;
 
     // Database Helper
     private FirebaseAuth auth;
@@ -115,6 +116,15 @@ public class FieldInfoActivity extends AppCompatActivity {
             Report newRe = new Report("Net with some holes", fieldId, "John", baos.toByteArray());
             mDatabase.createReport(newRe);
         }
+        TextView field_loc = (TextView) findViewById(R.id.field_location);
+        Field f = db.getField(fieldId);
+        System.out.println("field info + " + f.getLocation());
+        byte[] image = f.getImage();
+        if(image == null) iv.setImageResource(R.drawable.basket_field);
+        else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
+
+        theLocation = f.getLocation();
+        field_loc.setText(theLocation);
 //        ImageView iv = (ImageView) findViewById(R.id.field_image);
 //
 //        TextView field_loc = (TextView) findViewById(R.id.field_location);
@@ -208,6 +218,12 @@ public class FieldInfoActivity extends AppCompatActivity {
                 return true;
             case R.id.action_backMap :
                 finish();
+                return true;
+            case R.id.createEvent:
+                Intent s = new Intent(this,AddReportActivity.class);
+                s.putExtra("fieldId",fieldId);
+                s.putExtra("location",theLocation);
+                startActivity(s);
                 return true;
             case android.R.id.home:
                 if (DrawerUtilActivity.result.isDrawerOpen())
