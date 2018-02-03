@@ -9,7 +9,7 @@ public class Report {
     private int _fieldId; //secondary key that connects to Field
     private int _reportId; //descr number primary key must be incremented automatically
     private String _date;
-    private String _userName;
+    private String _uId;
     private byte[] _reportImage ;
 
     //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -21,11 +21,11 @@ public class Report {
 
     }
     //contructor
-    public Report(String descr, int fieldId, String userName, byte[] reportImage)
+    public Report(String descr, int fieldId, String uId, byte[] reportImage)
     {
         this._descr=descr;
         this._fieldId=fieldId;
-        this._userName=userName;
+        this._uId=uId;
         this._reportImage=reportImage;
     }
 
@@ -68,14 +68,13 @@ public class Report {
         this._date=date;
     }
 
-    public String getUserName()
+    public String getuId()
     {
-        return this._userName;
+        return this._uId;
     }
-
-    public void setUserName(String userName)
+    public void setuId(String uId)
     {
-        this._userName=userName;
+        this._uId=uId;
     }
 
     public void setRepImage(byte[] reportImage) { this._reportImage = reportImage ;}

@@ -1,79 +1,80 @@
 package eu.croussel.sportyfield.Activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.vansuita.pickimage.bean.PickResult;
+import com.vansuita.pickimage.bundle.PickSetup;
+import com.vansuita.pickimage.dialog.PickImageDialog;
+import com.vansuita.pickimage.listeners.IPickResult;
 
 import java.io.ByteArrayOutputStream;
 
 import eu.croussel.sportyfield.DB_classes.Report;
-import eu.croussel.sportyfield.DataBaseHandler;
 import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 
-public class AddReportActivity extends Activity {
+public class AddReportActivity extends AppCompatActivity{
 
-    DataBaseHandler db;
     int fieldId;
-    String userName;
-    private static int RESULT_LOAD_IMAGE = 1;
+    String uId;
     ImageView im;
-
+    Button addReportButton ;
     // Database Helper
-    private FirebaseAuth auth;
     private FirebaseDBhandler mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_report);
+        //DB init
         mDatabase = new FirebaseDBhandler();
-//        db = new DataBaseHandler(getApplicationContext());
+
         im = (ImageView) findViewById(R.id.imageView);
+        im.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Display display = getWindowManager().getDefaultDisplay();
+                PickImageDialog.build(new PickSetup().setWidth(im.getMaxWidth()).setHeight(im.getMaxHeight()))
+                        .setOnPickResult(new IPickResult() {
+                            @Override
+                            public void onPickResult(PickResult pickResult) {
+                                Log.d("PATH",pickResult.getPath() +"-"+pickResult);
+//                                setPic(pickResult.getPath());
+                                im.setImageBitmap(pickResult.getBitmap());
+                            }
+                        }).show(AddReportActivity.this);
+            }
+        });
+
+        addReportButton = (Button) findViewById(R.id.buttonToAdd);
+        addReportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addRep();
+            }
+        });
         Intent mIntent = getIntent();
         fieldId = mIntent.getIntExtra("fieldId", 0);
-        userName = mIntent.getStringExtra("uName");
+        uId = mDatabase.getCurrentUID();
     }
 
-    public void imageSearch(View view) {
-        Intent i = new Intent(
-                Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(i, RESULT_LOAD_IMAGE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-            Cursor cursor = getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            im.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-        }
 
 
-    }
-
-    public void repAdd(View view) {
+    public void addRep() {
         //add report to the db, but first get info from image and edit text
         EditText descr = (EditText) findViewById(R.id.nameUser);
         String des = descr.getText().toString();
@@ -87,7 +88,7 @@ public class AddReportActivity extends Activity {
         catch(NullPointerException ex){
             imageInByte = null;
         }
-        Report r = new Report(des,fieldId,userName,imageInByte);
+        Report r = new Report(des,fieldId,uId,imageInByte);
 
         mDatabase.createReport(r);
         finish();

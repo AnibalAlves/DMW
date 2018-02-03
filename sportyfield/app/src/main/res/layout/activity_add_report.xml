@@ -1,86 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context="eu.croussel.sportyfield.Activities.AddReportActivity">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/colorPrimary">
-
-        <TextView
-            android:id="@+id/field_location"
-            android:layout_width="match_parent"
-            android:layout_height="48dip"
-            android:layout_marginLeft="15dp"
-            android:textColor="@android:color/white"
-            android:text="Add a report"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            android:gravity="left|center"
-        />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp" />
-
-        <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/imageView"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="42dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_add_circle_white_24dp"
-            android:tint="@color/colorPrimary"
-            android:onClick="imageSearch"
-            />
-    </RelativeLayout>
+    tools:context="eu.croussel.sportyfield.Activities.AddFieldActivity">
 
     <TextView
+        android:id="@+id/field_location"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="left|center"
+        android:text="Share a report :"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.55"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_add_a_photo_black_48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/field_location" />
+
+
+    <TextView
+        android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="Add information:"
-        android:textSize="17dp"
         android:textColor="@android:color/black"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="25dp"
-        />
+        android:textSize="17dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="nameUser"
         android:textSize="17dp"
+        android:id="@+id/descr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:textColor="@android:color/black"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
-        />
+        android:textSize="17dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
     <Button
+        android:id="@+id/buttonToAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="24dp"
         android:background="@color/colorPrimary"
         android:text="ADD REPORT"
-        android:layout_marginRight="15dp"
         android:textColor="@android:color/white"
-        android:layout_gravity="right"
-        android:id="@+id/buttonToAdd"
-        android:onClick="repAdd"
-    />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descr" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

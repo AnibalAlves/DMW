@@ -11,6 +11,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import eu.croussel.sportyfield.DB_classes.User;
+
 /**
  * Created by afonso on 05-12-2017.
  */
@@ -23,9 +29,12 @@ public class CustomList extends ArrayAdapter<String> {
     private final String[] user_Descr;
     private final Integer[] user_reputation;
     private final byte[][] repImage;
+    private final List<User> _users ;
+    ;
 
-    public CustomList(Activity context,String[] type_u, String[] da, String[] user_de, Integer[] user_rep, byte[][] rim) {
+    public CustomList(Activity context,List<User> users, String[] type_u, String[] da, String[] user_de, Integer[] user_rep, byte[][] rim) {
         super(context, R.layout.list_single, user_de);
+        this._users = users;
         this.context = context;
         this.type_user = type_u;
         this.date = da;
@@ -40,7 +49,13 @@ public class CustomList extends ArrayAdapter<String> {
         View rowView= inflater.inflate(R.layout.list_single, null, true);
 
         ImageView us_im = rowView.findViewById(R.id.user_image);
-        us_im.setImageResource(R.drawable.user_icon);
+        byte[] image = _users.get(position).get_image();
+
+        Bitmap bitmap = getBitmapSavingMem(image);
+        if(bitmap != null) us_im.setImageBitmap(bitmap);
+        else us_im.setImageResource(R.drawable.user_icon);
+
+
         TextView user_t = rowView.findViewById(R.id.user_type);
         user_t.setText(type_user[position]);
         TextView dating = rowView.findViewById(R.id.date);
@@ -51,8 +66,8 @@ public class CustomList extends ArrayAdapter<String> {
         //change this to change the report image
         try {
             ImageView rep_im = rowView.findViewById(R.id.report_image);
-            Bitmap bmp = BitmapFactory.decodeByteArray(repImage[position], 0, repImage[position].length);
-            rep_im.setImageBitmap(bmp);
+            bitmap = getBitmapSavingMem(repImage[position]);
+            rep_im.setImageBitmap(bitmap);
         }
         catch (NullPointerException ex) {}
         ImageButton up_a = rowView.findViewById(R.id.imageButton);
@@ -69,5 +84,38 @@ public class CustomList extends ArrayAdapter<String> {
                 reput.setText("-" + user_reputation[position].toString());
         }
         return rowView;
+    }
+
+    public Bitmap getBitmapSavingMem(byte[] image){
+        // Calculate inSampleSize
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        if(image != null) BitmapFactory.decodeByteArray(image, 0 ,image.length, options);
+
+        options.inSampleSize = calculateInSampleSize(options, 50, 50);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeByteArray(image, 0 ,image.length, options);
+    }
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 }
