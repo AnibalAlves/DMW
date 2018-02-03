@@ -1,56 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_field_info"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context="eu.croussel.sportyfield.Activities.FieldInfoActivity">
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_field_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        tools:context="eu.croussel.sportyfield.Activities.FieldInfoActivity">
 
-        <TextView
-            android:id="@+id/field_location"
-            android:layout_width="match_parent"
-            android:layout_height="48dip"
-            android:layout_marginLeft="15dp"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            android:gravity="left|center"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/field_image"
-            android:scaleType="fitXY"
-            android:src="@drawable/field"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary">
+
+            <TextView
+                android:id="@+id/field_location"
+                android:layout_width="match_parent"
+                android:layout_height="48dip"
+                android:layout_marginLeft="15dp"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                android:gravity="left|center"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/field_image"
+                android:scaleType="fitXY"
+                android:src="@drawable/field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+            />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:text="List of Reports:"
+            android:textColor="@android:color/black"
         />
+        <ListView
+            android:id="@+id/reports"
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </ListView>
+
     </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:text="List of Reports:"
-        android:textColor="@android:color/black"
-    />
-    <ListView
-        android:id="@+id/reports"
-        android:layout_marginTop="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </ListView>
-
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

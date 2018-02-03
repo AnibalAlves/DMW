@@ -1,12 +1,8 @@
 package eu.croussel.sportyfield;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by afonso on 05-12-2017.
@@ -52,7 +45,7 @@ public class CustomList extends ArrayAdapter<String> {
         user_t.setText(type_user[position]);
         TextView dating = rowView.findViewById(R.id.date);
         dating.setText(date[position]);
-        TextView descrip = rowView.findViewById(R.id.descr);
+        TextView descrip = rowView.findViewById(R.id.nameUser);
         descrip.setText(user_Descr[position]);
 
         //change this to change the report image

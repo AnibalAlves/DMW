@@ -71,14 +71,12 @@ public class CreateEventActivity extends AppCompatActivity {
         numberPla = findViewById(R.id.numbers);
         Intent mIntent = getIntent();
         fieldId = mIntent.getIntExtra("fieldId", 0);
-        location = mIntent.getStringExtra("location");
 
-        //Populate NumberPicker values from minimum and maximum value range
-        //Set the minimum value of NumberPicker
+        location = mIntent.getStringExtra("location"); //event location
+        locat.setText(location);
+
         numberPla.setMinValue(0);
-        //Specify the maximum value/number of NumberPicker
-        numberPla.setMaxValue(15);
-        //Gets whether the selector wheel wraps when reaching the min/max value.
+        numberPla.setMaxValue(25);
         numberPla.setWrapSelectorWheel(true);
     }
 
@@ -90,7 +88,16 @@ public class CreateEventActivity extends AppCompatActivity {
         }
         else
         {
-
+            //////////////////////
+            ///Event Parameters///
+            //////////////////////
+            String eventName = name.getText().toString();
+            //location is on variable location
+            String eventDate = date.getText().toString();
+            Integer numberPlayers = numberPla.getValue(); //stored as a list of users with this size
+            String eventDescription = descript.getText().toString();
+            //event owner = firebase user
+            //list of users with the size of numberPlayers
         }
     }
 
@@ -107,7 +114,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
                 TimePickerDialog mTimePicker;
-                if (aux==0) {
+                if (aux==0) { //doing this solves a bug where each timer picker and date picker are called twice
                     mTimePicker = new TimePickerDialog(CreateEventActivity.this,AlertDialog.THEME_HOLO_DARK, new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {

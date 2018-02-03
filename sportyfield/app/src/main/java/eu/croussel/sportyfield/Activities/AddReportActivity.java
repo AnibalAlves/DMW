@@ -75,7 +75,7 @@ public class AddReportActivity extends Activity {
 
     public void repAdd(View view) {
         //add report to the db, but first get info from image and edit text
-        EditText descr = (EditText) findViewById(R.id.descr);
+        EditText descr = (EditText) findViewById(R.id.nameUser);
         String des = descr.getText().toString();
         byte[] imageInByte;
         try {

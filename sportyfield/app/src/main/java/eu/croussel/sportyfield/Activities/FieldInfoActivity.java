@@ -117,13 +117,13 @@ public class FieldInfoActivity extends AppCompatActivity {
             mDatabase.createReport(newRe);
         }
         TextView field_loc = (TextView) findViewById(R.id.field_location);
-        Field f = db.getField(fieldId);
-        System.out.println("field info + " + f.getLocation());
-        byte[] image = f.getImage();
-        if(image == null) iv.setImageResource(R.drawable.basket_field);
-        else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
+        //Field f = db.getField(fieldId);
+        //System.out.println("field info + " + f.getLocation());
+        //byte[] image = f.getImage();
+        //if(image == null) iv.setImageResource(R.drawable.basket_field);
+        //else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
 
-        theLocation = f.getLocation();
+        //theLocation = f.getLocation();
         field_loc.setText(theLocation);
 //        ImageView iv = (ImageView) findViewById(R.id.field_image);
 //

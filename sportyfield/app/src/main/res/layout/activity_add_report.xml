@@ -65,7 +65,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/descr"
+        android:id="nameUser"
         android:textSize="17dp"
         android:textColor="@android:color/black"
         android:layout_marginLeft="15dp"
