@@ -50,6 +50,7 @@ public class FieldInfoActivity extends AppCompatActivity {
     //Fields acquisition vars
     List<Report> reports ;
     List<User> users ;
+    List<Field> fields;
     int oldReportListSize = -1;
     private Handler handlerReports ;
     private Runnable runnable;
@@ -116,6 +117,9 @@ public class FieldInfoActivity extends AppCompatActivity {
         reports = new ArrayList<Report>();
         mDatabase.getAllReportsListener(reports, users,fieldId);
 
+        fields = new ArrayList<Field>();
+        mDatabase.getAllFieldsListener(fields);
+
         //CREATING SOME REPORTS OF THE FIELD
         Bitmap src=BitmapFactory.decodeFile("/storage/emulated/0/Download/download.jpeg");
         if(src != null) {
@@ -134,7 +138,6 @@ public class FieldInfoActivity extends AppCompatActivity {
         //theLocation = f.getLocation();
         users = new ArrayList<User>();
         mDatabase.getAllReportsListener(reports, users, fieldId);
-
 //        theLocation = f.getLocation();
         field_loc.setText(theLocation);
         onResume();
