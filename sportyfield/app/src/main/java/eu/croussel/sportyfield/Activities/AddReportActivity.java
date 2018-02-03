@@ -1,5 +1,6 @@
 package eu.croussel.sportyfield.Activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -40,6 +42,17 @@ public class AddReportActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_report);
+        //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
+        //that will use the drawer menu
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        try {
+            DrawerUtilActivity.getDrawer(this);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         //DB init
         mDatabase = new FirebaseDBhandler();
 
@@ -76,7 +89,7 @@ public class AddReportActivity extends AppCompatActivity{
 
     public void addRep() {
         //add report to the db, but first get info from image and edit text
-        EditText descr = (EditText) findViewById(R.id.nameUser);
+        @SuppressLint("WrongViewCast") EditText descr = findViewById(R.id.nameUser);
         String des = descr.getText().toString();
         byte[] imageInByte;
         try {
@@ -92,5 +105,32 @@ public class AddReportActivity extends AppCompatActivity{
 
         mDatabase.createReport(r);
         finish();
+    }
+
+    //Called when one of the action button is called
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            //Drawer nav.
+            case android.R.id.home:
+                if (DrawerUtilActivity.result.isDrawerOpen())
+                {
+                    DrawerUtilActivity.result.closeDrawer();
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setHomeButtonEnabled(false);
+                }
+                else {
+                    DrawerUtilActivity.result.openDrawer();
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setHomeButtonEnabled(false);
+                }
+                return true;
+
+            //Default, do nothing
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

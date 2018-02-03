@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -47,6 +48,17 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+        //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
+        //that will use the drawer menu
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        try {
+            DrawerUtilActivity.getDrawer(this);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
         locat = findViewById(R.id.locati);
         name = findViewById(R.id.eveName);
@@ -141,6 +153,32 @@ public class CreateEventActivity extends AppCompatActivity {
         datePickerDialog.setTitle("Select Day");
         datePickerDialog.show();
         aux=0;
+    }
+    //Called when one of the action button is called
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            //Drawer nav.
+            case android.R.id.home:
+                if (DrawerUtilActivity.result.isDrawerOpen())
+                {
+                    DrawerUtilActivity.result.closeDrawer();
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setHomeButtonEnabled(false);
+                }
+                else {
+                    DrawerUtilActivity.result.openDrawer();
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setHomeButtonEnabled(false);
+                }
+                return true;
+
+            //Default, do nothing
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
 

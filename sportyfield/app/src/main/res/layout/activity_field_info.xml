@@ -24,11 +24,10 @@
                 android:id="@+id/field_location"
                 android:layout_width="match_parent"
                 android:layout_height="48dip"
-                android:layout_marginLeft="15dp"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:textStyle="normal"
-                android:gravity="left|center"
+                android:gravity="center"
                 />
         </LinearLayout>
 

@@ -8,7 +8,7 @@
     <string name="action_addReport">Add a report</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
-    <string name="title_activity_fieldInfo">Field Information</string>
+    <string name="title_activity_fieldInfo">Information</string>
     <string name="reports">report</string>
     <string name="clickedMarkerTitle">Add new field ?</string>
     <string name="clickedMarkerText">Click to add new field.</string>
@@ -56,6 +56,6 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="title_activity_change_profile">ChangeProfileActivity</string>
+    <string name="title_activity_change_profile">Update your personal information</string>
 
 </resources>

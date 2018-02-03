@@ -21,7 +21,7 @@
             android:layout_marginTop="26dp"
             android:text="Location:"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/locati"
@@ -35,7 +35,7 @@
             android:background="@drawable/edittext_frame"
             android:clickable="false"
             android:text="blablabla"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
@@ -55,7 +55,7 @@
             android:layout_marginTop="26dp"
             android:text="Event name:"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/eveName"
@@ -67,7 +67,7 @@
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/eventName"
             android:background="@drawable/edittext_frame"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
@@ -87,7 +87,7 @@
             android:layout_marginTop="26dp"
             android:text="Date/Time:"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/dateChoice"
@@ -96,7 +96,8 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/dateTime"
-            android:text="Calendar" />
+            android:text="Calendar"
+            android:textSize="16sp"/>
 
     </RelativeLayout>
 
@@ -117,7 +118,7 @@
             android:layout_marginStart="56dp"
             android:text="Players:"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <NumberPicker
             android:id="@+id/numbers"
@@ -141,7 +142,7 @@
             android:layout_marginStart="24dp"
             android:text="Description:"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/descriptor"
@@ -151,7 +152,7 @@
             android:layout_marginEnd="8dp"
             android:layout_toEndOf="@+id/descri"
             android:background="@drawable/edittext_frame"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:layout_centerVertical="true"/>
 
     </RelativeLayout>

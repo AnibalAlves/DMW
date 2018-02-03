@@ -57,6 +57,17 @@ public class FieldInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_info);
+        //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
+        //that will use the drawer menu
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        try {
+            DrawerUtilActivity.getDrawer(this);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         mDatabase = new FirebaseDBhandler();
         //Every sec we check if the list has changed
         handlerReports = new Handler();
@@ -103,7 +114,7 @@ public class FieldInfoActivity extends AppCompatActivity {
 
 
         reports = new ArrayList<Report>();
-        mDatabase.getAllReportsListener(reports, fieldId);
+        mDatabase.getAllReportsListener(reports, users,fieldId);
 
         //CREATING SOME REPORTS OF THE FIELD
         Bitmap src=BitmapFactory.decodeFile("/storage/emulated/0/Download/download.jpeg");
@@ -124,7 +135,6 @@ public class FieldInfoActivity extends AppCompatActivity {
         users = new ArrayList<User>();
         mDatabase.getAllReportsListener(reports, users, fieldId);
 
-        TextView field_loc = (TextView) findViewById(R.id.field_location);
 //        theLocation = f.getLocation();
         field_loc.setText(theLocation);
         onResume();
@@ -210,7 +220,7 @@ public class FieldInfoActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.createEvent:
-                Intent s = new Intent(this,AddReportActivity.class);
+                Intent s = new Intent(this,CreateEventActivity.class);
                 s.putExtra("fieldId",fieldId);
                 s.putExtra("location",theLocation);
                 startActivity(s);
@@ -225,7 +235,6 @@ public class FieldInfoActivity extends AppCompatActivity {
                 }
                 else {
                     DrawerUtilActivity.result.openDrawer();
-                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_arrow);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     getSupportActionBar().setHomeButtonEnabled(false);
                 }

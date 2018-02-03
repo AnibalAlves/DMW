@@ -44,6 +44,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,6 +83,17 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
+        //that will use the drawer menu
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        try {
+            DrawerUtilActivity.getDrawer(this);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         //Every sec we check if the list has changed
         handlerFields = new Handler();
         final Runnable runnable = new Runnable() {
@@ -97,17 +109,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         handlerFields.postDelayed(runnable, 1000);
 
 
-        //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
-        //that will use the drawer menu
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(false);
-        try {
-            DrawerUtilActivity.getDrawer(this);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
         //Fragment of the Maps API
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -150,11 +152,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             displayFields();
             onLocationChanged(mLastLocation);
         }
-//        try {
-//            DrawerUtilActivity.getDrawer(this);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            DrawerUtilActivity.getDrawer(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getFields(List<Field> fieldList){
@@ -501,13 +503,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 if (DrawerUtilActivity.result.isDrawerOpen())
                 {
                     DrawerUtilActivity.result.closeDrawer();
-                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     getSupportActionBar().setHomeButtonEnabled(false);
                 }
                 else {
                     DrawerUtilActivity.result.openDrawer();
-                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_arrow);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     getSupportActionBar().setHomeButtonEnabled(false);
                 }

@@ -102,7 +102,7 @@
         <activity
             android:name=".Activities.ChangeProfileActivity"
             android:label="@string/title_activity_change_profile"
-            android:theme="@style/AppTheme.NoActionBar" />
+            />
         <activity
             android:name=".Activities.CreateEventActivity"
             android:label="Create a new event"></activity>
