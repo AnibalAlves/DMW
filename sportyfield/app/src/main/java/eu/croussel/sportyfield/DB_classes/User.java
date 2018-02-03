@@ -13,6 +13,7 @@ public class User {
     private String _favSport;
     private String _type; //PRO USER OR AMATEUR USER
     private String _uId ;
+    private byte[] _image;
     public User()
     {
 
@@ -30,6 +31,8 @@ public class User {
         this._type=type;
     }
 
+    public void setImage(byte[] image){this._image = image;}
+    public byte[] get_image(){return this._image;}
     public void setUid(String uId){this._uId=uId;}
     public String getUid(){return this._uId;}
 

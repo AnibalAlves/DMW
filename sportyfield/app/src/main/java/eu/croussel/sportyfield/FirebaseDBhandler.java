@@ -67,6 +67,7 @@ public class FirebaseDBhandler {
     private int id ;
     private StorageReference storage ;
     private FirebaseAuth auth;
+    final long ONE_MEGABYTE = 1024*1024*5;
 
 
     public FirebaseDBhandler() {
@@ -75,6 +76,9 @@ public class FirebaseDBhandler {
         storage = FirebaseStorage.getInstance().getReference();
     }
 
+    public String getCurrentUID(){
+        return auth.getCurrentUser().getUid();
+    }
     public void getAllFieldsListener(final List<Field> fields) {
         db.child("field").orderByChild("id")
                 .addValueEventListener(
@@ -86,7 +90,6 @@ public class FirebaseDBhandler {
                                     for (DataSnapshot snap: dataSnapshot.getChildren()) {
                                         final Field fi = snap.getValue(Field.class);
                                         StorageReference imRef = storage.child("images/field/"+fi.getId());
-                                        final long ONE_MEGABYTE = 1024*1024;
                                         Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
                                                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                                                     @Override
@@ -195,11 +198,11 @@ public class FirebaseDBhandler {
                                 catch(NullPointerException e){
 
                                 }
+                                report.setreportId(maxRepId+1);
                                 if(report.getRepImage() != null) {
                                     putReportPic(report.getreportId(), report.getRepImage());
                                     report.setRepImage(null);
                                 }
-                                report.setreportId(maxRepId+1);
                                 db.child("report").push().setValue(report);
                             }
 
@@ -228,41 +231,107 @@ public class FirebaseDBhandler {
                     }
                 });
     }
-    public void getAllReportsListener(final List<Report> reports, int fieldId) {
+    public void getAllReportsListener(final List<Report> reports, final List<User> users, int fieldId) {
         db.child("report").orderByChild("id").equalTo(fieldId)
                 .addValueEventListener(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                try {
                                     reports.clear();
-                                    for (DataSnapshot snap: dataSnapshot.getChildren()) {
-                                        final Report r = snap.getValue(Report.class);
-                                        StorageReference imRef = storage.child("images/report/"+r.getreportId());
-                                        final long ONE_MEGABYTE = 1024*1024;
-                                        Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
-                                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                    @Override
-                                                    public void onSuccess(byte[] bytes) {
-                                                        r.setRepImage(bytes);
-                                                        reports.add(r);
-                                                        Log.d("DL IMAGE", "SUCCESS");
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        r.setRepImage(null);
-                                                        reports.add(r);
-                                                        Log.d("DL IMAGE", "FAIL");
+                                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                        try {
+                                            final Report r = snap.getValue(Report.class);
+                                            Log.d("UID of report",  "uid : " + r.getuId()
+                                            + " descr : "+r.getDescr()
+                                            + " id : " + r.getId());
 
-                                                    }
-                                                });
+                                            StorageReference imRef = storage.child("images/report/" + r.getreportId());
+                                            Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
+                                                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                        @Override
+                                                        public void onSuccess(byte[] bytes) {
+                                                            r.setRepImage(bytes);
+                                                            reports.add(r);
+                                                            db.child("users").orderByChild("uid").equalTo(r.getuId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                                                        try {
+                                                                            final User u = snap.getValue(User.class);
+                                                                            StorageReference imRef = storage.child("images/users/" + u.getUid());
+                                                                            Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
+                                                                                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                                                        @Override
+                                                                                        public void onSuccess(byte[] bytes) {
+                                                                                            u.setImage(bytes);
+                                                                                            users.add(u);
+                                                                                            Log.d("DL IMAGE USER", "SUCCESS");
+                                                                                        }
+                                                                                    })
+                                                                                    .addOnFailureListener(new OnFailureListener() {
+                                                                                        @Override
+                                                                                        public void onFailure(@NonNull Exception e) {
+                                                                                            u.setImage(null);
+                                                                                            users.add(u);
+                                                                                        }
+                                                                                    });
+
+                                                                        }catch(Exception e){Log.d("Get users ex ","exception : " +e);}
+                                                                    }
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(DatabaseError databaseError) {
+//
+                                                                }
+                                                            });
+                                                            Log.d("DL IMAGE", "SUCCESS");
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            r.setRepImage(null);
+                                                            reports.add(r);
+                                                        db.child("users").orderByChild("uid").equalTo(r.getuId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                                                    try {
+                                                                        final User u = snap.getValue(User.class);
+//                                                                        StorageReference imRef = storage.child("images/users/" + u.getUid());
+//                                                                        Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
+//                                                                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                                                                                    @Override
+//                                                                                    public void onSuccess(byte[] bytes) {
+//                                                                                        u.setImage(bytes);
+                                                                                        users.add(u);
+//                                                                                    }
+//                                                                                })
+//                                                                                .addOnFailureListener(new OnFailureListener() {
+//                                                                                    @Override
+//                                                                                    public void onFailure(@NonNull Exception e) {
+//                                                                                        u.setImage(null);
+//                                                                                        users.add(u);
+//                                                                                    }
+//                                                                                });
+                                                                    }catch(Exception e){Log.d("Get users ex ","exception : " +e);}
+                                                                }
+
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(DatabaseError databaseError) {
+
+                                                            }
+                                                        });
+                                                            Log.d("DL IMAGE", "FAIL");
+
+                                                        }
+                                                    });
+                                        }
+                                        catch(Exception e){Log.d("Get reports ex ","exception : " +e);}
                                     }
-                                }
-                                catch(NullPointerException e){
-                                    reports.clear();
-                                }
                             }
 
                             @Override
@@ -283,7 +352,7 @@ public class FirebaseDBhandler {
                         Toast.makeText(context, "User created with success!", Toast.LENGTH_SHORT).show();
                         FirebaseUser currentUser = auth.getCurrentUser();
                         u.setUid(currentUser.getUid());
-                        db.child("users").child(u.getUid()).setValue(u);
+                        db.child("users").push().setValue(u);
                         if(image != null)
                             putUserPic(currentUser.getUid(),image);
                         context.startActivity(new Intent(context, LoginActivity.class));
@@ -326,7 +395,7 @@ public class FirebaseDBhandler {
                         Log.d("FB sign in", "signInWithCredential:success");
                         final FirebaseUser firebaseUser = auth.getCurrentUser();
                         final String uId = firebaseUser.getUid();
-                        db.child("users").child(uId)
+                        db.child("users")
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -338,7 +407,7 @@ public class FirebaseDBhandler {
                                             try {
                                                 Log.i("FB sign in", "Inside login with facebook - Creating table!");
                                                 final User u = new User(uId, firebaseUser.getDisplayName(), 0, firebaseUser.getEmail(), firebaseUser.getPhoneNumber(), 0, "", "");
-                                                db.child("users").child(uId).setValue(u);
+                                                db.child("users").push().setValue(u);
                                                 Intent intent = new Intent(context, MapsActivity.class);
                                                 context.startActivity(intent);
                                             } catch (Exception e) {

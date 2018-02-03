@@ -41,7 +41,6 @@ public class FieldInfoActivity extends AppCompatActivity {
     // Database Helper
 //    DataBaseHandler db;
     int fieldId;
-    String testUsername = "John";
     String theLocation;
 
     // Database Helper
@@ -50,6 +49,7 @@ public class FieldInfoActivity extends AppCompatActivity {
 
     //Fields acquisition vars
     List<Report> reports ;
+    List<User> users ;
     int oldReportListSize = -1;
     private Handler handlerReports ;
     private Runnable runnable;
@@ -63,12 +63,12 @@ public class FieldInfoActivity extends AppCompatActivity {
         runnable = new Runnable() {
             @Override
             public void run() {
-                Log.d("Number of reports", reports.size() + " field ID : "+fieldId);
-                if(reports.size() != oldReportListSize){
-                    oldReportListSize = reports.size();
-                    System.out.println("number of reports is " + reports.size());
+                Log.d("Number of reports", "number of reports is " + reports.size() + " n of users :" + users.size());
+                if(users.size() != oldReportListSize && users.size()==reports.size()){
+                    oldReportListSize = users.size();
+                    System.out.println("number of reports is " + reports.size() + " n of users :" + users.size());
 
-                    if (reports.size()>0)
+                    if (users.size()>0)
                     {
                         String[] repDate = new String[reports.size()];
                         String[] repDescr = new String[reports.size()];
@@ -79,12 +79,9 @@ public class FieldInfoActivity extends AppCompatActivity {
                             repDate[i] = reports.get(i).getDate();
                             repDescr[i] = reports.get(i).getDescr();
                             repImage[i] = reports.get(i).getRepImage();
-                            String uNameToReport = reports.get(i).getUserName();
-                            //userTy[i] = db.getUser(uNameToReport).getType();
-//                            userReput[i] = db.getUser(uNameToReport).getReputation();
                         }
 
-                        CustomList adapter = new CustomList(FieldInfoActivity.this, userTy, repDate, repDescr, userReput, repImage);
+                        CustomList adapter = new CustomList(FieldInfoActivity.this,users, userTy, repDate, repDescr, userReput, repImage);
 
                         ListView rep = (ListView) findViewById(R.id.reports);
                         rep.setAdapter(adapter);
@@ -106,36 +103,12 @@ public class FieldInfoActivity extends AppCompatActivity {
 
 
         reports = new ArrayList<Report>();
-        mDatabase.getAllReportsListener(reports, fieldId);
+        users = new ArrayList<User>();
+        mDatabase.getAllReportsListener(reports, users, fieldId);
 
-        //CREATING SOME REPORTS OF THE FIELD
-        Bitmap src=BitmapFactory.decodeFile("/storage/emulated/0/Download/download.jpeg");
-        if(src != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            src.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            Report newRe = new Report("Net with some holes", fieldId, "John", baos.toByteArray());
-            mDatabase.createReport(newRe);
-        }
         TextView field_loc = (TextView) findViewById(R.id.field_location);
-        Field f = db.getField(fieldId);
-        System.out.println("field info + " + f.getLocation());
-        byte[] image = f.getImage();
-        if(image == null) iv.setImageResource(R.drawable.basket_field);
-        else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
-
-        theLocation = f.getLocation();
+//        theLocation = f.getLocation();
         field_loc.setText(theLocation);
-//        ImageView iv = (ImageView) findViewById(R.id.field_image);
-//
-//        TextView field_loc = (TextView) findViewById(R.id.field_location);
-//        Field f = db.getField(fieldId);
-//        System.out.println("field info + " + f.getLocation());
-//        byte[] image = f.getImage();
-//        if(image == null) iv.setImageResource(R.drawable.basket_field);
-//        else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
-//
-//        String theLocation = f.getLocation();
-//        field_loc.setText(theLocation);
         onResume();
     }
 
@@ -213,7 +186,6 @@ public class FieldInfoActivity extends AppCompatActivity {
             case R.id.action_addReport:
                 Intent newRe = new Intent(this,AddReportActivity.class);
                 newRe.putExtra("fieldId",fieldId);
-                newRe.putExtra("uName",testUsername);
                 startActivity(newRe);
                 return true;
             case R.id.action_backMap :

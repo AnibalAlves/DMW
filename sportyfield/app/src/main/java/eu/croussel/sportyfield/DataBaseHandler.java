@@ -287,7 +287,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_DESCRIPTION, d.getDescr());
         values.put(KEY_FIELDID, d.getId());
         values.put(KEY_DATE, String.valueOf(Calendar.getInstance().getTime()));
-        values.put(KEY_UNAMEREPORT,d.getUserName());
+        values.put(KEY_UNAMEREPORT,d.getuId());
         values.put(KEY_REPIMAGE, d.getRepImage());
         // insert row
         db.insertWithOnConflict(DESCR, null, values,SQLiteDatabase.CONFLICT_REPLACE);
