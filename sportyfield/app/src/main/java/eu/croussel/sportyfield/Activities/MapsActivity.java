@@ -78,6 +78,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     Filter appliedFilter ;
     int oldFieldListSize = 0;
     private Handler handlerFields ;
+    Runnable runnable ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,17 +97,16 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         }
         //Every sec we check if the list has changed
         handlerFields = new Handler();
-        final Runnable runnable = new Runnable() {
+        runnable = new Runnable() {
             @Override
             public void run() {
-                if(fieldList.size() != oldFieldListSize){
+                if (fieldList.size() != oldFieldListSize) {
                     oldFieldListSize = fieldList.size();
                     displayFields();
                 }
-                handlerFields.postDelayed(this,1000);
+                handlerFields.postDelayed(this, 1000);
             }
         };
-        handlerFields.postDelayed(runnable, 1000);
 
 
 
@@ -118,7 +118,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 
 
         mDatabase = new FirebaseDBhandler();
-//        db.createField(new Field("Marsala",45.47856593, 9.18897651, false, false, 0, "Near the road", null));
+//        mDatabase.createField(new Field("Marsala",45.47856593, 9.18897651, false, false, 1, "Near the road", null));
+
         //Init the field list which will be modified over time
         fieldList = new ArrayList<Field>();
         mDatabase.getAllFieldsListener(fieldList);
@@ -144,6 +145,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     @Override
     public void onResume(){
         super.onResume();
+        handlerFields.postDelayed(runnable, 1000);
+
 //        fieldList = getFields();
         if(mapConnected){
             mMap.clear();
@@ -452,7 +455,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 break;
             default:
                 Intent intent = new Intent(this, FieldInfoActivity.class);
-                   intent.putExtra("fieldID", tag); //added this to pass the Field ID. You need
+                   intent.putExtra("fieldID", tag-1); //added this to pass the Field ID. You need
                  //to get it from the database. When somenone click on marker, get that id from db and send to FieldInfoActivity
                    startActivity(intent);
                    break ;

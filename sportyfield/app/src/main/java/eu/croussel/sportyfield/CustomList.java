@@ -13,8 +13,10 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.util.List;
 
+import eu.croussel.sportyfield.DB_classes.Report;
 import eu.croussel.sportyfield.DB_classes.User;
 
 /**
@@ -24,23 +26,15 @@ import eu.croussel.sportyfield.DB_classes.User;
 public class CustomList extends ArrayAdapter<String> {
 
     private final Activity context;
-    private final String[] type_user;
-    private final String[] date;
-    private final String[] user_Descr;
-    private final Integer[] user_reputation;
-    private final byte[][] repImage;
     private final List<User> _users ;
-    ;
+    private final List<Report> _reports ;
 
-    public CustomList(Activity context,List<User> users, String[] type_u, String[] da, String[] user_de, Integer[] user_rep, byte[][] rim) {
-        super(context, R.layout.list_single, user_de);
+
+    public CustomList(Activity context, List<User> users, List<Report> reports) {
+        super(context, R.layout.list_single, new String[users.size()]);
         this._users = users;
         this.context = context;
-        this.type_user = type_u;
-        this.date = da;
-        this.user_Descr = user_de;
-        this.user_reputation = user_rep;
-        this.repImage=rim;
+        this._reports=reports;
     }
 
     @Override
@@ -50,26 +44,22 @@ public class CustomList extends ArrayAdapter<String> {
 
         ImageView us_im = rowView.findViewById(R.id.user_image);
         byte[] image = _users.get(position).get_image();
-
-        Bitmap bitmap = getBitmapSavingMem(image);
-        if(bitmap != null) us_im.setImageBitmap(bitmap);
-        else us_im.setImageResource(R.drawable.user_icon);
+        if(image != null) {
+            Bitmap bitmap = getBitmapSavingMem(image);
+            us_im.setImageBitmap(bitmap);
+        }else us_im.setImageResource(R.drawable.user_icon);
 
 
         TextView user_t = rowView.findViewById(R.id.user_type);
-        user_t.setText(type_user[position]);
-        TextView dating = rowView.findViewById(R.id.date);
-        dating.setText(date[position]);
-        TextView descrip = rowView.findViewById(R.id.nameUser);
-        descrip.setText(user_Descr[position]);
+        user_t.setText(_users.get(position).getType());
 
-        //change this to change the report image
-        try {
-            ImageView rep_im = rowView.findViewById(R.id.report_image);
-            bitmap = getBitmapSavingMem(repImage[position]);
-            rep_im.setImageBitmap(bitmap);
-        }
-        catch (NullPointerException ex) {}
+        TextView dating = rowView.findViewById(R.id.date);
+        dating.setText(android.text.format.DateFormat.format("yyyy.MM.dd",_reports.get(position).getDate()).toString());
+
+        TextView descrip = rowView.findViewById(R.id.nameUser);
+        descrip.setText(_reports.get(position).getDescr());
+
+
         ImageButton up_a = rowView.findViewById(R.id.imageButton);
         up_a.setImageResource(R.drawable.arrow_up);
         ImageButton down_a;
@@ -77,14 +67,15 @@ public class CustomList extends ArrayAdapter<String> {
         down_a.setImageResource(R.drawable.arrow_down);
 
         TextView reput = rowView.findViewById(R.id.reputation);
-        if(user_reputation[position] != null) {
-            if (user_reputation[position] >= 0)
-                reput.setText("+" + user_reputation[position].toString());
+        int user_reputation = _users.get(position).getReputation();
+            if (user_reputation >= 0)
+                reput.setText("+" + Integer.toString(user_reputation));
             else
-                reput.setText("-" + user_reputation[position].toString());
-        }
+                reput.setText("-" + Integer.toString(user_reputation));
         return rowView;
     }
+
+
 
     public Bitmap getBitmapSavingMem(byte[] image){
         // Calculate inSampleSize
@@ -96,6 +87,8 @@ public class CustomList extends ArrayAdapter<String> {
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeByteArray(image, 0 ,image.length, options);
     }
+
+
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image

@@ -1,5 +1,7 @@
 package eu.croussel.sportyfield.DB_classes;
 
+import java.util.Date;
+
 /**
  * Created by afonso on 29-11-2017.
  */
@@ -8,7 +10,7 @@ public class Report {
     private String _descr;
     private int _fieldId; //secondary key that connects to Field
     private int _reportId; //descr number primary key must be incremented automatically
-    private String _date;
+    private Date _date;
     private String _uId;
     private byte[] _reportImage ;
 
@@ -21,8 +23,9 @@ public class Report {
 
     }
     //contructor
-    public Report(String descr, int fieldId, String uId, byte[] reportImage)
+    public Report(String descr, int fieldId, String uId, Date date, byte[] reportImage)
     {
+        this._date=date;
         this._descr=descr;
         this._fieldId=fieldId;
         this._uId=uId;
@@ -58,12 +61,12 @@ public class Report {
         this._reportId=reportId;
     }
 
-    public String getDate()
+    public Date getDate()
     {
         return this._date;
     }
 
-    public void setDate(String date)
+    public void setDate(Date date)
     {
         this._date=date;
     }

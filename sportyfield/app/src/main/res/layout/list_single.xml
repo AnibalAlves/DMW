@@ -44,16 +44,7 @@
             android:textColor="@android:color/black"
             android:textSize="10dp" />
 
-    <ImageView
-        android:id="@+id/report_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignTop="@+id/date"
-        android:layout_marginEnd="24dp"
-        android:layout_toStartOf="@+id/imageButton"
-        android:src="@drawable/broken_ring" />
-
-        <ImageButton
+    <ImageButton
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentEnd="true"

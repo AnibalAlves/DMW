@@ -78,68 +78,30 @@ public class FieldInfoActivity extends AppCompatActivity {
                 Log.d("Number of reports", "number of reports is " + reports.size() + " n of users :" + users.size());
                 if(users.size() != oldReportListSize && users.size()==reports.size()){
                     oldReportListSize = users.size();
-                    System.out.println("number of reports is " + reports.size() + " n of users :" + users.size());
+                    CustomList adapter = new CustomList(FieldInfoActivity.this,users, reports);
 
-                    if (users.size()>0)
-                    {
-                        String[] repDate = new String[reports.size()];
-                        String[] repDescr = new String[reports.size()];
-                        String[] userTy = new String[reports.size()];
-                        Integer[] userReput = new Integer[reports.size()];
-                        byte[][] repImage = new byte[reports.size()][];
-                        for (int i = 0; i < reports.size(); i++) {
-                            repDate[i] = reports.get(i).getDate();
-                            repDescr[i] = reports.get(i).getDescr();
-                            repImage[i] = reports.get(i).getRepImage();
+                    ListView rep = (ListView) findViewById(R.id.reports);
+                    rep.setAdapter(adapter);
+                    rep.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         }
-
-                        CustomList adapter = new CustomList(FieldInfoActivity.this,users, userTy, repDate, repDescr, userReput, repImage);
-
-                        ListView rep = (ListView) findViewById(R.id.reports);
-                        rep.setAdapter(adapter);
-                        rep.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            }
-                        });
-                }
+                    });
             }
             handlerReports.postDelayed(this,2000);
 
             }};
-        handlerReports.postDelayed(runnable, 1000);
 
         Intent intent = getIntent();
         fieldId = intent.getIntExtra("fieldID", 0); //get the Field id from Maps class
+        List<Field> field = new ArrayList<Field>();
+        mDatabase.getOneFieldListener(field, fieldId, (ImageView) findViewById(R.id.field_image));
         System.out.println("field id is = " + fieldId);
 
 
         reports = new ArrayList<Report>();
-        mDatabase.getAllReportsListener(reports, users,fieldId);
-
-        fields = new ArrayList<Field>();
-        mDatabase.getAllFieldsListener(fields);
-
-        //CREATING SOME REPORTS OF THE FIELD
-        Bitmap src=BitmapFactory.decodeFile("/storage/emulated/0/Download/download.jpeg");
-        if(src != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            src.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            Report newRe = new Report("Net with some holes", fieldId, "John", baos.toByteArray());
-            mDatabase.createReport(newRe);
-        }
-        TextView field_loc = (TextView) findViewById(R.id.field_location);
-        //Field f = db.getField(fieldId);
-        //System.out.println("field info + " + f.getLocation());
-        //byte[] image = f.getImage();
-        //if(image == null) iv.setImageResource(R.drawable.basket_field);
-        //else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
-
-        //theLocation = f.getLocation();
         users = new ArrayList<User>();
         mDatabase.getAllReportsListener(reports, users, fieldId);
-//        theLocation = f.getLocation();
-        field_loc.setText(theLocation);
         onResume();
     }
 
@@ -152,6 +114,8 @@ public class FieldInfoActivity extends AppCompatActivity {
     public void onResume()
     {  // After a pause OR at startup
         super.onResume();
+        handlerReports.postDelayed(runnable, 1000);
+
         try {
             DrawerUtilActivity.getDrawer(this);
         } catch (IOException e) {
@@ -162,9 +126,9 @@ public class FieldInfoActivity extends AppCompatActivity {
     public void upArrow(View view) {
         //get the row the clicked button is in
         RelativeLayout vwParentRow = (RelativeLayout) view.getParent();
-        ImageButton btnChild = (ImageButton)vwParentRow.getChildAt(5);
-        ImageButton btnChildd = (ImageButton)vwParentRow.getChildAt(7);
-        TextView rep = (TextView) vwParentRow.getChildAt(6);
+        ImageButton btnChild = (ImageButton)vwParentRow.getChildAt(4);
+        ImageButton btnChildd = (ImageButton)vwParentRow.getChildAt(6);
+        TextView rep = (TextView) vwParentRow.getChildAt(5);
         String repu = (String) rep.getText();
         String splitt = repu.substring(1);
         Integer aux = Integer.parseInt(splitt);

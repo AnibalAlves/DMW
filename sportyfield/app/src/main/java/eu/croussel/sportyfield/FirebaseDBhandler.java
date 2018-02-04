@@ -2,6 +2,7 @@ package eu.croussel.sportyfield;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -89,25 +90,26 @@ public class FirebaseDBhandler {
                                     fields.clear();
                                     for (DataSnapshot snap: dataSnapshot.getChildren()) {
                                         final Field fi = snap.getValue(Field.class);
-                                        StorageReference imRef = storage.child("images/field/"+fi.getId());
-                                        Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
-                                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                    @Override
-                                                    public void onSuccess(byte[] bytes) {
-                                                        fi.setImage(bytes);
-                                                        fields.add(fi);
-                                                        Log.d("DL IMAGE", "SUCCESS");
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        fi.setImage(null);
-                                                        fields.add(fi);
-                                                        Log.d("DL IMAGE", "FAIL");
-
-                                                    }
-                                                });
+                                        fields.add(fi);
+//                                        StorageReference imRef = storage.child("images/field/"+fi.getId());
+//                                        Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
+//                                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                                                    @Override
+//                                                    public void onSuccess(byte[] bytes) {
+//                                                        fi.setImage(bytes);
+//                                                        fields.add(fi);
+//                                                        Log.d("DL IMAGE", "SUCCESS");
+//                                                    }
+//                                                })
+//                                                .addOnFailureListener(new OnFailureListener() {
+//                                                    @Override
+//                                                    public void onFailure(@NonNull Exception e) {
+//                                                        fi.setImage(null);
+//                                                        fields.add(fi);
+//                                                        Log.d("DL IMAGE", "FAIL");
+//
+//                                                    }
+//                                                });
 
                                         Log.d("DEBUG getAllfields ", "Here is the field id found : "+ fi.getId());
                                     }
@@ -127,6 +129,7 @@ public class FirebaseDBhandler {
 
 
     public void createField(final Field f){
+        Log.d("DEBUG","ADDING FIELD");
         db.child("field").orderByChild("id").limitToLast(1)
                 .addListenerForSingleValueEvent(
                         new ValueEventListener() {
@@ -182,6 +185,54 @@ public class FirebaseDBhandler {
         });
     }
 
+    public void getOneFieldListener(final List<Field> fields, int fieldId, final ImageView imageView) {
+        Log.d("GET ONE FIELD", "field id is :"+fieldId);
+        db.child("field").orderByChild("id").equalTo(fieldId)
+                .addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                try {
+                                    fields.clear();
+                                    for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                                        final Field fi = snap.getValue(Field.class);
+                                        fields.add(fi);
+                                        StorageReference imRef = storage.child("images/field/"+fi.getId());
+                                        Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
+                                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                    @Override
+                                                    public void onSuccess(byte[] bytes) {
+                                                        fi.setImage(bytes);
+                                                        imageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0 ,bytes.length));
+                                                        fields.add(fi);
+                                                        Log.d("DL IMAGE", "SUCCESS");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        fi.setImage(null);
+                                                        fields.add(fi);
+                                                        Log.d("DL IMAGE", "FAIL");
+
+                                                    }
+                                                });
+
+                                        Log.d("DEBUG getAllfields ", "Here is the field id found : "+ fi.getId());
+                                    }
+                                }
+                                catch(NullPointerException e){
+                                    fields.clear();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d("BUG","Didn't get data");
+                            }
+                        }
+                );
+    }
     public void createReport(final Report report){
         db.child("report").orderByChild("reportId").limitToLast(1)
                 .addListenerForSingleValueEvent(
@@ -244,102 +295,51 @@ public class FirebaseDBhandler {
                                             Log.d("UID of report",  "uid : " + r.getuId()
                                             + " descr : "+r.getDescr()
                                             + " id : " + r.getId());
+                                            reports.add(r);
+                                            db.child("users").orderByChild("uid").equalTo(r.getuId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                                        try {
+                                                            final User u = snap.getValue(User.class);
+                                                            StorageReference imRef = storage.child("images/users/" + u.getUid());
+                                                            Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
+                                                                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                                        @Override
+                                                                        public void onSuccess(byte[] bytes) {
+                                                                            u.setImage(bytes);
+                                                                            users.add(u);
+                                                                            Log.d("DL IMAGE USER", "SUCCESS");
+                                                                        }
+                                                                    })
+                                                                    .addOnFailureListener(new OnFailureListener() {
+                                                                        @Override
+                                                                        public void onFailure(@NonNull Exception e) {
+                                                                            u.setImage(null);
+                                                                            users.add(u);
+                                                                        }
+                                                                    });
 
-                                            StorageReference imRef = storage.child("images/report/" + r.getreportId());
-                                            Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
-                                                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                        @Override
-                                                        public void onSuccess(byte[] bytes) {
-                                                            r.setRepImage(bytes);
-                                                            reports.add(r);
-                                                            db.child("users").orderByChild("uid").equalTo(r.getuId()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                                                                        try {
-                                                                            final User u = snap.getValue(User.class);
-                                                                            StorageReference imRef = storage.child("images/users/" + u.getUid());
-                                                                            Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
-                                                                                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                                                        @Override
-                                                                                        public void onSuccess(byte[] bytes) {
-                                                                                            u.setImage(bytes);
-                                                                                            users.add(u);
-                                                                                            Log.d("DL IMAGE USER", "SUCCESS");
-                                                                                        }
-                                                                                    })
-                                                                                    .addOnFailureListener(new OnFailureListener() {
-                                                                                        @Override
-                                                                                        public void onFailure(@NonNull Exception e) {
-                                                                                            u.setImage(null);
-                                                                                            users.add(u);
-                                                                                        }
-                                                                                    });
+                                                        }catch(Exception e){Log.d("Get users ex ","exception : " +e);}
+                                                    }
+                                                }
 
-                                                                        }catch(Exception e){Log.d("Get users ex ","exception : " +e);}
-                                                                    }
-                                                                }
-
-                                                                @Override
-                                                                public void onCancelled(DatabaseError databaseError) {
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
 //
-                                                                }
-                                                            });
-                                                            Log.d("DL IMAGE", "SUCCESS");
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            r.setRepImage(null);
-                                                            reports.add(r);
-                                                        db.child("users").orderByChild("uid").equalTo(r.getuId()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                            @Override
-                                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                                                                    try {
-                                                                        final User u = snap.getValue(User.class);
-//                                                                        StorageReference imRef = storage.child("images/users/" + u.getUid());
-//                                                                        Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
-//                                                                                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-//                                                                                    @Override
-//                                                                                    public void onSuccess(byte[] bytes) {
-//                                                                                        u.setImage(bytes);
-                                                                                        users.add(u);
-//                                                                                    }
-//                                                                                })
-//                                                                                .addOnFailureListener(new OnFailureListener() {
-//                                                                                    @Override
-//                                                                                    public void onFailure(@NonNull Exception e) {
-//                                                                                        u.setImage(null);
-//                                                                                        users.add(u);
-//                                                                                    }
-//                                                                                });
-                                                                    }catch(Exception e){Log.d("Get users ex ","exception : " +e);}
-                                                                }
+                                                }
+                                            });
 
-                                                            }
-
-                                                            @Override
-                                                            public void onCancelled(DatabaseError databaseError) {
-
-                                                            }
-                                                        });
-                                                            Log.d("DL IMAGE", "FAIL");
-
-                                                        }
-                                                    });
-                                        }
-                                        catch(Exception e){Log.d("Get reports ex ","exception : " +e);}
-                                    }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Log.d("BUG","Didn't get data");
-                            }
                         }
-                );
+                        catch(Exception e){Log.d("Get reports ex ","exception : " +e);}
+                    }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("BUG","Didn't get data");
+            }
+        });
     }
     ///////////////////////
     ///   CREATE USER   ///
@@ -479,6 +479,41 @@ public class FirebaseDBhandler {
                         }
                     }
                 });
+    }
+
+    public Bitmap getBitmapSavingMem(byte[] image){
+        // Calculate inSampleSize
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        if(image != null) BitmapFactory.decodeByteArray(image, 0 ,image.length, options);
+
+        options.inSampleSize = calculateInSampleSize(options, 50, 50);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeByteArray(image, 0 ,image.length, options);
+    }
+
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 }
 

@@ -24,6 +24,8 @@ import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Calendar;
+import java.util.Date;
 
 import eu.croussel.sportyfield.DB_classes.Report;
 import eu.croussel.sportyfield.FirebaseDBhandler;
@@ -89,7 +91,7 @@ public class AddReportActivity extends AppCompatActivity{
 
     public void addRep() {
         //add report to the db, but first get info from image and edit text
-        @SuppressLint("WrongViewCast") EditText descr = findViewById(R.id.nameUser);
+        @SuppressLint("WrongViewCast") EditText descr = findViewById(R.id.descr);
         String des = descr.getText().toString();
         byte[] imageInByte;
         try {
@@ -101,7 +103,8 @@ public class AddReportActivity extends AppCompatActivity{
         catch(NullPointerException ex){
             imageInByte = null;
         }
-        Report r = new Report(des,fieldId,uId,imageInByte);
+        Date date = Calendar.getInstance().getTime();
+        Report r = new Report(des,fieldId,uId,date,imageInByte);
 
         mDatabase.createReport(r);
         finish();
