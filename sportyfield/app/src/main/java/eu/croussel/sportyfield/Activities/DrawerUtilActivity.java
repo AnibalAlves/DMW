@@ -85,6 +85,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
     };
 
     public static void getDrawer(final Activity activity) throws IOException {
+        System.out.println("HEY I AM HERE AND TIRED OF THIS SHIT");
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
         // Check if user is signed in (non-null)
