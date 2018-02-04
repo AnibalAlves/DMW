@@ -41,6 +41,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -361,6 +363,7 @@ public class FirebaseDBhandler {
                                 db.child("events").push().setValue(event);
 
                                 applyToEvent(event);
+                                db.child("eventListField").child(Integer.toString(event.getFieldId())).push().setValue(new SimplifiedEvent(event));
                                 System.out.println("Cheguei aqui?");
                             }
 
@@ -378,7 +381,7 @@ public class FirebaseDBhandler {
         }
         else{
             SimplifiedEvent e = new SimplifiedEvent(event);
-            db.child("eventList").child(auth.getUid()).push().setValue(e);
+            db.child("eventListUser").child(auth.getUid()).push().setValue(e);
             //User has to be added to the event list
             db.child("events").orderByChild("eventId").equalTo(event.getEventId())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -400,6 +403,79 @@ public class FirebaseDBhandler {
                     });
         }
     }
+    public void getEventsForField(final List<SimplifiedEvent> events, int fieldId){
+        db.child("eventListField").child(Integer.toString(fieldId))
+                .addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                events.clear();
+                                for (DataSnapshot child : dataSnapshot.getChildren()){
+                                    SimplifiedEvent simplifiedEvent = child.getValue(SimplifiedEvent.class);
+
+                                    try {
+                                        events.add(simplifiedEvent);
+                                    }catch(Exception e){}
+                                }
+                                Collections.sort(events);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        }
+                );
+    }
+
+    public void getAllOwnedSimplifiedEvents(final List<SimplifiedEvent> events){
+        db.child("eventListUser").child(auth.getUid())
+                .addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                events.clear();
+                                for (DataSnapshot child : dataSnapshot.getChildren()){
+                                    SimplifiedEvent simplifiedEvent = child.getValue(SimplifiedEvent.class);
+
+                                    try {
+                                        events.add(simplifiedEvent);
+                                    }catch(Exception e){}
+                                }
+                                Collections.sort(events);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        }
+                );
+    }
+
+    public void getEventInfo(final List<Event> event, int eventId, final List<User> players){
+        db.child("events").orderByChild("eventId").equalTo(eventId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        event.clear();
+                        for (DataSnapshot child : dataSnapshot.getChildren()){
+                            Event e = child.getValue(Event.class);
+                            for(String uId : e.getEventPlayers())
+                                addUserToList(players,uId);
+                            try {
+                                event.add(e);
+                            }catch(Exception ex){}
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
 
     ///////////////////////
     ///   CREATE USER   ///
@@ -442,6 +518,27 @@ public class FirebaseDBhandler {
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     }
                 });
+    }
+
+
+    private void addUserToList(final List<User> users, String uId){
+        db.child("users").orderByChild("uid").equalTo(uId)
+                .addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child : dataSnapshot.getChildren()){
+                                    User u = child.getValue(User.class);
+                                    users.add(u);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        }
+                );
     }
     ///////////////////////
     /////    LOG IN  //////

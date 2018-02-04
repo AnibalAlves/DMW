@@ -7,7 +7,7 @@ import java.util.List;
  * Created by root on 04/02/18.
  */
 
-public class Event {
+public class Event implements Comparable<Event> {
     private int _eventId;
     private String _organizerUID;
     private int _fieldId;
@@ -27,7 +27,10 @@ public class Event {
         this._eventPlayers=players;
         this._eventDescription=descri;
     }
-
+    @Override
+    public int compareTo(Event o) {
+        return this.getEventDate().compareTo(o.getEventDate());
+    }
     public void set_organizerUID(String organizerUID){_organizerUID=organizerUID;}
     public String get_organizerUID(){return this._organizerUID;}
     public int getEventId(){return this._eventId;}
