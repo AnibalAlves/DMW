@@ -53,6 +53,7 @@ import java.util.concurrent.Semaphore;
 import eu.croussel.sportyfield.Activities.LoginActivity;
 import eu.croussel.sportyfield.Activities.MapsActivity;
 import eu.croussel.sportyfield.Activities.SignupActivity;
+import eu.croussel.sportyfield.DB_classes.Event;
 import eu.croussel.sportyfield.DB_classes.Field;
 import eu.croussel.sportyfield.DB_classes.Report;
 import eu.croussel.sportyfield.DB_classes.User;
@@ -129,35 +130,27 @@ public class FirebaseDBhandler {
 
 
     public void createField(final Field f){
-        Log.d("DEBUG","ADDING FIELD");
         db.child("field").orderByChild("id").limitToLast(1)
                 .addListenerForSingleValueEvent(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                try {
-                                    for (DataSnapshot snap: dataSnapshot.getChildren()) {
-                                            Field fi = snap.getValue(Field.class);
-                                            id = fi.getId();
-                                            Log.d("DEBUG", "Id : " + id);
-                                            f.setId(id + 1);
-                                            Log.d("Set id :", " id = "+ f.getId());
-                                            if(f.getImage() != null) {
-                                                putFieldPic(f.getId(), f.getImage());
-                                                f.setImage(null);
-                                            }
-                                            db.child("field").push().setValue(f);
-
+                                int maxId = 0;
+                                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                    try {
+                                        Field fi = snap.getValue(Field.class);
+                                        maxId = fi.getId();
+                                    } catch (NullPointerException e) {
                                     }
-                                }
-                                catch(NullPointerException e){
-                                    id = 0;
-                                    f.setId(id + 1);
-                                    Log.d("Set id :", " id = "+ f.getId());
+                                    f.setId(maxId + 1);
+                                    if (f.getImage() != null) {
+                                        putFieldPic(f.getId(), f.getImage());
+                                        f.setImage(null);
+                                    }
                                     db.child("field").push().setValue(f);
+
                                 }
                             }
-
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
                                 Log.d("BUG","Didn't get data");
@@ -326,7 +319,6 @@ public class FirebaseDBhandler {
 
                                                 @Override
                                                 public void onCancelled(DatabaseError databaseError) {
-//
                                                 }
                                             });
 
@@ -341,6 +333,43 @@ public class FirebaseDBhandler {
             }
         });
     }
+
+
+    ///////////////////////
+    ///   EVENTS       ///
+    ///////////////////////
+
+    public void createEvent(final Event event){
+        db.child("events").orderByChild("eventId").limitToLast(1)
+                .addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int maxId = 0;
+                                try {
+                                    for (DataSnapshot snap: dataSnapshot.getChildren()) {
+                                        Event e = snap.getValue(Event.class);
+                                        maxId = e.getEventId();
+                                    }
+                                }
+                                catch(NullPointerException e){
+
+                                }
+                                event.setEventId(maxId+1);
+                                event.set_organizerUID(auth.getUid());
+                                db.child("events").push().setValue(event);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d("BUG","Didn't get data");
+                            }
+                        }
+                );
+    }
+
+
+
     ///////////////////////
     ///   CREATE USER   ///
     ///////////////////////
