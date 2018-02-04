@@ -126,7 +126,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 e1.printStackTrace();
             }
             Integer numberPlayers = numberPla.getValue(); //stored as a list of users with this size
-            List<User> players = new ArrayList<User>(numberPlayers);
+            List<String> players = new ArrayList<String>(numberPlayers);
             String eventDescription = descript.getText().toString();
             System.out.println("Variables: " + eventName + "\n" + eventDate + "\n" + players.size() + "\n" + eventDescription + "\n" + fieldId);
             e = new Event(0,"",fieldId,eventName,eventDate,players,eventDescription);

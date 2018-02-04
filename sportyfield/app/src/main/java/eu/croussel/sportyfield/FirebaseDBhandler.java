@@ -56,6 +56,7 @@ import eu.croussel.sportyfield.Activities.SignupActivity;
 import eu.croussel.sportyfield.DB_classes.Event;
 import eu.croussel.sportyfield.DB_classes.Field;
 import eu.croussel.sportyfield.DB_classes.Report;
+import eu.croussel.sportyfield.DB_classes.SimplifiedEvent;
 import eu.croussel.sportyfield.DB_classes.User;
 
 import static java.lang.Thread.sleep;
@@ -358,6 +359,11 @@ public class FirebaseDBhandler {
                                 event.setEventId(maxId+1);
                                 event.set_organizerUID(auth.getUid());
                                 db.child("events").push().setValue(event);
+<<<<<<< HEAD
+=======
+                                applyToEvent(event);
+                                System.out.println("Cheguei aqui?");
+>>>>>>> 303bb2a480a7ac155d9edb01b7cf94cb7c5609f6
                             }
 
                             @Override
@@ -368,7 +374,34 @@ public class FirebaseDBhandler {
                 );
     }
 
+    public void applyToEvent(Event event){
+        if(event.getEventPlayers().contains(auth.getUid())){
+            //User already registered
+        }
+        else{
+            SimplifiedEvent e = new SimplifiedEvent(event);
+            db.child("eventList").child(auth.getUid()).push().setValue(e);
+            //User has to be added to the event list
+            db.child("events").orderByChild("eventId").equalTo(event.getEventId())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                List<String> child_players = (List<String>) child.child("eventPlayers").getValue();
+                                if(child_players == null)
+                                    child_players = new ArrayList<String>();
+                                child_players.add(auth.getUid());
+                                child.child("eventPlayers").getRef().setValue(child_players);
+                            }
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+        }
+    }
 
     ///////////////////////
     ///   CREATE USER   ///

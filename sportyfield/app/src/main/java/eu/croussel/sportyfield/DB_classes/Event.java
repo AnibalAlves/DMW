@@ -13,10 +13,11 @@ public class Event {
     private int _fieldId;
     private String _eventName;
     private Date _eventDate;
-    private List<User> _eventPlayers;
+    private List<String> _eventPlayers;
     private String _eventDescription;
 
-    public Event(int id, String org, int fid, String name, Date d, List<User> players, String descri)
+    public Event(){}
+    public Event(int id, String org, int fid, String name, Date d, List<String> players, String descri)
     {
         this._eventId=id;
         this._organizerUID=org;
@@ -31,14 +32,14 @@ public class Event {
     public String get_organizerUID(){return this._organizerUID;}
     public int getEventId(){return this._eventId;}
     public void setEventId(int eventId){this._eventId = eventId;}
-    public int getFielId(){return this._fieldId;}
+    public int getFieldId(){return this._fieldId;}
     public void setFieldId(int i){this._fieldId=i;}
     public String getEventName() { return this._eventName;}
     public void setEventName(String n){this._eventName=n;}
     public Date getEventDate(){return this._eventDate;}
     public void setEventDate(Date d){ this._eventDate=d;}
-    public List<User> getEventPlayers(){return this._eventPlayers;}
-    public void setEventPlayers(List<User> p){this._eventPlayers=p;}
+    public List<String> getEventPlayers(){return this._eventPlayers;}
+    public void setEventPlayers(List<String> p){this._eventPlayers=p;}
     public String getEventDescription(){return this._eventDescription;}
     public void setEventDescription(String d){this._eventDescription=d;}
 }
