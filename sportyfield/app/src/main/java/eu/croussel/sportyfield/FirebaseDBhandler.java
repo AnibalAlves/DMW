@@ -520,7 +520,42 @@ public class FirebaseDBhandler {
                 });
     }
 
+    public void getUserToList(final List<User> users,String uId){
+        db.child("users").orderByChild("uid").equalTo(uId)
+                .addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child : dataSnapshot.getChildren()){
+                                    final User u = child.getValue(User.class);
+                                    StorageReference imRef = storage.child("images/users/" + u.getUid());
+                                    Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
+                                            .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                @Override
+                                                public void onSuccess(byte[] bytes) {
+                                                    u.setImage(bytes);
+                                                    users.add(u);
+                                                    Log.d("DL IMAGE USER", "SUCCESS");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    u.setImage(null);
+                                                    users.add(u);
+                                                    Log.d("DL IMAGE USER", "FAILED - doesn't exist");
+                                                }
+                                            });
+                                }
+                            }
 
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        }
+                );
+    }
     private void addUserToList(final List<User> users, String uId){
         db.child("users").orderByChild("uid").equalTo(uId)
                 .addListenerForSingleValueEvent(
