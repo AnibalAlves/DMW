@@ -67,9 +67,12 @@ public class CreateEventActivity extends AppCompatActivity {
         catch (Exception e) {
             e.printStackTrace();
         }
+        Intent mIntent = getIntent();
+        fieldId = mIntent.getIntExtra("fieldId", 0);
 
         mDatabase = new FirebaseDBhandler();
         locat = findViewById(R.id.locati);
+        locat.setText(mIntent.getStringExtra("location"));
         name = findViewById(R.id.eveName);
         descript = findViewById(R.id.descriptor);
 
@@ -90,8 +93,6 @@ public class CreateEventActivity extends AppCompatActivity {
         });
 
         numberPla = findViewById(R.id.numbers);
-        Intent mIntent = getIntent();
-        fieldId = mIntent.getIntExtra("fieldId", 0);
 
         location = mIntent.getStringExtra("location"); //event location
         locat.setText(location);
@@ -130,7 +131,6 @@ public class CreateEventActivity extends AppCompatActivity {
             System.out.println("Variables: " + eventName + "\n" + eventDate + "\n" + players.size() + "\n" + eventDescription + "\n" + fieldId);
             e = new Event(0,"",fieldId,eventName,eventDate,players,eventDescription);
             mDatabase.createEvent(e);
-            System.out.println("Wait, i came back???");
             finish();
         }
     }

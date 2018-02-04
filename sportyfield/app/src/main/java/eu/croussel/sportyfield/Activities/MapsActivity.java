@@ -436,7 +436,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             case 0 :
                 LatLng clickedPos = marker.getPosition();
 
-
                 //to attach LatLong to the intent, we need a bundle
                 //https://stackoverflow.com/questions/16134682/how-to-send-a-latlng-instance-to-new-intent
                 Bundle args = new Bundle();
@@ -455,8 +454,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 break;
             default:
                 Intent intent = new Intent(this, FieldInfoActivity.class);
-                   intent.putExtra("fieldID", tag-1); //added this to pass the Field ID. You need
+                intent.putExtra("fieldID", tag-1); //added this to pass the Field ID. You need
                  //to get it from the database. When somenone click on marker, get that id from db and send to FieldInfoActivity
+                intent.putExtra("location",marker.getSnippet());
                    startActivity(intent);
                    break ;
         }

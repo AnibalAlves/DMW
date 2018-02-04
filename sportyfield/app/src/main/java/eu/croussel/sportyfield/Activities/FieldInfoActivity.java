@@ -42,6 +42,7 @@ public class FieldInfoActivity extends AppCompatActivity {
 //    DataBaseHandler db;
     int fieldId;
     String theLocation;
+    TextView location;
 
     // Database Helper
     private FirebaseAuth auth;
@@ -70,6 +71,12 @@ public class FieldInfoActivity extends AppCompatActivity {
         catch (Exception e) {
             e.printStackTrace();
         }
+        location = findViewById(R.id.field_location);
+        Intent intent = getIntent();
+        fieldId = intent.getIntExtra("fieldID", 0); //get the Field id from Maps class
+        theLocation = intent.getStringExtra("location");
+        location.setText(theLocation);
+
         mDatabase = new FirebaseDBhandler();
         //Every sec we check if the list has changed
         handlerReports = new Handler();
@@ -93,8 +100,6 @@ public class FieldInfoActivity extends AppCompatActivity {
 
             }};
 
-        Intent intent = getIntent();
-        fieldId = intent.getIntExtra("fieldID", 0); //get the Field id from Maps class
         List<Field> field = new ArrayList<Field>();
         mDatabase.getOneFieldListener(field, fieldId, (ImageView) findViewById(R.id.field_image));
         System.out.println("field id is = " + fieldId);
@@ -182,6 +187,7 @@ public class FieldInfoActivity extends AppCompatActivity {
             case R.id.action_addReport:
                 Intent newRe = new Intent(this,AddReportActivity.class);
                 newRe.putExtra("fieldId",fieldId);
+                newRe.putExtra("location",theLocation);
                 startActivity(newRe);
                 return true;
             case R.id.action_backMap :

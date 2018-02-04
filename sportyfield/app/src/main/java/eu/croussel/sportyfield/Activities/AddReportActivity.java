@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
@@ -36,6 +37,7 @@ public class AddReportActivity extends AppCompatActivity{
     int fieldId;
     String uId;
     ImageView im;
+    TextView loca;
     Button addReportButton ;
     // Database Helper
     private FirebaseDBhandler mDatabase;
@@ -57,6 +59,7 @@ public class AddReportActivity extends AppCompatActivity{
         }
         //DB init
         mDatabase = new FirebaseDBhandler();
+        loca = findViewById(R.id.field_location);
 
         im = (ImageView) findViewById(R.id.imageView);
         im.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +87,7 @@ public class AddReportActivity extends AppCompatActivity{
         });
         Intent mIntent = getIntent();
         fieldId = mIntent.getIntExtra("fieldId", 0);
+        loca.setText(mIntent.getStringExtra("location"));
         uId = mDatabase.getCurrentUID();
     }
 

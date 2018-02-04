@@ -80,7 +80,8 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Activities.AddReportActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:label="Send us your report"/>
         <activity android:name=".Activities.AddFieldActivity" />
         <activity android:name=".Activities.FilterActivity" />
         <activity
