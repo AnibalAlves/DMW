@@ -36,7 +36,7 @@ public class Event {
     public String getEventName() { return this._eventName;}
     public void setEventName(String n){this._eventName=n;}
     public Date getEventDate(){return this._eventDate;}
-    public void setEventName(Date d){ this._eventDate=d;}
+    public void setEventDate(Date d){ this._eventDate=d;}
     public List<User> getEventPlayers(){return this._eventPlayers;}
     public void setEventPlayers(List<User> p){this._eventPlayers=p;}
     public String getEventDescription(){return this._eventDescription;}
