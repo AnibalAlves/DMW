@@ -31,6 +31,7 @@ import eu.croussel.sportyfield.CustomList;
 import eu.croussel.sportyfield.DB_classes.Field;
 import eu.croussel.sportyfield.DB_classes.Filter;
 import eu.croussel.sportyfield.DB_classes.Report;
+import eu.croussel.sportyfield.DB_classes.SimplifiedEvent;
 import eu.croussel.sportyfield.DB_classes.User;
 import eu.croussel.sportyfield.DataBaseHandler;
 import eu.croussel.sportyfield.FirebaseDBhandler;
@@ -51,7 +52,7 @@ public class FieldInfoActivity extends AppCompatActivity {
     //Fields acquisition vars
     List<Report> reports ;
     List<User> users ;
-    List<Field> fields;
+    List<SimplifiedEvent> events;
     int oldReportListSize = -1;
     private Handler handlerReports ;
 
@@ -84,6 +85,8 @@ public class FieldInfoActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Log.d("Number of reports", "number of reports is " + reports.size() + " n of users :" + users.size());
+                if(events.size() > 0)
+                    Log.d("EVENTS", events.size() + " events found. First event's description : "+ events.get(0).getEventDescription());
                 if(users.size() != oldReportListSize && users.size()==reports.size()){
                     oldReportListSize = users.size();
                     CustomList adapter = new CustomList(FieldInfoActivity.this,users, reports);
@@ -107,7 +110,9 @@ public class FieldInfoActivity extends AppCompatActivity {
 
         reports = new ArrayList<Report>();
         users = new ArrayList<User>();
+        events = new ArrayList<SimplifiedEvent>();
         mDatabase.getAllReportsListener(reports, users, fieldId);
+        mDatabase.getEventsForField(events, fieldId);
         onResume();
     }
 

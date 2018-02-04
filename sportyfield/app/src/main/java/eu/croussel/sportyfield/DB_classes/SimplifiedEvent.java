@@ -7,13 +7,13 @@ import java.util.List;
  * Created by root on 04/02/18.
  */
 
-public class SimplifiedEvent {
+public class SimplifiedEvent implements Comparable<SimplifiedEvent>  {
         private int _eventId;
         private int _fieldId;
         private String _eventName;
         private Date _eventDate;
         private String _eventDescription;
-
+        public SimplifiedEvent(){};
         public SimplifiedEvent(Event event){
             _eventId = event.getEventId();
             _fieldId = event.getFieldId();
@@ -30,7 +30,10 @@ public class SimplifiedEvent {
             this._eventDate=d;
             this._eventDescription=descri;
         }
-
+    @Override
+    public int compareTo(SimplifiedEvent o) {
+        return this.getEventDate().compareTo(o.getEventDate());
+    }
         public int getEventId(){return this._eventId;}
         public void setEventId(int eventId){this._eventId = eventId;}
         public int getFieldId(){return this._fieldId;}
