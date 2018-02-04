@@ -53,6 +53,7 @@ public class FieldInfoActivity extends AppCompatActivity {
     List<Field> fields;
     int oldReportListSize = -1;
     private Handler handlerReports ;
+
     private Runnable runnable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

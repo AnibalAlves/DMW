@@ -24,10 +24,16 @@ import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import eu.croussel.sportyfield.DB_classes.Event;
+import eu.croussel.sportyfield.DB_classes.User;
+import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -39,9 +45,11 @@ public class CreateEventActivity extends AppCompatActivity {
     TextView locat;
     Button date, create;
     NumberPicker numberPla;
-    private SimpleDateFormat mFormatter = new SimpleDateFormat("MMMM dd yyyy hh:mm aa");
+    private SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private int mYear, mMonth, mDay;
+    Calendar finalDate = Calendar.getInstance();
     int aux=0;
+    private FirebaseDBhandler mDatabase;
 
 
     @Override
@@ -60,6 +68,7 @@ public class CreateEventActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        mDatabase = new FirebaseDBhandler();
         locat = findViewById(R.id.locati);
         name = findViewById(R.id.eveName);
         descript = findViewById(R.id.descriptor);
@@ -87,7 +96,7 @@ public class CreateEventActivity extends AppCompatActivity {
         location = mIntent.getStringExtra("location"); //event location
         locat.setText(location);
 
-        numberPla.setMinValue(0);
+        numberPla.setMinValue(1);
         numberPla.setMaxValue(25);
         numberPla.setWrapSelectorWheel(true);
     }
@@ -103,13 +112,26 @@ public class CreateEventActivity extends AppCompatActivity {
             //////////////////////
             ///Event Parameters///
             //////////////////////
+            Event e;
+
             String eventName = name.getText().toString();
             //location is on variable location
-            String eventDate = date.getText().toString();
+            String formatedDate = mFormatter.format(finalDate.getTime());
+            System.out.println("FormatedDate: " + formatedDate);
+            Date eventDate = null;
+            try {
+                eventDate = mFormatter.parse(formatedDate);
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
             Integer numberPlayers = numberPla.getValue(); //stored as a list of users with this size
+            List<User> players = new ArrayList<User>(numberPlayers);
             String eventDescription = descript.getText().toString();
-            //event owner = firebase user
-            //list of users with the size of numberPlayers
+            System.out.println("Variables: " + eventName + "\n" + eventDate + "\n" + players.size() + "\n" + eventDescription + "\n" + fieldId);
+            e = new Event(0,"",fieldId,eventName,eventDate,players,eventDescription);
+            mDatabase.createEvent(e);
+            System.out.println("Wait, i came back???");
+            finish();
         }
     }
 
@@ -123,8 +145,8 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker view, final int year, final int monthOfYear, final int dayOfMonth) {
                 Calendar mcurrentTime = Calendar.getInstance();
-                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                int minute = mcurrentTime.get(Calendar.MINUTE);
+                final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                final int minute = mcurrentTime.get(Calendar.MINUTE);
                 TimePickerDialog mTimePicker;
                 if (aux==0) { //doing this solves a bug where each timer picker and date picker are called twice
                     mTimePicker = new TimePickerDialog(CreateEventActivity.this,AlertDialog.THEME_HOLO_DARK, new TimePickerDialog.OnTimeSetListener() {
@@ -142,6 +164,7 @@ public class CreateEventActivity extends AppCompatActivity {
                             if (selectedHour > 10 && selectedMinute >10) {
                                 date.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth + " - " +selectedHour + ":"+selectedMinute + " Hh:mm");
                             }
+                            finalDate.set(year,monthOfYear,dayOfMonth,hour,minute);
                         }
                     }, hour, minute, true);//Yes 24 hour time
                     mTimePicker.setTitle("Select Time");
