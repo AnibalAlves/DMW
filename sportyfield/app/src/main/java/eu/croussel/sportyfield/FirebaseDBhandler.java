@@ -359,11 +359,9 @@ public class FirebaseDBhandler {
                                 event.setEventId(maxId+1);
                                 event.set_organizerUID(auth.getUid());
                                 db.child("events").push().setValue(event);
-<<<<<<< HEAD
-=======
+
                                 applyToEvent(event);
                                 System.out.println("Cheguei aqui?");
->>>>>>> 303bb2a480a7ac155d9edb01b7cf94cb7c5609f6
                             }
 
                             @Override
