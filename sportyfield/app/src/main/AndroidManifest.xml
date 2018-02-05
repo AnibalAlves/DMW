@@ -80,8 +80,8 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Activities.AddReportActivity"
-            android:theme="@style/AppTheme"
-            android:label="Send us your report"/>
+            android:label="Send us your report"
+            android:theme="@style/AppTheme" />
         <activity android:name=".Activities.AddFieldActivity" />
         <activity android:name=".Activities.FilterActivity" />
         <activity
@@ -102,12 +102,13 @@
         </activity>
         <activity
             android:name=".Activities.ChangeProfileActivity"
-            android:label="@string/title_activity_change_profile"
-            />
+            android:label="@string/title_activity_change_profile" />
         <activity
             android:name=".Activities.CreateEventActivity"
-            android:label="Create a new event"></activity>
-        <activity android:name=".Activities.ClassifyPlayersActivity"></activity>
+            android:label="Create a new event" />
+        <activity android:name=".Activities.ClassifyPlayersActivity" />
+        <activity android:name=".Activities.ListEventsActivity" />
+        <activity android:name=".Activities.EventInfoActivity"></activity>
     </application>
 
 </manifest>

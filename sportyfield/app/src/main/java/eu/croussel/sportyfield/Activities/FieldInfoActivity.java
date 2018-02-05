@@ -1,10 +1,6 @@
 package eu.croussel.sportyfield.Activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -22,18 +18,15 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.croussel.sportyfield.CustomList;
+import eu.croussel.sportyfield.Adapters.CustomList;
 import eu.croussel.sportyfield.DB_classes.Field;
-import eu.croussel.sportyfield.DB_classes.Filter;
 import eu.croussel.sportyfield.DB_classes.Report;
 import eu.croussel.sportyfield.DB_classes.SimplifiedEvent;
 import eu.croussel.sportyfield.DB_classes.User;
-import eu.croussel.sportyfield.DataBaseHandler;
 import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 

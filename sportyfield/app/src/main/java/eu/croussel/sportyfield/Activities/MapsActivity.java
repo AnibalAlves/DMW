@@ -451,6 +451,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             case 1 :
                 Toast.makeText(this, "Clicked on you",
                         Toast.LENGTH_SHORT).show();
+                Intent intent_list = new Intent(this, ListEventsActivity.class);
+                startActivity(intent_list);
                 break;
             default:
                 Intent intent = new Intent(this, FieldInfoActivity.class);
