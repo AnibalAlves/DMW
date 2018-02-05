@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +41,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -164,7 +167,30 @@ public class FirebaseDBhandler {
                         }
                 );
     }
+    static String facebookUserId = "";
+    private void putPicFromFb() {
+        for (final UserInfo user : FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
+            if (user.getProviderId().equals(FacebookAuthProvider.PROVIDER_ID)) {
+                facebookUserId = user.getUid();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
 
+                            URL url = new URL("https://graph.facebook.com/" + facebookUserId + "/picture?type=large");
+                            Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                            byte[] imageInByte = baos.toByteArray();
+                            putUserPic(getCurrentUID(), imageInByte);
+                        } catch (Exception e) {
+                            Log.d("PUT PIC FROM FB", "EXCEPTION : " + e);
+                        }
+                    }
+                }).start();
+            }
+        }
+    }
     private void putFieldPic(int fieldId, byte[] image) {
         StorageReference imRef = storage.child("images/field/"+fieldId);
         UploadTask uploadTask = imRef.putBytes(image);
@@ -483,7 +509,7 @@ public class FirebaseDBhandler {
     ///////////////////////
     ///   CREATE USER   ///
     ///////////////////////
-    public void createUser(final User u, final byte[] image, String email, String password, ProgressBar progressBar, final Context context) {
+    public void createNewUser(final User u, final byte[] image, String email, String password, ProgressBar progressBar, final Context context) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
@@ -504,6 +530,17 @@ public class FirebaseDBhandler {
                     }
                 });
     }
+    public void createUser(final User u){
+        FirebaseUser currentUser = auth.getCurrentUser();
+        u.setUid(currentUser.getUid());
+        byte[] image = u.get_image();
+        if(image != null)
+            putUserPic(u.getUid(),image);
+        u.setImage(null);
+        db.child("users").push().setValue(u);
+
+    }
+
     private void putUserPic(String uId, byte[] image) {
         StorageReference imRef = storage.child("images/users/"+uId);
         UploadTask uploadTask = imRef.putBytes(image);
@@ -523,6 +560,28 @@ public class FirebaseDBhandler {
                 });
     }
 
+    public void updateUser(final User u, String uId){
+        db.child("users").orderByChild("uid").equalTo(uId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            child.getRef().removeValue(new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    createUser(u);
+                                }
+                            });
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
     public void getUserToList(final List<User> users,String uId){
         db.child("users").orderByChild("uid").equalTo(uId)
                 .addListenerForSingleValueEvent(
@@ -602,7 +661,15 @@ public class FirebaseDBhandler {
                                             try {
                                                 Log.i("FB sign in", "Inside login with facebook - Creating table!");
                                                 final User u = new User(uId, firebaseUser.getDisplayName(), 0, firebaseUser.getEmail(), firebaseUser.getPhoneNumber(), 0, "", "");
-                                                db.child("users").push().setValue(u);
+                                                new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Log.i("FB sign in", "INSIDE THE THREAD");
+
+                                                        db.child("users").push().setValue(u);
+                                                        putPicFromFb();
+                                                    }
+                                                }).start();
                                                 Intent intent = new Intent(context, MapsActivity.class);
                                                 context.startActivity(intent);
                                             } catch (Exception e) {

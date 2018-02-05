@@ -106,8 +106,8 @@ public class DrawerUtilActivity extends AppCompatActivity{
 
         final SecondaryDrawerItem drawerItemProfile = new SecondaryDrawerItem().withIdentifier(4)
                 .withName("Profile").withIcon(R.drawable.user_drawer);
-        final SecondaryDrawerItem drawerItemTeam = new SecondaryDrawerItem().withIdentifier(5)
-                .withName("Teams").withIcon(R.drawable.teammates);
+        final SecondaryDrawerItem drawerItemEvent = new SecondaryDrawerItem().withIdentifier(5)
+                .withName("Events").withIcon(R.drawable.teammates);
         final SecondaryDrawerItem drawerItemMap = new SecondaryDrawerItem().withIdentifier(6)
                 .withName("Map").withIcon(R.drawable.maps);
         final SecondaryDrawerItem drawerItemSettings = new SecondaryDrawerItem().withIdentifier(7)
@@ -139,7 +139,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
                     drawable = aux.getDrawable();
                 }
                 headerResult = getHeader(activity,u.getDisplayName(),u.getEmail());
-                createDrawer(activity,drawerItemProfile,drawerItemTeam,drawerItemMap,drawerItemSettings,drawerItemLogout);
+                createDrawer(activity,drawerItemProfile,drawerItemEvent,drawerItemMap,drawerItemSettings,drawerItemLogout);
 
             } else if (user.getProviderId().equals("google.com"))
             {
@@ -151,7 +151,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
                     drawable = aux.getDrawable();
                 }
                 headerResult = getHeader(activity,u.getDisplayName(),u.getEmail());
-                createDrawer(activity,drawerItemProfile,drawerItemTeam,drawerItemMap,drawerItemSettings,drawerItemLogout);
+                createDrawer(activity,drawerItemProfile,drawerItemEvent,drawerItemMap,drawerItemSettings,drawerItemLogout);
 
             }
             else if (user.getProviderId().equals("password"))
@@ -174,7 +174,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
 //                            Picasso.with(activity).load(uri).into(target);
                             headerResult = getHeader(activity,u.getUserName(),u.getEmail());
 
-                            createDrawer(activity,drawerItemProfile,drawerItemTeam,drawerItemMap,drawerItemSettings,drawerItemLogout);
+                            createDrawer(activity,drawerItemProfile,drawerItemEvent,drawerItemMap,drawerItemSettings,drawerItemLogout);
                         }
                         else
                             handler.postDelayed(this,2000);
@@ -220,7 +220,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
                         }
                         if (drawerItem.getIdentifier() == 5) {
                             // load find teams activity
-                            Intent intent = new Intent(activity, MapsActivity.class);
+                            Intent intent = new Intent(activity, ListEventsActivity.class);
                             view.getContext().startActivity(intent);
                         }
                         if (drawerItem.getIdentifier() == 6) {
