@@ -95,7 +95,6 @@ public class DrawerUtilActivity extends AppCompatActivity{
     };
 
     public static void getDrawer(final Activity activity) throws IOException {
-        System.out.println("HEY I AM HERE AND TIRED OF THIS SHIT");
         // Check if user is signed in (non-null)
         FirebaseDBhandler mDatabase = new FirebaseDBhandler();
         FirebaseUser u = mDatabase.getCurrentFirebaseUser();

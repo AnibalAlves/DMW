@@ -48,11 +48,26 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
-            android:text="List of Reports:"
+            android:text="Reports on this field:"
             android:textColor="@android:color/black"
         />
         <ListView
             android:id="@+id/reports"
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </ListView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:text="Events on this field:"
+            android:textColor="@android:color/black"
+            />
+        <ListView
+            android:id="@+id/events"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
