@@ -4,12 +4,15 @@ package eu.croussel.sportyfield.Activities;
  * Created by afonso on 26-12-2017.
  */
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -47,10 +50,12 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.croussel.sportyfield.Adapters.CustomListEvent;
 import eu.croussel.sportyfield.DB_classes.User;
 import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
@@ -65,12 +70,10 @@ public class DrawerUtilActivity extends AppCompatActivity{
     private static String userName="";
     static ImageView aux=null;
     static Drawer result;
-    static Drawable d = null;
-    private static DatabaseReference mDatabase;
+    static Drawable drawable = null;
     private static GoogleApiClient mGoogleApiClient;
     private static AccountHeader headerResult;
     private static String uname="";
-
 
     private static final Target target = new Target() {
         @Override
@@ -78,7 +81,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
             //test if code reach here to get the profile pic
             Log.i(TAG,"Inside onBitMapLoaded: " + bitmap + " " + from);
             aux.setImageBitmap(bitmap);
-            d = aux.getDrawable();
+            drawable = aux.getDrawable();
         }
 
         @Override
@@ -93,16 +96,26 @@ public class DrawerUtilActivity extends AppCompatActivity{
 
     public static void getDrawer(final Activity activity) throws IOException {
         System.out.println("HEY I AM HERE AND TIRED OF THIS SHIT");
-        //Get Firebase auth instance
-        auth = FirebaseAuth.getInstance();
         // Check if user is signed in (non-null)
-        FirebaseUser u = auth.getCurrentUser();
+        FirebaseDBhandler mDatabase = new FirebaseDBhandler();
+        FirebaseUser u = mDatabase.getCurrentFirebaseUser();
         u.getEmail();
 
         aux = new ImageView(activity);
         aux.setTag(target);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        String decodedEmail = decodeUserEmail(u.getEmail());
+
+
+        final SecondaryDrawerItem drawerItemProfile = new SecondaryDrawerItem().withIdentifier(4)
+                .withName("Profile").withIcon(R.drawable.user_drawer);
+        final SecondaryDrawerItem drawerItemTeam = new SecondaryDrawerItem().withIdentifier(5)
+                .withName("Teams").withIcon(R.drawable.teammates);
+        final SecondaryDrawerItem drawerItemMap = new SecondaryDrawerItem().withIdentifier(6)
+                .withName("Map").withIcon(R.drawable.maps);
+        final SecondaryDrawerItem drawerItemSettings = new SecondaryDrawerItem().withIdentifier(7)
+                .withName("Settings").withIcon(R.drawable.settings);
+        final SecondaryDrawerItem drawerItemLogout = new SecondaryDrawerItem().withIdentifier(8)
+                .withName("Logout").withIcon(R.drawable.logout);
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -112,16 +125,6 @@ public class DrawerUtilActivity extends AppCompatActivity{
                 .build();
         mGoogleApiClient.connect();
 
-        SecondaryDrawerItem drawerItemProfile = new SecondaryDrawerItem().withIdentifier(4)
-                .withName("Profile").withIcon(R.drawable.user_drawer);
-        SecondaryDrawerItem drawerItemTeam = new SecondaryDrawerItem().withIdentifier(5)
-                .withName("Teams").withIcon(R.drawable.teammates);
-        SecondaryDrawerItem drawerItemMap = new SecondaryDrawerItem().withIdentifier(6)
-                .withName("Map").withIcon(R.drawable.maps);
-        SecondaryDrawerItem drawerItemSettings = new SecondaryDrawerItem().withIdentifier(7)
-                .withName("Settings").withIcon(R.drawable.settings);
-        SecondaryDrawerItem drawerItemLogout = new SecondaryDrawerItem().withIdentifier(8)
-                .withName("Logout").withIcon(R.drawable.logout);
 
 
         for (final UserInfo user : FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
@@ -134,7 +137,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
                     Picasso.with(activity).load(photoUrl).into(target);
                 } else {
                     Picasso.with(activity).load("@drawable/user_icon").into(aux);
-                    d = aux.getDrawable();
+                    drawable = aux.getDrawable();
                 }
                 headerResult = getHeader(activity,u.getDisplayName(),u.getEmail());
             } else if (user.getProviderId().equals("google.com"))
@@ -144,121 +147,120 @@ public class DrawerUtilActivity extends AppCompatActivity{
                     Picasso.with(activity).load(photoUrl).into(target);
                 } else {
                     Picasso.with(activity).load("@drawable/user_icon").into(aux);
-                    d = aux.getDrawable();
+                    drawable = aux.getDrawable();
                 }
                 headerResult = getHeader(activity,u.getDisplayName(),u.getEmail());
             }
             else if (user.getProviderId().equals("password"))
             {
-                mDatabase.child("user_photos_test").child(decodedEmail)
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot != null) {
-                                    photoUrl = dataSnapshot.getValue(String.class);
-                                    Picasso.with(activity).load(photoUrl).into(target);
-                                }
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError firebaseError) {
+                final List<User> users = new ArrayList<User>();
+                mDatabase.getUserToList(users, u.getUid());
+                final Handler handler ;
+                handler = new Handler();
+                //Every sec we check if the list has changed
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if(users.size() > 0){
+                            User u = users.get(0);
+                            Bitmap bitmap = getBitmapSavingMem(u.get_image());
+                            Uri uri = getImageUri(activity,getBitmapSavingMem(u.get_image()));
+                            aux.setImageBitmap(bitmap);
+                            drawable = aux.getDrawable();
 
-                            }
-                        });
-                mDatabase.child("userName_ids").child(decodedEmail)
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot != null) {
-                                    uname = dataSnapshot.getValue(String.class);
-                                }
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError firebaseError) {
+//                            Picasso.with(activity).load(uri).into(target);
+                            headerResult = getHeader(activity,u.getUserName(),u.getEmail());
 
-                            }
-                        });
-                headerResult = getHeader(activity,uname,u.getEmail());
+                            //create the drawer and remember the `Drawer` result object
+                            result = new DrawerBuilder()
+                                    .withActivity(activity)
+                                    .withTranslucentStatusBar(false)
+                                    .withActionBarDrawerToggle(false)
+                                    .withAccountHeader(headerResult)
+                                    .addDrawerItems(
+                                            drawerItemProfile,
+                                            drawerItemTeam,
+                                            drawerItemMap,
+                                            drawerItemSettings,
+                                            drawerItemLogout
+                                    )
+                                    .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                                        @Override
+                                        public boolean onItemClick(final View view, int position, IDrawerItem drawerItem) {
+                                            if (drawerItem.getIdentifier() == 4) {
+                                                // load change profile activity
+                                                Intent intent = new Intent(activity, ChangeProfileActivity.class);
+                                                view.getContext().startActivity(intent);
+                                            }
+                                            if (drawerItem.getIdentifier() == 5) {
+                                                // load find teams activity
+                                                Intent intent = new Intent(activity, MapsActivity.class);
+                                                view.getContext().startActivity(intent);
+                                            }
+                                            if (drawerItem.getIdentifier() == 6) {
+                                                // load map activity
+                                                Intent intent = new Intent(activity, MapsActivity.class);
+                                                view.getContext().startActivity(intent);
+                                            }
+                                            if (drawerItem.getIdentifier() == 7) {
+                                                // load settings screen
+                                                Intent intent = new Intent(activity, MapsActivity.class);
+                                                view.getContext().startActivity(intent);
+                                            }
+                                            if (drawerItem.getIdentifier() == 8) {
+                                                for (final UserInfo user : FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
+                                                    // check if the provider id matches "facebook.com" or google or only firebase
+                                                    if (user.getProviderId().equals(FacebookAuthProvider.PROVIDER_ID)) {
+                                                        FirebaseAuth.getInstance().signOut();
+                                                        LoginManager.getInstance().logOut();
+                                                        Intent intent = new Intent(activity, LoginActivity.class);
+                                                        //add flags to end all activities and out Login on the bottom of the stack
+                                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                        view.getContext().startActivity(intent);
+                                                    } else if (user.getProviderId().equals("google.com"))
+                                                    {
+                                                        FirebaseAuth.getInstance().signOut();
+                                                        System.out.println("mGoogleApiClient is : " + mGoogleApiClient);
+                                                        // Google sign out
+                                                        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                                                                new ResultCallback<Status>() {
+                                                                    @Override
+                                                                    public void onResult(@NonNull Status status) {
+                                                                        Intent intent = new Intent(activity, LoginActivity.class);
+                                                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                        view.getContext().startActivity(intent);
+                                                                    }
+                                                                });
+                                                    }
+                                                    else if (user.getProviderId().equals("password"))
+                                                    {
+                                                        FirebaseAuth.getInstance().signOut();
+                                                        Intent intent = new Intent(activity, LoginActivity.class);
+                                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                        view.getContext().startActivity(intent);
+                                                    }
+                                                }
+                                            }
+                                            return true;
+                                        }
+                                    })
+                                    .build();
+                        }
+                        else
+                            handler.postDelayed(this,2000);
+
+                    }
+                };
+                handler.postDelayed(runnable, 1000);
+
             }
         }
 
-        //create the drawer and remember the `Drawer` result object
-        result = new DrawerBuilder()
-            .withActivity(activity)
-            .withTranslucentStatusBar(false)
-            .withActionBarDrawerToggle(false)
-            .withAccountHeader(headerResult)
-            .addDrawerItems(
-                    drawerItemProfile,
-                    drawerItemTeam,
-                    drawerItemMap,
-                    drawerItemSettings,
-                    drawerItemLogout
-            )
-            .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                @Override
-                public boolean onItemClick(final View view, int position, IDrawerItem drawerItem) {
-                    if (drawerItem.getIdentifier() == 4) {
-                        // load change profile activity
-                        Intent intent = new Intent(activity, ChangeProfileActivity.class);
-                        view.getContext().startActivity(intent);
-                    }
-                    if (drawerItem.getIdentifier() == 5) {
-                        // load find teams activity
-                        Intent intent = new Intent(activity, MapsActivity.class);
-                        view.getContext().startActivity(intent);
-                    }
-                    if (drawerItem.getIdentifier() == 6) {
-                        // load map activity
-                        Intent intent = new Intent(activity, MapsActivity.class);
-                        view.getContext().startActivity(intent);
-                    }
-                    if (drawerItem.getIdentifier() == 7) {
-                        // load settings screen
-                        Intent intent = new Intent(activity, MapsActivity.class);
-                        view.getContext().startActivity(intent);
-                    }
-                    if (drawerItem.getIdentifier() == 8) {
-                        for (final UserInfo user : FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
-                            // check if the provider id matches "facebook.com" or google or only firebase
-                            if (user.getProviderId().equals(FacebookAuthProvider.PROVIDER_ID)) {
-                                FirebaseAuth.getInstance().signOut();
-                                LoginManager.getInstance().logOut();
-                                Intent intent = new Intent(activity, LoginActivity.class);
-                                //add flags to end all activities and out Login on the bottom of the stack
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                view.getContext().startActivity(intent);
-                            } else if (user.getProviderId().equals("google.com"))
-                            {
-                                FirebaseAuth.getInstance().signOut();
-                                System.out.println("mGoogleApiClient is : " + mGoogleApiClient);
-                                // Google sign out
-                                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                                        new ResultCallback<Status>() {
-                                            @Override
-                                            public void onResult(@NonNull Status status) {
-                                                Intent intent = new Intent(activity, LoginActivity.class);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                view.getContext().startActivity(intent);
-                                            }
-                                        });
-                            }
-                            else if (user.getProviderId().equals("password"))
-                            {
-                                FirebaseAuth.getInstance().signOut();
-                                Intent intent = new Intent(activity, LoginActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                view.getContext().startActivity(intent);
-                            }
-                        }
-                    }
-                    return true;
-                }
-            })
-            .build();
+
+
+
     }
-    public static String decodeUserEmail(String userEmail) {
-        return userEmail.replace(".", ",");
-    }
+
 
     public static AccountHeader getHeader(Activity a, String name, String email)
     {
@@ -268,7 +270,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
                 .withHeaderBackground(R.drawable.header)
                 //.withHeaderBackground(R.color.com_facebook_button_background_color)
                 .addProfiles(
-                        new ProfileDrawerItem().withName(name).withEmail(email).withIcon(d)
+                        new ProfileDrawerItem().withName(name).withEmail(email).withIcon(drawable)
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
@@ -277,5 +279,21 @@ public class DrawerUtilActivity extends AppCompatActivity{
                     }
                 })
                 .build();
+    }
+
+    private static Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+    private static Bitmap getBitmapSavingMem(byte[] image){
+        // Calculate inSampleSize
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        if(image != null) BitmapFactory.decodeByteArray(image, 0 ,image.length, options);
+
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeByteArray(image, 0 ,image.length, options);
     }
 }

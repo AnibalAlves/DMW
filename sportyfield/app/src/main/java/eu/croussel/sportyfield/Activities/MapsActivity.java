@@ -89,12 +89,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
-        try {
-            DrawerUtilActivity.getDrawer(this);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+
         //Every sec we check if the list has changed
         handlerFields = new Handler();
         runnable = new Runnable() {
@@ -123,8 +118,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         //Init the field list which will be modified over time
         fieldList = new ArrayList<Field>();
         mDatabase.getAllFieldsListener(fieldList);
-
-
     }
 
     @Override
@@ -155,6 +148,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             displayFields();
             onLocationChanged(mLastLocation);
         }
+
         try {
             DrawerUtilActivity.getDrawer(this);
         } catch (IOException e) {
