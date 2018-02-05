@@ -9,13 +9,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.nfc.Tag;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
@@ -45,7 +48,11 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import eu.croussel.sportyfield.DB_classes.User;
+import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 
 public class DrawerUtilActivity extends AppCompatActivity{
@@ -115,6 +122,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
                 .withName("Settings").withIcon(R.drawable.settings);
         SecondaryDrawerItem drawerItemLogout = new SecondaryDrawerItem().withIdentifier(8)
                 .withName("Logout").withIcon(R.drawable.logout);
+
 
         for (final UserInfo user : FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
             // check if the provider id matches "facebook.com"
