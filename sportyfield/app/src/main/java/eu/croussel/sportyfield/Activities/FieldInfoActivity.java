@@ -21,11 +21,13 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import eu.croussel.sportyfield.Adapters.CustomList;
 import eu.croussel.sportyfield.Adapters.CustomListEvent;
 import eu.croussel.sportyfield.Adapters.CustomListFieldEvents;
+import eu.croussel.sportyfield.DB_classes.Event;
 import eu.croussel.sportyfield.DB_classes.Field;
 import eu.croussel.sportyfield.DB_classes.Report;
 import eu.croussel.sportyfield.DB_classes.SimplifiedEvent;
@@ -49,8 +51,9 @@ public class FieldInfoActivity extends AppCompatActivity {
     List<Report> reports ;
     List<User> users ;
     List<SimplifiedEvent> events;
+    List<Event> noSimplifiedEvent;
     int oldReportListSize = -1;
-    int oldEventListSize = -1;
+    int oldEventListSize = 0;
     private Handler handlerReports ;
 
     private Runnable runnable;
@@ -82,17 +85,37 @@ public class FieldInfoActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Log.d("Number of reports", "number of reports is " + reports.size() + " n of users :" + users.size());
-                System.out.println("Events size? " + events.size());
-                if(events.size() > 0) {
+                if(events.size() != oldEventListSize && events.size() > 0) {
+                    oldEventListSize++;
                     Log.d("EVENTS", events.size() + " events found. First event's description : " + events.get(0).getEventDescription());
                     CustomListFieldEvents eventAdaper = new CustomListFieldEvents(FieldInfoActivity.this,events);
                     ListView eve = findViewById(R.id.events);
                     eve.setAdapter(eventAdaper);
-                    System.out.println("After the adapter??? ");
+                    eve.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent x = new Intent(FieldInfoActivity.this, EventInfoActivity.class);
+                            x.putExtra("eventId",events.get(position).getEventId());
+                            startActivity(x);
+                        }
+                    });
                 }
                 if(users.size() != oldReportListSize && users.size()==reports.size()){
                 oldReportListSize = users.size();
-                CustomList adapter = new CustomList(FieldInfoActivity.this,users, reports);
+                int x=0;
+                List<Report> finalList = new ArrayList<Report>();
+                Date last = null;
+                while(x<reports.size())
+                {
+                    Date actual = reports.get(x).getDate();
+                    System.out.println("ACTUAL AND LAST: " + actual + last);
+                    if (actual.after(last))
+                    {
+                        last = actual;
+                        finalList.add(0,reports.get(x));
+                    }
+                }
+                CustomList adapter = new CustomList(FieldInfoActivity.this,users, finalList);
 
                 ListView rep = (ListView) findViewById(R.id.reports);
                 rep.setAdapter(adapter);
@@ -114,6 +137,7 @@ public class FieldInfoActivity extends AppCompatActivity {
         reports = new ArrayList<Report>();
         users = new ArrayList<User>();
         events = new ArrayList<SimplifiedEvent>();
+        noSimplifiedEvent = new ArrayList<Event>();
         mDatabase.getAllReportsListener(reports, users, fieldId);
         mDatabase.getEventsForField(events, fieldId);
         onResume();
