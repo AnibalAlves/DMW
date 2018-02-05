@@ -81,6 +81,9 @@ public class FirebaseDBhandler {
         storage = FirebaseStorage.getInstance().getReference();
     }
 
+    public FirebaseUser getCurrentFirebaseUser(){
+        return auth.getCurrentUser();
+    }
     public String getCurrentUID(){
         return auth.getCurrentUser().getUid();
     }
