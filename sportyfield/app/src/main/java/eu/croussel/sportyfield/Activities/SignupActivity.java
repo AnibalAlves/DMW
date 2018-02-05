@@ -161,7 +161,7 @@ public class SignupActivity extends AppCompatActivity {
                     imageInByte = null;
                 }
                 //create user
-                db.createUser(u, imageInByte, u.getEmail(),password,progressBar,getBaseContext());
+                db.createNewUser(u, imageInByte, u.getEmail(),password,progressBar,getBaseContext());
 
             }
         });

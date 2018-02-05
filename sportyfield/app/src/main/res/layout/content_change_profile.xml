@@ -1,300 +1,297 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/picLayout"
+        android:layout_width="match_parent"
+        android:layout_height="213dp"
+        android:background="@drawable/header"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/profilePic"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:src="@drawable/ic_account_circle_black_36dp" />
+
+        <ImageButton
+            android:id="@+id/editProfilePic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/profilePic"
+            android:layout_marginStart="19dp"
+            android:layout_toEndOf="@+id/profilePic"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_edit_white_24dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/emailLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:id="@+id/parent"
-        android:orientation="vertical">
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/picLayout"
+        tools:layout_editor_absoluteX="0dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/email"
+            android:text="Email:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="213dp"
-            android:background="@drawable/header"
-            android:scaleType = "centerCrop">
-
-            <ImageView
-                android:id="@+id/profilePic"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="30dp"
-                android:src="@drawable/ic_account_circle_black_36dp" />
-
-            <ImageButton
-                android:id="@+id/editProfilePic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/profilePic"
-                android:layout_marginStart="19dp"
-                android:layout_toEndOf="@+id/profilePic"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_edit_white_24dp" />
-        </RelativeLayout>
-
-        <RelativeLayout
+        <TextView
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="35dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp">
+            android:gravity="center"
+            android:textColor="@color/darkGray"
+            android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email:"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:layout_alignLeft="@+id/email"
-            />
+        <ImageButton
+            android:id="@+id/editEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_edit_black_24dp" />
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/darkGray"
-                android:textSize="18sp"
-                />
+    <RelativeLayout
+        android:id="@+id/passGone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/emailLayout"
+        tools:layout_editor_absoluteX="30dp">>
 
-            <ImageButton
-                android:id="@+id/editEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_edit_black_24dp" />
-        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/password"
+            android:text="Password:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
-        <RelativeLayout
-            android:id="@+id/passGone"
+        <TextView
+            android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp">>
+            android:gravity="center"
+            android:inputType="textPassword"
+            android:textColor="@color/darkGray"
+            android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Password:"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:layout_alignLeft="@+id/password"
-                />
+        <ImageButton
+            android:id="@+id/editPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_edit_black_24dp" />
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/darkGray"
-                android:textSize="18sp"
-                android:inputType="textPassword"
-                />
+    <RelativeLayout
+        android:id="@+id/nameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/passGone"
+        tools:layout_editor_absoluteX="0dp">
 
-            <ImageButton
-                android:id="@+id/editPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_edit_black_24dp" />
-        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/uName"
+            android:text="Username:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/uName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp">
+            android:gravity="center"
+            android:textColor="@color/darkGray"
+            android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Username:"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:layout_alignLeft="@+id/uName"
-                />
+        <ImageButton
+            android:id="@+id/editUname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_edit_black_24dp" />
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/uName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/darkGray"
-                android:textSize="18sp"
-                />
+    <RelativeLayout
+        android:id="@+id/phoneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/nameLayout"
+        tools:layout_editor_absoluteX="15dp">
 
-            <ImageButton
-                android:id="@+id/editUname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_edit_black_24dp" />
-        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/phone"
+            android:text="Phone:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp">
+            android:gravity="center"
+            android:inputType="phone"
+            android:textColor="@color/darkGray"
+            android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Phone:"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:layout_alignLeft="@+id/phone"
-                />
+        <ImageButton
+            android:id="@+id/editPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_edit_black_24dp" />
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/darkGray"
-                android:textSize="18sp"
-                android:inputType="phone"
-                />
+    <RelativeLayout
+        android:id="@+id/favSportRel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/ageLayout"
+        tools:layout_editor_absoluteX="0dp">
 
-            <ImageButton
-                android:id="@+id/editPhone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_edit_black_24dp" />
-        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/favSport"
+            android:text="Sport:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/favSport"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp">
+            android:gravity="center"
+            android:textColor="@color/darkGray"
+            android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Age:"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:layout_alignLeft="@+id/age"
-                />
+        <ImageButton
+            android:id="@+id/editSport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_edit_black_24dp" />
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/age"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/darkGray"
-                android:textSize="18sp"
-                android:inputType="number"
-                />
+    <RelativeLayout
+        android:id="@+id/reputation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/favSportRel"
+        tools:layout_editor_absoluteX="15dp">
 
-            <ImageButton
-                android:id="@+id/editAge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_edit_black_24dp" />
-        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/rep"
+            android:text="Reputation:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/rep"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp">
+            android:gravity="center"
+            android:inputType="number"
+            android:text="0"
+            android:textColor="@color/darkGray"
+            android:textSize="18sp" />
+    </RelativeLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sport:"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:layout_alignLeft="@+id/favSport"
-                />
+    <RelativeLayout
+        android:id="@+id/ageLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/phoneLayout"
+        tools:layout_editor_absoluteX="8dp">
 
-            <TextView
-                android:id="@+id/favSport"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/darkGray"
-                android:textSize="18sp"
-                />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/age"
+            android:text="Age:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
-            <ImageButton
-                android:id="@+id/editSport"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_edit_black_24dp" />
-        </RelativeLayout>
-
-        <RelativeLayout
+        <TextView
+            android:id="@+id/age"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="10dp">
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@color/darkGray"
+            android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Reputation:"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:layout_alignLeft="@+id/rep"
-                />
+        <ImageButton
+            android:id="@+id/editAge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_edit_black_24dp" />
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/rep"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:gravity="center"
-                android:textColor="@color/darkGray"
-                android:textSize="18sp"
-                android:inputType="number"
-                />
-        </RelativeLayout>
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Save changes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reputation" />
 
-    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
