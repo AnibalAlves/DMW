@@ -143,8 +143,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 //        fieldList = getFields();
         if(mapConnected){
             mMap.clear();
-            displayCurrPos(new LatLng(mLastLocation.getLatitude(),
-                    mLastLocation.getLongitude()));
+            if(mLastLocation != null)
+                displayCurrPos(new LatLng(mLastLocation.getLatitude(),
+                        mLastLocation.getLongitude()));
             displayFields();
             onLocationChanged(mLastLocation);
         }

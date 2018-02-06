@@ -417,7 +417,7 @@ public class FirebaseDBhandler {
     }
 
     public void applyToEvent(Event event){
-        if(event.getEventPlayers().contains(auth.getUid())){
+        if(event.getEventPlayers() != null && event.getEventPlayers().contains(auth.getUid())){
             //User already registered
         }
         else{
@@ -735,6 +735,7 @@ public class FirebaseDBhandler {
                                         if (dataSnapshot.getValue() != null) {
                                             Log.i("FB sign in", "Inside login with facebook - Table already exists! " + dataSnapshot.child("type").getValue());
                                             Intent intent = new Intent(context, MapsActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             context.startActivity(intent);
                                         } else {
                                             try {
@@ -750,6 +751,7 @@ public class FirebaseDBhandler {
                                                     }
                                                 }).start();
                                                 Intent intent = new Intent(context, MapsActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                                 context.startActivity(intent);
                                             } catch (Exception e) {
                                                 Log.i("FB login", "Exception creating fb table is: " + e);

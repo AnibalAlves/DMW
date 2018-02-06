@@ -78,8 +78,7 @@ public class EventInfoActivity extends AppCompatActivity {
                     count = count +1;
                 if(events.size() != oldEventListSize){
                     oldEventListSize = events.size();
-                    event = events.get(0);
-                    if(event.getEventPlayers().contains(mDatabase.getCurrentUID()))
+                    if(events.get(0).getEventPlayers() != null && events.get(0).getEventPlayers().contains(mDatabase.getCurrentUID()))
                     {
                         registered = 1;
                         buttonRegister.setText("Unregister");
@@ -89,11 +88,11 @@ public class EventInfoActivity extends AppCompatActivity {
                         registered = 0;
                         buttonRegister.setText("Register");
                     }
-                    mDatabase.getOneFieldListener(field, event.getFieldId(),fieldImage);
+                    textDate.setText("Date of event : " + DateFormat.format("yy/MM/dd hh:mm",events.get(0).getEventDate()));
+                    mDatabase.getOneFieldListener(field, events.get(0).getFieldId(),fieldImage);
                 }
                 if(field.size() != oldFieldListSize){
                     oldFieldListSize = field.size();
-                    textDate.setText("Date of event : " + DateFormat.format("yy/MM/dd hh:mm",event.getEventDate()));
                     textLocation.setText("Event at : "+field.get(0).getLocation());
                 }
                 if(players.size() != oldPlayerListSize){
@@ -109,10 +108,15 @@ public class EventInfoActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    if(registered == 1) mDatabase.unApplyToEvent(event,EventInfoActivity.this);
-                    else if(registered == 0)mDatabase.applyToEvent(event);
-                    registered = -1;
-                    onResume();
+                    if(registered == 1) {
+                        mDatabase.unApplyToEvent(events.get(0),EventInfoActivity.this);
+                        onResume();
+                    }
+                    else if(registered == 0)
+                    {
+                        mDatabase.applyToEvent(events.get(0));
+                        onResume();
+                    }
                 }
             });
     }
@@ -120,9 +124,11 @@ public class EventInfoActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-
+        registered = -1;
         players.clear();
         events.clear();
+        oldEventListSize = 0;
+        oldPlayerListSize = 0;
         if(count >= 3 || count == -1) {
             count = 0;
             listPlayers.setAdapter(null);
