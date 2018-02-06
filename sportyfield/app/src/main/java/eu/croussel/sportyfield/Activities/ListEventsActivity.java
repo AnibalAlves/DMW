@@ -24,16 +24,17 @@ public class ListEventsActivity extends AppCompatActivity {
     private Handler handlerList ;
     private FirebaseDBhandler mDatabase;
     private Runnable runnable;
+    private ListView listView;
+    int count = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_events);
-        final ListView listView = (ListView) findViewById(R.id.listEvents);
+        listView = (ListView) findViewById(R.id.listEvents);
         events = new ArrayList<SimplifiedEvent>();
         mDatabase = new FirebaseDBhandler();
         handlerList = new Handler();
 
-        mDatabase.getAllOwnedSimplifiedEvents(events);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -53,7 +54,10 @@ public class ListEventsActivity extends AppCompatActivity {
                     CustomListEvent adapter = new CustomListEvent(ListEventsActivity.this,events);
                     listView.setAdapter(adapter);
                 }
-                handlerList.postDelayed(this,2000);
+                else
+                    count = count +1;
+                if(count > 3)
+                    handlerList.postDelayed(this,2000);
 
             }};
     }
@@ -61,6 +65,10 @@ public class ListEventsActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
+        events.clear();
+        count = 0;
+        mDatabase.getAllOwnedSimplifiedEvents(events);
+        listView.setAdapter(null);
         handlerList.postDelayed(runnable, 1000);
 
     }

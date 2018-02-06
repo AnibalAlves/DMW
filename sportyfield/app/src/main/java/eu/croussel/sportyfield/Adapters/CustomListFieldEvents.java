@@ -45,15 +45,15 @@ public class CustomListFieldEvents extends ArrayAdapter<String> {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView= inflater.inflate(R.layout.list_events, null, true);
         mDatabase = new FirebaseDBhandler();
-
+        SimplifiedEvent event = events.get(position);
         TextView name = rowView.findViewById(R.id.name);
-        name.setText(events.get(position).getEventName().toString());
+        name.setText(event.getEventName());
 
         TextView date = rowView.findViewById(R.id.date);
-        date.setText(android.text.format.DateFormat.format("yyyy.MM.dd - HH:MM",events.get(position).getEventDate()).toString());
+        date.setText(android.text.format.DateFormat.format("yyyy.MM.dd - HH:MM",event.getEventDate()));
 
         TextView description = rowView.findViewById(R.id.eventDescription);
-        description.setText(events.get(position).getEventDescription());
+        description.setText(event.getEventDescription());
 
         /*Button joinEvent = rowView.findViewById(R.id.eventJoin); //onClick join this event
         joinEvent.setOnClickListener(new View.OnClickListener() {

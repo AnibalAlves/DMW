@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,24 +33,26 @@ public class EventInfoActivity extends AppCompatActivity {
     ImageView fieldImage;
     TextView textLocation ;
     TextView textDate;
-
+    Button buttonRegister;
     int oldEventListSize = 0;
     int oldFieldListSize = 0;
     int oldPlayerListSize = 0;
-
-
+    int eventId;
+    int count = -1;
     private Handler handlerList ;
     private FirebaseDBhandler mDatabase;
     private Runnable runnable;
-
+    private ListView listPlayers;
+    private int registered;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_info);
-        final ListView listPlayers = (ListView) findViewById(R.id.listViewPlayers);
+        listPlayers = (ListView) findViewById(R.id.listViewPlayers);
         fieldImage = findViewById(R.id.imageField);
         textDate = findViewById(R.id.textEventDate);
         textLocation = findViewById(R.id.textEventLoc);
+        buttonRegister = findViewById(R.id.buttonRegister);
 
         events = new ArrayList<Event>();
         players = new ArrayList<User>();
@@ -58,8 +61,7 @@ public class EventInfoActivity extends AppCompatActivity {
         mDatabase = new FirebaseDBhandler();
         handlerList = new Handler();
 
-        int eventId = getIntent().getIntExtra("eventId", 0);
-        mDatabase.getEventInfo(events,eventId,players);
+        eventId = getIntent().getIntExtra("eventId", 0);
 
         listPlayers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -72,9 +74,21 @@ public class EventInfoActivity extends AppCompatActivity {
         runnable = new Runnable() {
             @Override
             public void run() {
+                if(events.size() == oldEventListSize && field.size() == oldFieldListSize && players.size() == oldPlayerListSize)
+                    count = count +1;
                 if(events.size() != oldEventListSize){
                     oldEventListSize = events.size();
                     event = events.get(0);
+                    if(event.getEventPlayers().contains(mDatabase.getCurrentUID()))
+                    {
+                        registered = 1;
+                        buttonRegister.setText("Unregister");
+                    }
+                    else
+                    {
+                        registered = 0;
+                        buttonRegister.setText("Register");
+                    }
                     mDatabase.getOneFieldListener(field, event.getFieldId(),fieldImage);
                 }
                 if(field.size() != oldFieldListSize){
@@ -87,14 +101,35 @@ public class EventInfoActivity extends AppCompatActivity {
                     CustomListPlayers adapter = new CustomListPlayers(EventInfoActivity.this,players);
                     listPlayers.setAdapter(adapter);
                 }
-                handlerList.postDelayed(this,2000);
+                if(count < 3)
+                    handlerList.postDelayed(this,2000);
 
             }};
+            buttonRegister.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(registered == 1) mDatabase.unApplyToEvent(event,EventInfoActivity.this);
+                    else if(registered == 0)mDatabase.applyToEvent(event);
+                    registered = -1;
+                    onResume();
+                }
+            });
     }
 
     @Override
     public void onResume(){
         super.onResume();
+
+        players.clear();
+        events.clear();
+        if(count >= 3 || count == -1) {
+            count = 0;
+            listPlayers.setAdapter(null);
+            mDatabase.getEventInfo(events, eventId, players);
+        }
+
+
         handlerList.postDelayed(runnable, 1000);
 
     }

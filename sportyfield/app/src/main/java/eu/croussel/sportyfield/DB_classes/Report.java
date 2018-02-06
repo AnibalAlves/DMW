@@ -6,7 +6,7 @@ import java.util.Date;
  * Created by afonso on 29-11-2017.
  */
 
-public class Report {
+public class Report implements Comparable<Report>  {
     private String _descr;
     private int _fieldId; //secondary key that connects to Field
     private int _reportId; //descr number primary key must be incremented automatically
@@ -16,7 +16,10 @@ public class Report {
 
     //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     // String date = sdf.format(new Date());
-
+    @Override
+    public int compareTo(Report o) {
+        return o.getDate().compareTo(this.getDate());
+    }
     //empty
     public Report()
     {

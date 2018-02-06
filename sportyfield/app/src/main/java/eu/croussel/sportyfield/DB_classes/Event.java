@@ -16,6 +16,7 @@ public class Event implements Comparable<Event> {
     private List<String> _eventPlayers;
     private String _eventDescription;
 
+
     public Event(){}
     public Event(int id, String org, int fid, String name, Date d, List<String> players, String descri)
     {

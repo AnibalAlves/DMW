@@ -1,5 +1,6 @@
 package eu.croussel.sportyfield;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -309,55 +310,27 @@ public class FirebaseDBhandler {
     }
     public void getAllReportsListener(final List<Report> reports, final List<User> users, int fieldId) {
         db.child("report").orderByChild("id").equalTo(fieldId)
-                .addValueEventListener(
+                .addListenerForSingleValueEvent(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                    reports.clear();
-                                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                                        try {
-                                            final Report r = snap.getValue(Report.class);
-                                            Log.d("UID of report",  "uid : " + r.getuId()
-                                            + " descr : "+r.getDescr()
-                                            + " id : " + r.getId());
-                                            reports.add(r);
-                                            db.child("users").orderByChild("uid").equalTo(r.getuId()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                                                        try {
-                                                            final User u = snap.getValue(User.class);
-                                                            StorageReference imRef = storage.child("images/users/" + u.getUid());
-                                                            Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
-                                                                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                                        @Override
-                                                                        public void onSuccess(byte[] bytes) {
-                                                                            u.setImage(bytes);
-                                                                            users.add(u);
-                                                                            Log.d("DL IMAGE USER", "SUCCESS");
-                                                                        }
-                                                                    })
-                                                                    .addOnFailureListener(new OnFailureListener() {
-                                                                        @Override
-                                                                        public void onFailure(@NonNull Exception e) {
-                                                                            u.setImage(null);
-                                                                            users.add(u);
-                                                                        }
-                                                                    });
+                                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                    try {
+                                        final Report rep = snap.getValue(Report.class);
+                                        Log.d("UID of report", "uid : " + rep.getuId()
+                                                + " descr : " + rep.getDescr()
+                                                + " id : " + rep.getId());
+                                        reports.add(rep);
+                                    } catch (Exception e) {
+                                        Log.d("Get users ex ", "exception : " + e);
+                                    }
+                                }
+                                Collections.sort(reports);
+                                if(reports.size()>0)
+                                    addUserToListFromReport(reports,users,0);
 
-                                                        }catch(Exception e){Log.d("Get users ex ","exception : " +e);}
-                                                    }
-                                                }
 
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-                                                }
-                                            });
-
-                        }
-                        catch(Exception e){Log.d("Get reports ex ","exception : " +e);}
-                    }
-            }
+                            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -366,6 +339,45 @@ public class FirebaseDBhandler {
         });
     }
 
+    private void addUserToListFromReport(final List<Report> reports, final List<User> users, final int indexReport){
+        db.child("users").orderByChild("uid").equalTo(reports.get(indexReport).getuId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                try {
+                    final User u = snap.getValue(User.class);
+                    StorageReference imRef = storage.child("images/users/" + u.getUid());
+                    Task<byte[]> downloadTask = imRef.getBytes(ONE_MEGABYTE)
+                            .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    u.setImage(bytes);
+                                    users.add(u);
+                                    Log.d("DL IMAGE USER", "SUCCESS");
+                                    if(indexReport+1 < reports.size() && indexReport < 3)
+                                      addUserToListFromReport(reports,users,indexReport+1);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    u.setImage(null);
+                                    users.add(u);
+                                    if(indexReport +1 < reports.size() && indexReport < 3)
+                                        addUserToListFromReport(reports,users,indexReport+1);
+                                }
+                            });
+                } catch (Exception e) {
+                }
+            }
+        }
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.d("BUG","Didn't get data");
+        }
+    });
+    }
 
     ///////////////////////
     ///   EVENTS       ///
@@ -432,6 +444,71 @@ public class FirebaseDBhandler {
                     });
         }
     }
+
+    public void unApplyToEvent(Event event, final Activity context){
+        if(event.getEventPlayers().contains(auth.getUid())){
+            //User already registered
+
+            SimplifiedEvent e = new SimplifiedEvent(event);
+
+            if(event.getEventPlayers().size() == 1) {
+                db.child("eventListField").child(Integer.toString(e.getFieldId())).orderByChild("eventId").equalTo(e.getEventId())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                    child.getRef().removeValue();
+                                }
+                                ((Activity) context).finish();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+            }
+            db.child("eventListUser").child(auth.getUid()).orderByChild("eventId").equalTo(e.getEventId())
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        child.getRef().removeValue();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            db.child("events").orderByChild("eventId").equalTo(event.getEventId())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                List<String> child_players = (List<String>) child.child("eventPlayers").getValue();
+                                if(child_players == null)
+                                    child_players = new ArrayList<String>();
+                                child_players.remove(auth.getUid());
+                                child.child("eventPlayers").getRef().setValue(child_players);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+        }
+        else{
+//            db.child("eventListUser").child(auth.getUid()).push().setValue(e);
+            //User has to be added to the event list
+
+        }
+    }
     public void getEventsForField(final List<SimplifiedEvent> events, int fieldId){
         db.child("eventListField").child(Integer.toString(fieldId))
                 .addListenerForSingleValueEvent(
@@ -490,11 +567,13 @@ public class FirebaseDBhandler {
                         event.clear();
                         for (DataSnapshot child : dataSnapshot.getChildren()){
                             Event e = child.getValue(Event.class);
-                            for(String uId : e.getEventPlayers())
-                                addUserToList(players,uId);
                             try {
-                                event.add(e);
+                                for(String uId : e.getEventPlayers())
+                                        addUserToList(players,uId);
+
                             }catch(Exception ex){}
+                            event.add(e);
+
                         }
                     }
 

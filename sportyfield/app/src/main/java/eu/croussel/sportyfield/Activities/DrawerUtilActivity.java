@@ -166,11 +166,12 @@ public class DrawerUtilActivity extends AppCompatActivity{
                     public void run() {
                         if(users.size() > 0){
                             User u = users.get(0);
-                            Bitmap bitmap = getBitmapSavingMem(u.get_image());
-                            Uri uri = getImageUri(activity,getBitmapSavingMem(u.get_image()));
-                            aux.setImageBitmap(bitmap);
-                            drawable = aux.getDrawable();
-
+                            if(u.get_image() != null) {
+                                Bitmap bitmap = getBitmapSavingMem(u.get_image());
+                                Uri uri = getImageUri(activity, getBitmapSavingMem(u.get_image()));
+                                aux.setImageBitmap(bitmap);
+                                drawable = aux.getDrawable();
+                            }
 //                            Picasso.with(activity).load(uri).into(target);
                             headerResult = getHeader(activity,u.getUserName(),u.getEmail());
 
@@ -303,8 +304,30 @@ public class DrawerUtilActivity extends AppCompatActivity{
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         if(image != null) BitmapFactory.decodeByteArray(image, 0 ,image.length, options);
-
+        options.inSampleSize = calculateInSampleSize(options, 50, 50);
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeByteArray(image, 0 ,image.length, options);
+    }
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 }
