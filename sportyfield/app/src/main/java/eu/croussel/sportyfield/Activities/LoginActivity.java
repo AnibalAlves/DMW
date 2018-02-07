@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -84,8 +85,9 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btn_login);
         btnReset = findViewById(R.id.btn_reset_password);
         // Set the dimensions of the sign-in button.
-        SignInButton signInButton = findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
+        ImageView signInButton = findViewById(R.id.sign_in_button);
+        signInButton.setClickable(true);
+        //        signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -95,10 +97,16 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
         final LoginButton login_button = findViewById(R.id.login_button);
-        login_button.setReadPermissions("email","public_profile");
-
+        ImageView imageLoginButton = findViewById(R.id.login_button_Image);
+        imageLoginButton.setClickable(true);
+        imageLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                login_button.performClick();
+            }
+        });
+        login_button.setVisibility(View.INVISIBLE);
         System.out.println("Before register callBack!!!!!");
         //FaceBook
         callbackManager = CallbackManager.Factory.create();

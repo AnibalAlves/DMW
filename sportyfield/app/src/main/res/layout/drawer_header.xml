@@ -1,30 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="178dp"
-    android:orientation="vertical"
+    android:layout_height="250dp"
     android:background="@color/colorPrimary"
+    android:orientation="vertical"
     android:paddingLeft="30dp">
-    <ImageView
-        android:id="@+id/profileImageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="left|top"
-        android:layout_marginTop="55dp" />
-    <TextView
-        android:id="@+id/userName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:layout_marginTop="20dp"
-        android:textStyle="bold"/>
-    <TextView
-        android:id="@+id/emailTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:layout_marginTop="5dp"
-        android:textSize="14sp"
-        android:textStyle="normal"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/profileImageView"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_gravity="left|top"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="64dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profileImageView" />
+
+        <TextView
+            android:id="@+id/emailTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/userName" />
+    </android.support.constraint.ConstraintLayout>
 </LinearLayout>

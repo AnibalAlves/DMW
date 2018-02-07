@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.content.ContextCompat;
@@ -34,6 +35,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
@@ -43,6 +45,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mikepenz.materialdrawer.Drawer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,11 +82,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     int oldFieldListSize = 0;
     private Handler handlerFields ;
     Runnable runnable ;
+
+    ActionBar actionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
+        actionBar = getSupportActionBar();
         //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
         //that will use the drawer menu
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
@@ -151,14 +156,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         }
 
         try {
-            DrawerUtilActivity.getDrawer(this);
+            DrawerUtilActivity.getDrawer(this,getSupportActionBar());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private void getFields(List<Field> fieldList){
-        if(appliedFilter == null)  mDatabase.getAllFieldsListener(fieldList);
+        mDatabase.getAllFieldsListener(fieldList);
         //else return mDatabase.getAllFieldsWithFilter(fieldList, appliedFilter);
     }
     /////////////////////////////
@@ -170,7 +175,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 
         //Initialize Google Play Services
         initGooglePlay();
-
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,R.raw.silver));
         //Activate listener for marker's info windows
         mMap.setOnInfoWindowClickListener(this);
         //Activate on map click listener
@@ -181,12 +186,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             // Use default InfoWindow frame
             @Override
             public View getInfoWindow(Marker arg0) {
-                return null;
-            }
 
-            // Defines the contents of the InfoWindow
-            @Override
-            public View getInfoContents(Marker arg0) {
                 int tag = (int) arg0.getTag();
                 // Getting view from the layout file info_window_layout
                 View v = getLayoutInflater().inflate(R.layout.windowlayout, null);
@@ -208,16 +208,22 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                         break;
                     default:
                         Field f = fieldList.get(tag - 2);
-                        tvTitle.setText(f.getComment());
+                        tvTitle.setText(f.getDescription());
                         tvText.setText(f.getLocation());
 //                        mDatabase.downloadFieldImTask(f.getId(), iv);
-                        byte[] image = f.getImage();
-                        if(image == null) iv.setImageResource(R.drawable.basket_field);
-                        else iv.setImageBitmap(BitmapFactory.decodeByteArray(image, 0 ,image.length));
+                        if(f.getDescription().equals("Basketball"))
+                            iv.setImageResource(R.drawable.picto_basketball_01);
                         break;
                 }
                 // Returning the view containing InfoWindow contents
                 return v;
+//                return null;
+            }
+
+            // Defines the contents of the InfoWindow
+            @Override
+            public View getInfoContents(Marker arg0) {
+                return null;
 
             }
         });
@@ -297,18 +303,32 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 
     //display all the fields on the map
     private void displayFields(){
-        for( Field f:fieldList )
-        {
-            LatLng fLatLong = new LatLng(f.getLat(), f.getLong());
-            MarkerOptions fMarkOpt = new MarkerOptions()
-                    .position(fLatLong)
-                    .title(f.getDescription())
-                    .snippet(f.getLocation());
-            Marker fieldMarker = mMap.addMarker(fMarkOpt);
-            fieldMarker.setTag(f.getId()+1);
+        for( Field f:fieldList ) {
+            if (appliedFilter == null)
+                displayField(f);
+            else {
+                if(
+                        (f.getPriv() == appliedFilter.getPrivate()
+                        || !f.getPriv() == appliedFilter.getPublic())
+                        && appliedFilter.getFieldType().contains(f.getDescription())
+                        && (!f.getOut() == appliedFilter.getIndoor()|| f.getOut() == appliedFilter.getOutdoor())
+                        )
+                {
+                    displayField(f);
+                }
+            }
         }
     }
 
+    private void displayField(Field f){
+        LatLng fLatLong = new LatLng(f.getLat(), f.getLong());
+        MarkerOptions fMarkOpt = new MarkerOptions()
+                .position(fLatLong)
+                .title(f.getDescription())
+                .snippet(f.getLocation());
+        Marker fieldMarker = mMap.addMarker(fMarkOpt);
+        fieldMarker.setTag(f.getId() + 1);
+    }
 
 
     /////////////////////////////
@@ -527,13 +547,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 //Retrieve filter
                 case REQUEST_FILTER :
                     appliedFilter = (Filter) data.getSerializableExtra("filter");
-                    Toast.makeText(this, appliedFilter.getFieldType(),
-                            Toast.LENGTH_SHORT).show();
+                    printstackList(appliedFilter.getFieldType());
                     break;
 
                 default:
                     break;
             }
         }
+    }
+    void printstackList(List<String> s){
+        if(s == null)            Log.d("DEBUG LIST", "found NOTHING");
+
+        for(String str:s)
+            Log.d("DEBUG LIST", "found : " + str);
     }
 }

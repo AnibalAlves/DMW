@@ -9,8 +9,8 @@
     <RelativeLayout
         android:id="@+id/picLayout"
         android:layout_width="match_parent"
-        android:layout_height="213dp"
-        android:background="@drawable/header"
+        android:layout_height="175dp"
+        android:background="@drawable/back"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,17 +18,17 @@
 
         <ImageView
             android:id="@+id/profilePic"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:src="@drawable/ic_account_circle_black_36dp" />
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="30dp" />
 
         <ImageButton
             android:id="@+id/editProfilePic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
             android:layout_alignBottom="@+id/profilePic"
             android:layout_marginStart="19dp"
             android:layout_toEndOf="@+id/profilePic"
@@ -41,9 +41,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/picLayout"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/picLayout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,13 +66,14 @@
 
         <ImageButton
             android:id="@+id/editEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_edit_black_24dp" />
+            android:scaleType="fitXY"
+            android:src="@drawable/tool_pencil_03" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -77,9 +81,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/emailLayout"
-        tools:layout_editor_absoluteX="30dp">>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailLayout">>
 
         <TextView
             android:layout_width="wrap_content"
@@ -100,13 +107,14 @@
 
         <ImageButton
             android:id="@+id/editPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_edit_black_24dp" />
+            android:scaleType="fitXY"
+            android:src="@drawable/tool_pencil_03" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -114,9 +122,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/passGone"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passGone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -136,13 +147,14 @@
 
         <ImageButton
             android:id="@+id/editUname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_edit_black_24dp" />
+            android:scaleType="fitXY"
+            android:src="@drawable/tool_pencil_03" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -150,9 +162,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/nameLayout"
-        tools:layout_editor_absoluteX="15dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameLayout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -173,13 +188,14 @@
 
         <ImageButton
             android:id="@+id/editPhone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_edit_black_24dp" />
+            android:scaleType="fitXY"
+            android:src="@drawable/tool_pencil_03" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -187,9 +203,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/ageLayout"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ageLayout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -209,13 +228,14 @@
 
         <ImageButton
             android:id="@+id/editSport"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_edit_black_24dp" />
+            android:scaleType="fitXY"
+            android:src="@drawable/tool_pencil_03" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -223,8 +243,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/favSportRel"
-        tools:layout_editor_absoluteX="15dp">
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/favSportRel">
 
         <TextView
             android:layout_width="wrap_content"
@@ -250,9 +273,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/phoneLayout"
-        tools:layout_editor_absoluteX="8dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneLayout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -273,25 +299,42 @@
 
         <ImageButton
             android:id="@+id/editAge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_edit_black_24dp" />
+            android:scaleType="fitXY"
+            android:src="@drawable/tool_pencil_03" />
     </RelativeLayout>
 
     <Button
         android:id="@+id/buttonSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginTop="16dp"
-        android:text="Save changes"
+        android:background="@color/colorPrimaryDark"
+        android:text="SAVE CHANGES"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reputation" />
+
+    <Button
+        android:id="@+id/buttonCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@null"
+        android:text="Cancel"
+        android:textAllCaps="false"
+        android:textColor="@color/darkGray"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonSave"
+        app:layout_constraintEnd_toStartOf="@+id/buttonSave"
+        app:layout_constraintTop_toTopOf="@+id/buttonSave" />
 
 </android.support.constraint.ConstraintLayout>

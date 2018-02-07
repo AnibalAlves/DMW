@@ -48,7 +48,6 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:choiceMode="singleChoice"
-        android:listSelector="@android:color/darker_gray"
         app:layout_constraintBottom_toTopOf="@+id/textAttributes_filter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

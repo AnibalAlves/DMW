@@ -71,7 +71,7 @@ public class FieldInfoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
         try {
-            DrawerUtilActivity.getDrawer(this);
+            DrawerUtilActivity.getDrawer(this,getSupportActionBar());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -160,7 +160,7 @@ public class FieldInfoActivity extends AppCompatActivity {
         eventListView.setAdapter(null);
         repListView.setAdapter(null);
         try {
-            DrawerUtilActivity.getDrawer(this);
+            DrawerUtilActivity.getDrawer(this,getSupportActionBar());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -14,6 +14,7 @@ import android.nfc.Tag;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -94,7 +95,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
         }
     };
 
-    public static void getDrawer(final Activity activity) throws IOException {
+    public static void getDrawer(final Activity activity, final ActionBar actionBar) throws IOException {
         // Check if user is signed in (non-null)
         FirebaseDBhandler mDatabase = new FirebaseDBhandler();
         FirebaseUser u = mDatabase.getCurrentFirebaseUser();
@@ -139,7 +140,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
                     drawable = aux.getDrawable();
                 }
                 headerResult = getHeader(activity,u.getDisplayName(),u.getEmail());
-                createDrawer(activity,drawerItemProfile,drawerItemEvent,drawerItemMap,drawerItemSettings,drawerItemLogout);
+                createDrawer(activity,drawerItemProfile,drawerItemEvent,drawerItemMap,drawerItemSettings,drawerItemLogout,actionBar);
 
             } else if (user.getProviderId().equals("google.com"))
             {
@@ -151,7 +152,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
                     drawable = aux.getDrawable();
                 }
                 headerResult = getHeader(activity,u.getDisplayName(),u.getEmail());
-                createDrawer(activity,drawerItemProfile,drawerItemEvent,drawerItemMap,drawerItemSettings,drawerItemLogout);
+                createDrawer(activity,drawerItemProfile,drawerItemEvent,drawerItemMap,drawerItemSettings,drawerItemLogout,actionBar);
 
             }
             else if (user.getProviderId().equals("password"))
@@ -175,7 +176,7 @@ public class DrawerUtilActivity extends AppCompatActivity{
 //                            Picasso.with(activity).load(uri).into(target);
                             headerResult = getHeader(activity,u.getUserName(),u.getEmail());
 
-                            createDrawer(activity,drawerItemProfile,drawerItemEvent,drawerItemMap,drawerItemSettings,drawerItemLogout);
+                            createDrawer(activity,drawerItemProfile,drawerItemEvent,drawerItemMap,drawerItemSettings,drawerItemLogout,actionBar);
                         }
                         else
                             handler.postDelayed(this,2000);
@@ -193,11 +194,11 @@ public class DrawerUtilActivity extends AppCompatActivity{
     }
 
     private static void createDrawer(final Activity activity,
-                                SecondaryDrawerItem drawerItemProfile,
-                                SecondaryDrawerItem drawerItemTeam,
-                                SecondaryDrawerItem drawerItemMap,
-                                SecondaryDrawerItem drawerItemSettings,
-                                SecondaryDrawerItem drawerItemLogout){
+                                     SecondaryDrawerItem drawerItemProfile,
+                                     SecondaryDrawerItem drawerItemTeam,
+                                     SecondaryDrawerItem drawerItemMap,
+                                     SecondaryDrawerItem drawerItemSettings,
+                                     SecondaryDrawerItem drawerItemLogout, final ActionBar actionBar){
         //create the drawer and remember the `Drawer` result object
         result = new DrawerBuilder()
                 .withActivity(activity)
@@ -216,25 +217,31 @@ public class DrawerUtilActivity extends AppCompatActivity{
                     public boolean onItemClick(final View view, int position, IDrawerItem drawerItem) {
                         if (drawerItem.getIdentifier() == 4) {
                             // load change profile activity
+                            result.closeDrawer();
+
                             Intent intent = new Intent(activity, ChangeProfileActivity.class);
                             view.getContext().startActivity(intent);
                         }
                         if (drawerItem.getIdentifier() == 5) {
+                            result.closeDrawer();
                             // load find teams activity
                             Intent intent = new Intent(activity, ListEventsActivity.class);
                             view.getContext().startActivity(intent);
                         }
                         if (drawerItem.getIdentifier() == 6) {
+                            result.closeDrawer();
                             // load map activity
                             Intent intent = new Intent(activity, MapsActivity.class);
                             view.getContext().startActivity(intent);
                         }
                         if (drawerItem.getIdentifier() == 7) {
+                            result.closeDrawer();
                             // load settings screen
                             Intent intent = new Intent(activity, MapsActivity.class);
                             view.getContext().startActivity(intent);
                         }
                         if (drawerItem.getIdentifier() == 8) {
+                            result.closeDrawer();
                             for (final UserInfo user : FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
                                 // check if the provider id matches "facebook.com" or google or only firebase
                                 if (user.getProviderId().equals(FacebookAuthProvider.PROVIDER_ID)) {
@@ -271,6 +278,22 @@ public class DrawerUtilActivity extends AppCompatActivity{
                         return true;
                     }
                 })
+                .withOnDrawerListener(new Drawer.OnDrawerListener() {
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        actionBar.hide();
+                    }
+
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                        actionBar.show();
+                    }
+
+                    @Override
+                    public void onDrawerSlide(View drawerView, float slideOffset) {
+
+                    }
+                })
                 .build();
     }
 
@@ -279,10 +302,11 @@ public class DrawerUtilActivity extends AppCompatActivity{
         // Create the AccountHeader
         return headerResult = new AccountHeaderBuilder()
                 .withActivity(a)
-                .withHeaderBackground(R.drawable.header)
+                .withHeaderBackground(R.drawable.back)
+                .withHeightDp(200)
                 //.withHeaderBackground(R.color.com_facebook_button_background_color)
                 .addProfiles(
-                        new ProfileDrawerItem().withName(name).withEmail(email).withIcon(drawable)
+                        new ProfileDrawerItem().withIcon(drawable).withName(name).withEmail(email).withIcon(drawable)
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override

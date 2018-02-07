@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -85,7 +91,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
         try {
-            DrawerUtilActivity.getDrawer(this);
+            DrawerUtilActivity.getDrawer(this, getSupportActionBar());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -113,6 +119,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
                     repu.setText(Integer.toString(user.getReputation()));
                     if (user.get_image() != null) {
                         Bitmap bitmap = getBitmapSavingMem(user.get_image());
+                        bitmap = getCroppedBitmap(bitmap);
                         profilePic.setImageBitmap(bitmap);
 
                     }
@@ -174,6 +181,13 @@ public class ChangeProfileActivity extends AppCompatActivity {
 
             }
         }
+
+        ((Button) findViewById(R.id.buttonCancel)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void changeProfilePic() {
@@ -442,6 +456,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
         }
     }
 
+
     private void viewInit() {
         email = findViewById(R.id.email);
         pw = findViewById(R.id.password);
@@ -519,10 +534,32 @@ public class ChangeProfileActivity extends AppCompatActivity {
     private static Bitmap getBitmapSavingMem(byte[] image) {
         // Calculate inSampleSize
         final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        if (image != null) BitmapFactory.decodeByteArray(image, 0, image.length, options);
-
-        options.inJustDecodeBounds = false;
         return BitmapFactory.decodeByteArray(image, 0, image.length, options);
     }
+    public Bitmap getCroppedBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int delta = height - width;
+        final Rect rect = new Rect(0, 0, width, height);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        canvas.drawCircle(width / 2, height / 2,
+                width / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        Bitmap bmp = Bitmap.createBitmap(output, 0,delta/2,width,width);
+//        Bitmap _bmp = Bitmap.createScaledBitmap(output, 100, 100, false);
+//        return _bmp;
+        return bmp;
+    }
+
 }

@@ -52,7 +52,7 @@ public class AddReportActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
         try {
-            DrawerUtilActivity.getDrawer(this);
+            DrawerUtilActivity.getDrawer(this,getSupportActionBar());
         }
         catch (Exception e) {
             e.printStackTrace();

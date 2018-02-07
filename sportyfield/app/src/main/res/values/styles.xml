@@ -22,6 +22,7 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -52,5 +53,7 @@
             @color/material_drawer_header_selection_text
         </item>
     </style>
+
+    <style name="SportifyTheme" parent="AppTheme" />
 
 </resources>

@@ -2,6 +2,11 @@ package eu.croussel.sportyfield.Activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -153,6 +158,7 @@ public class SignupActivity extends AppCompatActivity {
                 byte[] imageInByte;
                 try {
                     Bitmap bitmap = ((BitmapDrawable) im.getDrawable()).getBitmap();
+                    bitmap = getCroppedBitmap(bitmap);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     imageInByte = baos.toByteArray();
@@ -173,4 +179,30 @@ public class SignupActivity extends AppCompatActivity {
         super.onResume();
         progressBar.setVisibility(View.GONE);
     }
+    public Bitmap getCroppedBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int delta = height - width;
+        final Rect rect = new Rect(0, 0, width, height);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        canvas.drawCircle(width / 2, height / 2,
+                width / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        Bitmap bmp = Bitmap.createBitmap(output, 0,delta/2,width,width);
+//        Bitmap _bmp = Bitmap.createScaledBitmap(output, 100, 100, false);
+//        return _bmp;
+        return bmp;
+    }
+
 }
