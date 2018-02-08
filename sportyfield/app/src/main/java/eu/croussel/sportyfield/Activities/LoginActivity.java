@@ -2,6 +2,8 @@ package eu.croussel.sportyfield.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -57,10 +59,11 @@ public class LoginActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseDBhandler db;
     private ProgressDialog mProgressDialog;
-    String email,name,first_name,last_name;
+    String email, name, first_name, last_name;
     CallbackManager callbackManager;
     GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 0;
+    private static Bitmap logoImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +79,10 @@ public class LoginActivity extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         db = new FirebaseDBhandler();
+        logoImage = getBitmapSavingMem(R.drawable.logo_01, 236, 63);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(R.layout.activity_login);
+        ((ImageView) findViewById(R.id.imageView2)).setImageBitmap(logoImage);
         inputEmail = findViewById(R.id.email);
         inputPassword = findViewById(R.id.password);
         progressBar = findViewById(R.id.progressBar);
@@ -88,11 +93,9 @@ public class LoginActivity extends AppCompatActivity {
         ImageView signInButton = findViewById(R.id.sign_in_button);
         signInButton.setClickable(true);
         //        signInButton.setSize(SignInButton.SIZE_STANDARD);
-        signInButton.setOnClickListener(new View.OnClickListener()
-        {
+        signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 signIn();
             }
         });
@@ -176,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null)
         FirebaseUser currentUser = auth.getCurrentUser();
-        if (currentUser!=null) {
+        if (currentUser != null) {
             Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
             startActivity(intent);
         }
@@ -200,14 +203,11 @@ public class LoginActivity extends AppCompatActivity {
                 Log.w(TAG, "Google sign in failed", e);
 
             }
-        }
-        else
-        {
+        } else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
 
     }
-
 
 
 //    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -276,4 +276,37 @@ public class LoginActivity extends AppCompatActivity {
         return userEmail.replace(".", ",");
     }
 
-}
+    public Bitmap getBitmapSavingMem(int resId, int reqWidth, int reqHeight) {
+        // Calculate inSampleSize
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(this.getResources(), resId, options);
+
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(this.getResources(), resId, options);
+    }
+
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+            return inSampleSize;
+        }
+    }

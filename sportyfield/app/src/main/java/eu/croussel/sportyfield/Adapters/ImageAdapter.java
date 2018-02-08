@@ -18,9 +18,7 @@ import eu.croussel.sportyfield.R;
  */
 
 public class ImageAdapter extends BaseAdapter {
-    private Context mContext;
-    public ImageAdapter(Context c) {
-        mContext = c;
+    public ImageAdapter() {
     }
 
     public int getCount() {
@@ -40,7 +38,7 @@ public class ImageAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
-            imageView = new ImageView(mContext);
+            imageView = new ImageView(parent.getContext());
             imageView.setLayoutParams(new GridView.LayoutParams(75, 75));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(8, 8, 8, 8);
@@ -50,7 +48,7 @@ public class ImageAdapter extends BaseAdapter {
 
         final BitmapFactory.Options options = new BitmapFactory.Options();
         int id = mThumbIds[position];
-        Resources res = mContext.getResources();
+        Resources res = parent.getContext().getResources();
 
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(res, id,options);

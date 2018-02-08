@@ -18,7 +18,6 @@
         android:layout_marginTop="56dp"
         android:scaleType="fitXY"
 
-        android:src="@drawable/logo_01"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
