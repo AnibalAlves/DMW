@@ -86,8 +86,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     int oldFieldListSize = 0;
     private Handler handlerFields ;
     Runnable runnable ;
-    private HashMap<String, Integer> hash;
-    private Integer[] mThumbIds = {
+    private static HashMap<String, Integer> hash;
+    private static final Integer[] mThumbIds = {
             R.drawable.pictobasketball01,
             R.drawable.pictoarcherey01,
             R.drawable.pictoathletism01,
@@ -112,16 +112,16 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             R.drawable.pictotennis01,
             R.drawable.pictovolleyball01
     };
-    ActionBar actionBar;
-    Bitmap cursor1;
-    Bitmap cursor2;
-    Bitmap cursor3;
+    private static ActionBar actionBar;
+    private static Bitmap cursor1;
+    private static Bitmap cursor2;
+    private static Bitmap cursor3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cursor1=getBitmapSavingMem(R.drawable.toolpin01);
-        cursor2=getBitmapSavingMem(R.drawable.toolpin02);
-        cursor3=getBitmapSavingMem(R.drawable.toolpin03);
+        cursor1=getBitmapSavingMem(R.drawable.toolpin01,16,18);
+        cursor2=getBitmapSavingMem(R.drawable.toolpin02,16,18);
+        cursor3=getBitmapSavingMem(R.drawable.toolpin03,16,18);
         hash =  new HashMap<>();
         hash.put("Basketball",0);
         hash.put("Archery",1);
@@ -274,7 +274,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                         tvText.setText(f.getLocation());
 //                        mDatabase.downloadFieldImTask(f.getId(), iv);
                         if(hash.containsKey(f.getDescription()))
-                            iv.setImageResource(mThumbIds[hash.get(f.getDescription())]);
+                            iv.setImageBitmap(getBitmapSavingMem(mThumbIds[hash.get(f.getDescription())],50,50));
                         break;
                 }
                 // Returning the view containing InfoWindow contents
@@ -393,13 +393,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         fieldMarker.setTag(f.getId() + 1);
     }
 
-    public Bitmap getBitmapSavingMem(int resId){
+    public Bitmap getBitmapSavingMem(int resId, int reqWidth, int reqHeight){
         // Calculate inSampleSize
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(this.getResources(), resId, options);
 
-        options.inSampleSize = calculateInSampleSize(options, 16, 18);
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeResource(this.getResources(), resId, options);
     }

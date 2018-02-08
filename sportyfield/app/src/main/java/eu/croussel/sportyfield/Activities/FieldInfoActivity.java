@@ -1,6 +1,8 @@
 package eu.croussel.sportyfield.Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -37,7 +39,7 @@ import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 
 public class FieldInfoActivity extends AppCompatActivity {
-    private Integer[] mThumbIds = {
+    private static Integer[] mThumbIds = {
             R.drawable.pictobasketball01,
             R.drawable.pictoarcherey01,
             R.drawable.pictoathletism01,
@@ -64,41 +66,38 @@ public class FieldInfoActivity extends AppCompatActivity {
     };
     // Database Helper
 //    DataBaseHandler db;
-    int fieldId;
-    String theLocation;
-    TextView location;
-    int count = 0;
+    private int fieldId;
+    private String theLocation;
+    private int count = 0;
     // Database Helper
-    private FirebaseAuth auth;
     private FirebaseDBhandler mDatabase;
 
     //Fields acquisition vars
-    List<Report> reports ;
-    List<SimplifiedEvent> events;
-    List<Event> noSimplifiedEvent;
-    int oldReportListSize = 0;
-    int oldEventListSize = 0;
+    private List<Report> reports ;
+    private List<SimplifiedEvent> events;
+    private int oldReportListSize = 0;
+    private int oldEventListSize = 0;
     private Handler handlerReports ;
-    List<Field> field;
-    private Runnable runnable;
+    private List<Field> field;
+    private static Runnable runnable;
     private ListView eventListView;
     private ListView repListView;
-    private HashMap<String, Integer> hash;
+    private static HashMap<String, Integer> hash;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_info);
         //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
         //that will use the drawer menu
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(false);
-        try {
-            DrawerUtilActivity.getDrawer(this,getSupportActionBar());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(false);
+//        try {
+//            DrawerUtilActivity.getDrawer(this,getSupportActionBar());
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
         Intent intent = getIntent();
         fieldId = intent.getIntExtra("fieldID", 0); //get the Field id from Maps class
         theLocation = intent.getStringExtra("location");
@@ -175,7 +174,7 @@ public class FieldInfoActivity extends AppCompatActivity {
                     if(hash.containsKey(field.get(0).getDescription()))
                     {
                         int position = hash.get(field.get(0).getDescription());
-                        ((ImageView) findViewById(R.id.imageTypeSport)).setImageResource(mThumbIds[position]);
+                        ((ImageView) findViewById(R.id.imageTypeSport)).setImageBitmap(getBitmapSavingMem(mThumbIds[position],40,40));
                     }
                 }
                 if(count < 3)
@@ -191,9 +190,41 @@ public class FieldInfoActivity extends AppCompatActivity {
 
         reports = new ArrayList<Report>();
         events = new ArrayList<SimplifiedEvent>();
-        noSimplifiedEvent = new ArrayList<Event>();
+    }
+    public Bitmap getBitmapSavingMem(int resId, int reqWidth, int reqHeight){
+        // Calculate inSampleSize
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(this.getResources(), resId, options);
+
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(this.getResources(), resId, options);
     }
 
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
     @Override
     public void onStop(){
         super.onStop();
@@ -215,50 +246,13 @@ public class FieldInfoActivity extends AppCompatActivity {
         handlerReports.postDelayed(runnable, 1000);
         eventListView.setAdapter(null);
         repListView.setAdapter(null);
-        try {
-            DrawerUtilActivity.getDrawer(this,getSupportActionBar());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            DrawerUtilActivity.getDrawer(this,getSupportActionBar());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
-    public void upArrow(View view) {
-        //get the row the clicked button is in
-        RelativeLayout vwParentRow = (RelativeLayout) view.getParent();
-        ImageButton btnChild = (ImageButton)vwParentRow.getChildAt(4);
-        ImageButton btnChildd = (ImageButton)vwParentRow.getChildAt(6);
-        TextView rep = (TextView) vwParentRow.getChildAt(5);
-        String repu = (String) rep.getText();
-        String splitt = repu.substring(1);
-        Integer aux = Integer.parseInt(splitt);
-        aux++;
-//        db.updateUserRep(testUsername,aux);
-        if (aux>=0)
-            rep.setText("+" + aux);
-        else
-            rep.setText("-" + aux);
-        btnChild.setClickable(false);
-        btnChildd.setClickable(false);
-    }
-
-    public void downArrow(View view) {
-        //get the row the clicked button is in
-        RelativeLayout vwParentRow = (RelativeLayout) view.getParent();
-        ImageButton btnChildu = (ImageButton)vwParentRow.getChildAt(5);
-        ImageButton btnChild = (ImageButton)vwParentRow.getChildAt(7);
-        TextView rep = (TextView) vwParentRow.getChildAt(6);
-        String repu = (String) rep.getText();
-        String splitt = repu.substring(1);
-        Integer aux = Integer.parseInt(splitt);
-        aux--;
-//        db.updateUserRep(testUsername,aux);
-        if (aux>=0)
-            rep.setText("+" + aux);
-        else
-            rep.setText("-" + aux);
-        btnChildu.setClickable(false);
-        btnChild.setClickable(false);
-    }
 
     /////////////////////////////
     //      ACTION BUTTONS     //
@@ -293,20 +287,20 @@ public class FieldInfoActivity extends AppCompatActivity {
                 s.putExtra("sport",field.get(0).getDescription());
                 startActivity(s);
                 return true;
-            case android.R.id.home:
-                if (DrawerUtilActivity.result.isDrawerOpen())
-                {
-                    DrawerUtilActivity.result.closeDrawer();
-                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    getSupportActionBar().setHomeButtonEnabled(false);
-                }
-                else {
-                    DrawerUtilActivity.result.openDrawer();
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    getSupportActionBar().setHomeButtonEnabled(false);
-                }
-                return true;
+//            case android.R.id.home:
+//                if (DrawerUtilActivity.result.isDrawerOpen())
+//                {
+//                    DrawerUtilActivity.result.closeDrawer();
+//                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
+//                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                    getSupportActionBar().setHomeButtonEnabled(false);
+//                }
+//                else {
+//                    DrawerUtilActivity.result.openDrawer();
+//                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                    getSupportActionBar().setHomeButtonEnabled(false);
+//                }
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

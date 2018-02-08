@@ -26,12 +26,13 @@ import eu.croussel.sportyfield.R;
 public class FilterActivity extends AppCompatActivity {
     //List of type of sportfields
     private List<String> selectedFromList;
+    private ImageAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_v2);
         final GridView gv = (GridView) findViewById(R.id.gridView);
-        final ImageAdapter adapter = new ImageAdapter(this);
+        adapter = new ImageAdapter(this);
         final List<Integer> positions = new ArrayList<>();
         selectedFromList = new ArrayList<>();
         gv.setAdapter(adapter);

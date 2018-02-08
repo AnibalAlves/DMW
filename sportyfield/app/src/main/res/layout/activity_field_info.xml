@@ -70,7 +70,6 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="textLocation"
         app:layout_constraintStart_toEndOf="@+id/imageView3"
         app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
@@ -79,7 +78,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="textTypeField"
         app:layout_constraintStart_toEndOf="@+id/imageTypeSport"
         app:layout_constraintTop_toTopOf="@+id/imageTypeSport" />
 
@@ -90,7 +88,7 @@
         android:layout_marginStart="24dp"
         app:layout_constraintStart_toEndOf="@+id/textLocation"
         app:layout_constraintTop_toTopOf="@+id/textLocation"
-        app:srcCompat="@drawable/arrow_down" />
+ />
 
 </android.support.constraint.ConstraintLayout>
 

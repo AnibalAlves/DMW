@@ -1,6 +1,8 @@
 package eu.croussel.sportyfield.Adapters;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +27,8 @@ import eu.croussel.sportyfield.R;
 public class CustomListEvent extends ArrayAdapter<String> {
     private final Activity context;
     private final List<SimplifiedEvent> _events ;
-    private HashMap<String, Integer> hash;
-    private Integer[] mThumbIds = {
+    private static HashMap<String, Integer> hash;
+    private static Integer[] mThumbIds = {
             R.drawable.pictobasketball01,
             R.drawable.pictoarcherey01,
             R.drawable.pictoathletism01,
@@ -88,19 +90,48 @@ public class CustomListEvent extends ArrayAdapter<String> {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.event_row_layout, null, true);
 
-        TextView firstLine = (TextView) rowView.findViewById(R.id.firstLine);
-        TextView secondLine = (TextView) rowView.findViewById(R.id.secondLine);
-        TextView thirdLine = (TextView) rowView.findViewById(R.id.thirdLine);
-        ImageView image = (ImageView) rowView.findViewById(R.id.icon);
         SimplifiedEvent e = _events.get(position);
-        firstLine.setText(e.getEventName());
-        secondLine.setText(DateFormat.format("yyyy/MM/dd - hh:mm",e.getEventDate()));
-        thirdLine.setText(e.getEventDescription());
+        ((TextView) rowView.findViewById(R.id.firstLine)).setText(e.getEventName());
+        ((TextView) rowView.findViewById(R.id.secondLine)).setText(DateFormat.format("yyyy/MM/dd - hh:mm",e.getEventDate()));
+        ((TextView) rowView.findViewById(R.id.thirdLine)).setText(e.getEventDescription());
         if(hash.containsKey(e.get_eventSport()))
-            image.setImageResource(mThumbIds[hash.get(e.get_eventSport())]);
+            ((ImageView) rowView.findViewById(R.id.icon)).setImageBitmap(getBitmapSavingMem(mThumbIds[hash.get(e.get_eventSport())],40,40));
 
         return rowView;
     }
+    public Bitmap getBitmapSavingMem(int resId, int reqWidth, int reqHeight){
+        // Calculate inSampleSize
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(((Activity) context).getResources(), resId, options);
 
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(((Activity) context).getResources(), resId, options);
+    }
+
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
 
     }

@@ -42,26 +42,22 @@ public class CustomListPlayers extends ArrayAdapter<String> {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.event_row_layout, null, true);
 
-        TextView firstLine = (TextView) rowView.findViewById(R.id.firstLine);
-        TextView secondLine = (TextView) rowView.findViewById(R.id.secondLine);
-        TextView thirdLine = (TextView) rowView.findViewById(R.id.thirdLine);
 
-        ImageView image = (ImageView) rowView.findViewById(R.id.icon);
+        ImageView image = ((ImageView) rowView.findViewById(R.id.icon));
         User user = _players.get(position);
 
-        firstLine.setText(user.getUserName());
+        ((TextView) rowView.findViewById(R.id.firstLine)).setText(user.getUserName());
 
-        secondLine.setText(user.getType());
-        thirdLine.setText(user.getFavSport());
+        ((TextView) rowView.findViewById(R.id.secondLine)).setText(user.getType());
+        ((TextView) rowView.findViewById(R.id.thirdLine)).setText(user.getFavSport());
 
-        image.setImageResource(R.drawable.user_icon);
 
         byte[] imageBytes = user.get_image();
         if(imageBytes != null) {
             Bitmap bitmap = getBitmapSavingMem(imageBytes);
             bitmap = getCroppedBitmap(bitmap);
-            image.setImageBitmap(bitmap);
-        }else image.setImageResource(R.drawable.user_icon);
+            ((ImageView) rowView.findViewById(R.id.icon)).setImageBitmap(bitmap);
+        }
 
 
         return rowView;
