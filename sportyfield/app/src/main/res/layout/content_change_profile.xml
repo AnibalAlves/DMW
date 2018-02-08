@@ -43,7 +43,7 @@
         android:layout_gravity="center"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/picLayout">
@@ -239,36 +239,6 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/reputation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favSportRel">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/rep"
-            android:text="Reputation:"
-            android:textColor="@android:color/black"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/rep"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:inputType="number"
-            android:text="0"
-            android:textColor="@color/darkGray"
-            android:textSize="18sp" />
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/ageLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -315,13 +285,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginTop="16dp"
         android:background="@color/colorPrimaryDark"
         android:text="SAVE CHANGES"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reputation" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/buttonCancel"

@@ -15,11 +15,12 @@ public class Event implements Comparable<Event> {
     private Date _eventDate;
     private List<String> _eventPlayers;
     private String _eventDescription;
-
+    private String _eventSport;
 
     public Event(){}
-    public Event(int id, String org, int fid, String name, Date d, List<String> players, String descri)
+    public Event(int id, String org, int fid, String name, Date d, List<String> players, String descri, String eventSport)
     {
+        this._eventSport = eventSport;
         this._eventId=id;
         this._organizerUID=org;
         this._fieldId=fid;
@@ -32,6 +33,8 @@ public class Event implements Comparable<Event> {
     public int compareTo(Event o) {
         return this.getEventDate().compareTo(o.getEventDate());
     }
+    public void set_eventSport(String eventSport){_eventSport=eventSport;}
+    public String get_eventSport(){return _eventSport;}
     public void set_organizerUID(String organizerUID){_organizerUID=organizerUID;}
     public String get_organizerUID(){return this._organizerUID;}
     public int getEventId(){return this._eventId;}

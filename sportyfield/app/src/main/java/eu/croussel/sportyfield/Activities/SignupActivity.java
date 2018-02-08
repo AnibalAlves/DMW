@@ -47,7 +47,7 @@ public class SignupActivity extends AppCompatActivity {
     private String selectedFromList = new String();
     private Uri selectedImage;
     ImageView im;
-
+    Bitmap bitmap;
     private FirebaseDBhandler db;
     Bitmap photoBitmap;
     @Override
@@ -106,7 +106,8 @@ public class SignupActivity extends AppCompatActivity {
                             public void onPickResult(PickResult pickResult) {
                                 Log.d("PATH",pickResult.getPath() +"-"+pickResult);
 //                                setPic(pickResult.getPath());
-                                im.setImageBitmap(pickResult.getBitmap());
+                                bitmap=getCroppedBitmap(pickResult.getBitmap());
+                                im.setImageBitmap(bitmap);
                             }
                         }).show(SignupActivity.this);
             }
@@ -157,8 +158,6 @@ public class SignupActivity extends AppCompatActivity {
 
                 byte[] imageInByte;
                 try {
-                    Bitmap bitmap = ((BitmapDrawable) im.getDrawable()).getBitmap();
-                    bitmap = getCroppedBitmap(bitmap);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     imageInByte = baos.toByteArray();

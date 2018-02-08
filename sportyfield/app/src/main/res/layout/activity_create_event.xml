@@ -7,169 +7,113 @@
     tools:context="eu.croussel.sportyfield.Activities.CreateEventActivity">
 
 
-    <RelativeLayout
-        android:id="@+id/location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/fieldName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="26dp"
-            android:text="Location:"
-            android:textColor="@android:color/black"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/locati"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/fieldName"
-            android:layout_alignBottom="@+id/fieldName"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/fieldName"
-            android:background="@drawable/edittext_frame"
-            android:clickable="false"
-            android:text="blablabla"
-            android:textSize="16sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/location">
-
-        <TextView
-            android:id="@+id/eventName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="26dp"
-            android:text="Event name:"
-            android:textColor="@android:color/black"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/eveName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/eventName"
-            android:layout_alignBottom="@+id/eventName"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/eventName"
-            android:background="@drawable/edittext_frame"
-            android:textSize="16sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/date"
-        android:layout_width="match_parent"
-        android:layout_height="82dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name">
-
-        <TextView
-            android:id="@+id/dateTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="26dp"
-            android:layout_marginTop="26dp"
-            android:text="Date/Time:"
-            android:textColor="@android:color/black"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/dateChoice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/dateTime"
-            android:text="Calendar"
-            android:textSize="16sp"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/players"
-        android:layout_width="match_parent"
-        android:layout_height="129dp"
-        android:layout_marginTop="30dp"
-        android:theme="@android:style/Theme.Holo.Light"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date">
-
-        <TextView
-            android:id="@+id/playersNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="56dp"
-            android:text="Players:"
-            android:textColor="@android:color/black"
-            android:textSize="18sp" />
-
-        <NumberPicker
-            android:id="@+id/numbers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/players">
-
-        <TextView
-            android:id="@+id/descri"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="24dp"
-            android:text="Description:"
-            android:textColor="@android:color/black"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/descriptor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="16dp"
-            android:layout_toEndOf="@+id/descri"
-            android:background="@drawable/edittext_frame"
-            android:textSize="16sp" />
-
-    </RelativeLayout>
-
-
     <Button
         android:id="@+id/addEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:text="Create Event"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description" />
+        app:layout_constraintEnd_toEndOf="@+id/event_Description" />
 
+    <ImageView
+        android:id="@+id/imageSport"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/action_search" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageSport"
+        app:srcCompat="@drawable/toolmap01" />
+
+    <TextView
+        android:id="@+id/textLocation"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Location"
+        app:layout_constraintStart_toEndOf="@+id/imageView5"
+        app:layout_constraintTop_toTopOf="@+id/imageView5" />
+
+    <ImageView
+        android:id="@+id/imageDate"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textLocation"
+        app:srcCompat="@drawable/tooldcalendar01" />
+
+    <TextView
+        android:id="@+id/textDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Insert date"
+        app:layout_constraintStart_toEndOf="@+id/imageDate"
+        app:layout_constraintTop_toTopOf="@+id/imageDate" />
+
+    <EditText
+        android:id="@+id/event_Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:hint="@string/hint_email"
+        android:inputType="textEmailAddress"
+        android:text="Event name"
+        android:textColor="@android:color/darker_gray"
+        android:textColorHint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageDate" />
+
+    <EditText
+        android:id="@+id/event_Description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:hint="@string/hint_email"
+        android:inputType="textEmailAddress"
+        android:text="Event description"
+        android:textColor="@android:color/darker_gray"
+        android:textColorHint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_Name" />
+    <Button
+        android:id="@+id/buttonCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@null"
+        android:text="Cancel"
+        android:textAllCaps="false"
+        android:textColor="@color/darkGray"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/addEvent"
+        app:layout_constraintEnd_toStartOf="@+id/addEvent"
+        app:layout_constraintTop_toTopOf="@+id/addEvent" />
 
 </android.support.constraint.ConstraintLayout>

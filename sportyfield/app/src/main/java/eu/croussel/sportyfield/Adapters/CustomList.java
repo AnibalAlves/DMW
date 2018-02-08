@@ -27,13 +27,11 @@ import eu.croussel.sportyfield.R;
 public class CustomList extends ArrayAdapter<String> {
 
     private final Activity context;
-    private final List<User> _users ;
     private final List<Report> _reports ;
 
 
-    public CustomList(Activity context, List<User> users, List<Report> reports) {
-        super(context, R.layout.list_single, new String[users.size()]);
-        this._users = users;
+    public CustomList(Activity context, List<Report> reports) {
+        super(context, R.layout.list_single, new String[reports.size()]);
         this.context = context;
         this._reports=reports;
     }
@@ -42,37 +40,11 @@ public class CustomList extends ArrayAdapter<String> {
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView= inflater.inflate(R.layout.list_single, null, true);
+        Report r = _reports.get(position);
 
-        ImageView us_im = rowView.findViewById(R.id.user_image);
-        byte[] image = _users.get(position).get_image();
-        if(image != null) {
-            Bitmap bitmap = getBitmapSavingMem(image);
-            us_im.setImageBitmap(bitmap);
-        }else us_im.setImageResource(R.drawable.user_icon);
+        ((TextView) rowView.findViewById(R.id.reportText))
+        .setText(android.text.format.DateFormat.format("yyyy/MM/dd - HH:MM",r.getDate())+" : "+r.getDescr());
 
-
-        TextView user_t = rowView.findViewById(R.id.user_type);
-        user_t.setText(_users.get(position).getType());
-
-        TextView dating = rowView.findViewById(R.id.date);
-        dating.setText(android.text.format.DateFormat.format("yyyy.MM.dd",_reports.get(position).getDate()).toString());
-
-        TextView descrip = rowView.findViewById(R.id.nameUser);
-        descrip.setText(_reports.get(position).getDescr());
-
-
-        ImageButton up_a = rowView.findViewById(R.id.imageButton);
-        up_a.setImageResource(R.drawable.arrow_up);
-        ImageButton down_a;
-        down_a = rowView.findViewById(R.id.down);
-        down_a.setImageResource(R.drawable.arrow_down);
-
-        TextView reput = rowView.findViewById(R.id.reputation);
-        int user_reputation = _users.get(position).getReputation();
-            if (user_reputation >= 0)
-                reput.setText("+" + Integer.toString(user_reputation));
-            else
-                reput.setText("-" + Integer.toString(user_reputation));
         return rowView;
     }
 

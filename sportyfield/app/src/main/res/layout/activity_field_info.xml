@@ -1,23 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     tools:context="eu.croussel.sportyfield.Activities.FieldInfoActivity">
-
-
-    <TextView
-        android:id="@+id/field_location"
-        android:layout_width="match_parent"
-        android:layout_height="48dip"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<android.support.constraint.ConstraintLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/field_image"
@@ -27,16 +17,16 @@
         android:src="@drawable/field"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/field_location" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textReport"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="Reports on this field:"
         android:textColor="@android:color/black"
-        app:layout_constraintTop_toBottomOf="@+id/field_image"
+        app:layout_constraintTop_toBottomOf="@+id/textLocation"
         tools:layout_editor_absoluteX="0dp" />
 
     <ListView
@@ -60,13 +50,49 @@
     <ListView
         android:id="@+id/events"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textEvent"
-        app:layout_constraintVertical_bias="0.0"></ListView>
+        app:layout_constraintTop_toBottomOf="@+id/textEvent"></ListView>
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/field_image"
+        app:srcCompat="@drawable/toolmap01" />
+
+    <TextView
+        android:id="@+id/textLocation"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="textLocation"
+        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+    <TextView
+        android:id="@+id/textTypeField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="textTypeField"
+        app:layout_constraintStart_toEndOf="@+id/imageTypeSport"
+        app:layout_constraintTop_toTopOf="@+id/imageTypeSport" />
+
+    <ImageView
+        android:id="@+id/imageTypeSport"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toEndOf="@+id/textLocation"
+        app:layout_constraintTop_toTopOf="@+id/textLocation"
+        app:srcCompat="@drawable/arrow_down" />
 
 </android.support.constraint.ConstraintLayout>
+
+
+</ScrollView>

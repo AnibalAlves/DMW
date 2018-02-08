@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
     android:padding="6dip">
 
     <ImageView
@@ -17,11 +17,22 @@
         android:id="@+id/secondLine_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/firstLine_user"
         android:layout_toRightOf="@id/icon"
-        android:layout_below="@+id/firstLine"
+        android:layout_marginBottom="10dp"
         android:maxLines="1"
         android:text="Description"
-        android:textSize="12sp" />
+        android:textSize="24sp" />
+    <TextView
+        android:id="@+id/thirdLine_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/secondLine_user"
+        android:layout_toRightOf="@id/icon"
+        android:layout_marginBottom="10dp"
+        android:maxLines="1"
+        android:text="Description"
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/firstLine_user"
@@ -29,8 +40,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/icon"
+        android:layout_marginTop="10dp"
         android:gravity="center_vertical"
         android:text="Example application"
-        android:textSize="16sp" />
+        android:textSize="32sp" />
 
 </RelativeLayout>

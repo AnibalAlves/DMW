@@ -3,6 +3,11 @@ package eu.croussel.sportyfield.Adapters;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,18 +44,22 @@ public class CustomListPlayers extends ArrayAdapter<String> {
 
         TextView firstLine = (TextView) rowView.findViewById(R.id.firstLine);
         TextView secondLine = (TextView) rowView.findViewById(R.id.secondLine);
+        TextView thirdLine = (TextView) rowView.findViewById(R.id.thirdLine);
+
         ImageView image = (ImageView) rowView.findViewById(R.id.icon);
         User user = _players.get(position);
 
         firstLine.setText(user.getUserName());
 
-        secondLine.setText(user.getType()+" - Favorite sport : "+user.getFavSport());
+        secondLine.setText(user.getType());
+        thirdLine.setText(user.getFavSport());
 
         image.setImageResource(R.drawable.user_icon);
 
         byte[] imageBytes = user.get_image();
         if(imageBytes != null) {
             Bitmap bitmap = getBitmapSavingMem(imageBytes);
+            bitmap = getCroppedBitmap(bitmap);
             image.setImageBitmap(bitmap);
         }else image.setImageResource(R.drawable.user_icon);
 
@@ -65,7 +74,7 @@ public class CustomListPlayers extends ArrayAdapter<String> {
         options.inJustDecodeBounds = true;
         if(image != null) BitmapFactory.decodeByteArray(image, 0 ,image.length, options);
 
-        options.inSampleSize = calculateInSampleSize(options, 50, 50);
+        options.inSampleSize = calculateInSampleSize(options, 100, 100);
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeByteArray(image, 0 ,image.length, options);
     }
@@ -92,5 +101,30 @@ public class CustomListPlayers extends ArrayAdapter<String> {
         }
 
         return inSampleSize;
+    }
+    public Bitmap getCroppedBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int delta = height - width;
+        final Rect rect = new Rect(0, 0, width, height);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        canvas.drawCircle(width / 2, height / 2,
+                width / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        Bitmap bmp = Bitmap.createBitmap(output, 0,delta/2,width,width);
+//        Bitmap _bmp = Bitmap.createScaledBitmap(output, 100, 100, false);
+//        return _bmp;
+        return bmp;
     }
 }

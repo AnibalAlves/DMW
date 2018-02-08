@@ -24,21 +24,44 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import eu.croussel.sportyfield.Adapters.CustomList;
 import eu.croussel.sportyfield.Adapters.CustomListEvent;
-import eu.croussel.sportyfield.Adapters.CustomListFieldEvents;
 import eu.croussel.sportyfield.DB_classes.Event;
 import eu.croussel.sportyfield.DB_classes.Field;
 import eu.croussel.sportyfield.DB_classes.Report;
 import eu.croussel.sportyfield.DB_classes.SimplifiedEvent;
-import eu.croussel.sportyfield.DB_classes.User;
 import eu.croussel.sportyfield.FirebaseDBhandler;
 import eu.croussel.sportyfield.R;
 
 public class FieldInfoActivity extends AppCompatActivity {
-
+    private Integer[] mThumbIds = {
+            R.drawable.pictobasketball01,
+            R.drawable.pictoarcherey01,
+            R.drawable.pictoathletism01,
+            R.drawable.pictobadminton01,
+            R.drawable.pictobaseball01,
+            R.drawable.pictobowling01,
+            R.drawable.pictoboxe01,
+            R.drawable.pictocurling01,
+            R.drawable.pictodiving01,
+            R.drawable.pictofish01,
+            R.drawable.pictofitness01,
+            R.drawable.pictogolf01,
+            R.drawable.pictogym01,
+            R.drawable.pictohockey01,
+            R.drawable.pictojudo01,
+            R.drawable.pictokayak01,
+            R.drawable.pictopingpong01,
+            R.drawable.pictorugby01,
+            R.drawable.pictorunning01,
+            R.drawable.pictosocker01,
+            R.drawable.pictoswim01,
+            R.drawable.pictotennis01,
+            R.drawable.pictovolleyball01
+    };
     // Database Helper
 //    DataBaseHandler db;
     int fieldId;
@@ -51,7 +74,6 @@ public class FieldInfoActivity extends AppCompatActivity {
 
     //Fields acquisition vars
     List<Report> reports ;
-    List<User> users ;
     List<SimplifiedEvent> events;
     List<Event> noSimplifiedEvent;
     int oldReportListSize = 0;
@@ -61,6 +83,7 @@ public class FieldInfoActivity extends AppCompatActivity {
     private Runnable runnable;
     private ListView eventListView;
     private ListView repListView;
+    private HashMap<String, Integer> hash;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,13 +99,36 @@ public class FieldInfoActivity extends AppCompatActivity {
         catch (Exception e) {
             e.printStackTrace();
         }
-        location = findViewById(R.id.field_location);
         Intent intent = getIntent();
         fieldId = intent.getIntExtra("fieldID", 0); //get the Field id from Maps class
         theLocation = intent.getStringExtra("location");
-        location.setText(theLocation);
+        ((TextView) findViewById(R.id.textLocation)).setText(theLocation.replace(',','\n'));
         eventListView = findViewById(R.id.events);
         repListView = (ListView) findViewById(R.id.reports);
+        hash =  new HashMap<>();
+        hash.put("Basketball",0);
+        hash.put("Archery",1);
+        hash.put("Athletism",2);
+        hash.put("Badminton",3);
+        hash.put("Baseball",4);
+        hash.put("Bowling",5);
+        hash.put("Boxe",6);
+        hash.put("Curling",7);
+        hash.put("Diving",8);
+        hash.put("Fishing",9);
+        hash.put("Fitness",10);
+        hash.put("Golf",11);
+        hash.put("Gymnastic",12);
+        hash.put("Hockey",13);
+        hash.put("Judo",14);
+        hash.put("Kayak",15);
+        hash.put("Pingpong",16);
+        hash.put("Rugby",17);
+        hash.put("Running",18);
+        hash.put("Football",19);
+        hash.put("Swimming",20);
+        hash.put("Tennis",21);
+        hash.put("Volleyball",22);
 
 
         mDatabase = new FirebaseDBhandler();
@@ -92,14 +138,13 @@ public class FieldInfoActivity extends AppCompatActivity {
             @Override
             public void run() {
                 int eventSize = events.size();
-                int reportSize = users.size();
+                int reportSize = reports.size();
                 if(eventSize == oldEventListSize && reportSize == oldReportListSize)
                     count = count + 1;
-                Log.d("Number of reports", "number of reports is " + reports.size() + " n of users :" + users.size());
                 if(events.size() != oldEventListSize && events.size() > 0) {
                     oldEventListSize = events.size();
                     Log.d("EVENTS", events.size() + " events found. First event's description : " + events.get(0).getEventDescription());
-                    CustomListFieldEvents eventAdaper = new CustomListFieldEvents(FieldInfoActivity.this,events);
+                    CustomListEvent eventAdaper = new CustomListEvent(FieldInfoActivity.this,events);
                     eventListView.setAdapter(eventAdaper);
                     eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -110,10 +155,10 @@ public class FieldInfoActivity extends AppCompatActivity {
                         }
                     });
                 }
-                if(users.size() != oldReportListSize && users.size()<=reports.size()) {
-                    oldReportListSize = users.size();
+                if(reports.size() != oldReportListSize) {
+                    oldReportListSize = reports.size();
                     Collections.sort(reports);
-                    CustomList adapter = new CustomList(FieldInfoActivity.this,users, reports);
+                    CustomList adapter = new CustomList(FieldInfoActivity.this, reports);
 
                     repListView.setAdapter(adapter);
                     repListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -121,6 +166,17 @@ public class FieldInfoActivity extends AppCompatActivity {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         }
                     });
+                }
+                if(field.size()>0){
+                    if(field.get(0).getOut())
+                        ((TextView) findViewById(R.id.textTypeField)).setText(field.get(0).getDescription()+"\n"+"Outdoor");
+                    else
+                        ((TextView) findViewById(R.id.textTypeField)).setText(field.get(0).getDescription()+"\n"+"Indoor");
+                    if(hash.containsKey(field.get(0).getDescription()))
+                    {
+                        int position = hash.get(field.get(0).getDescription());
+                        ((ImageView) findViewById(R.id.imageTypeSport)).setImageResource(mThumbIds[position]);
+                    }
                 }
                 if(count < 3)
                     handlerReports.postDelayed(this,2000);
@@ -134,7 +190,6 @@ public class FieldInfoActivity extends AppCompatActivity {
 
 
         reports = new ArrayList<Report>();
-        users = new ArrayList<User>();
         events = new ArrayList<SimplifiedEvent>();
         noSimplifiedEvent = new ArrayList<Event>();
     }
@@ -149,11 +204,12 @@ public class FieldInfoActivity extends AppCompatActivity {
     {  // After a pause OR at startup
         super.onResume();
 
-        users.clear();
         reports.clear();
         events.clear();
+        oldEventListSize = 0;
+        oldReportListSize = 0;
         mDatabase.getEventsForField(events, fieldId);
-        mDatabase.getAllReportsListener(reports, users, fieldId);
+        mDatabase.getAllReportsListener(reports, null, fieldId);
 
         count = 0;
         handlerReports.postDelayed(runnable, 1000);
@@ -234,6 +290,7 @@ public class FieldInfoActivity extends AppCompatActivity {
                 Intent s = new Intent(this,CreateEventActivity.class);
                 s.putExtra("fieldId",fieldId);
                 s.putExtra("location",theLocation);
+                s.putExtra("sport",field.get(0).getDescription());
                 startActivity(s);
                 return true;
             case android.R.id.home:

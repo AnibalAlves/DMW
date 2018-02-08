@@ -57,13 +57,6 @@ public class CustomList_classify extends ArrayAdapter<String> {
         ImageButton thumUp = rowView.findViewById(R.id.thumb_up);
         ImageButton down_a = rowView.findViewById(R.id.thumb_down);
 
-        TextView reput = rowView.findViewById(R.id.reputation);
-        if(user_reputation[position] != null) {
-            if (user_reputation[position] >= 0)
-                reput.setText("+" + user_reputation[position].toString());
-            else
-                reput.setText("-" + user_reputation[position].toString());
-        }
         return rowView;
     }
 

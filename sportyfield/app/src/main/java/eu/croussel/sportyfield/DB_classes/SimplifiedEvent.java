@@ -13,8 +13,11 @@ public class SimplifiedEvent implements Comparable<SimplifiedEvent>  {
         private String _eventName;
         private Date _eventDate;
         private String _eventDescription;
-        public SimplifiedEvent(){};
+        private String _eventSport;
+
+    public SimplifiedEvent(){};
         public SimplifiedEvent(Event event){
+            _eventSport = event.get_eventSport();
             _eventId = event.getEventId();
             _fieldId = event.getFieldId();
             _eventName = event.getEventName();
@@ -34,7 +37,9 @@ public class SimplifiedEvent implements Comparable<SimplifiedEvent>  {
     public int compareTo(SimplifiedEvent o) {
         return this.getEventDate().compareTo(o.getEventDate());
     }
-        public int getEventId(){return this._eventId;}
+    public void set_eventSport(String eventSport){_eventSport=eventSport;}
+    public String get_eventSport(){return _eventSport;}
+    public int getEventId(){return this._eventId;}
         public void setEventId(int eventId){this._eventId = eventId;}
         public int getFieldId(){return this._fieldId;}
         public void setFieldId(int i){this._fieldId=i;}

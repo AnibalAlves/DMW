@@ -50,7 +50,7 @@ public class CustomListFieldEvents extends ArrayAdapter<String> {
         name.setText(event.getEventName());
 
         TextView date = rowView.findViewById(R.id.date);
-        date.setText(android.text.format.DateFormat.format("yyyy.MM.dd - HH:MM",event.getEventDate()));
+        date.setText(android.text.format.DateFormat.format("yyyy/MM/dd - HH:MM",event.getEventDate()));
 
         TextView description = rowView.findViewById(R.id.eventDescription);
         description.setText(event.getEventDescription());

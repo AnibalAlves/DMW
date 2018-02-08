@@ -6,12 +6,11 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:contentDescription="TODO"
-        android:src="@drawable/ic_add_a_photo_black_48dp" />
+        android:contentDescription="TODO" />
 
     <TextView
         android:id="@+id/secondLine"
@@ -19,18 +18,31 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/icon"
         android:layout_below="@+id/firstLine"
+        android:layout_marginLeft="20dp"
         android:maxLines="1"
-        android:text="Description"
+        android:textSize="12sp" />
+    <TextView
+        android:id="@+id/thirdLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/icon"
+        android:layout_marginLeft="20dp"
+
+        android:layout_below="@+id/secondLine"
+        android:layout_marginBottom="10dp"
+        android:maxLines="1"
         android:textSize="12sp" />
 
     <TextView
         android:id="@+id/firstLine"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/icon"
         android:gravity="center_vertical"
-        android:text="Example application"
-        android:textSize="16sp" />
+        android:textSize="18sp" />
 
 </RelativeLayout>

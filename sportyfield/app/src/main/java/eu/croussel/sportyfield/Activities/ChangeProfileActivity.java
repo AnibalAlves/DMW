@@ -116,7 +116,6 @@ public class ChangeProfileActivity extends AppCompatActivity {
                     phone.setText(user.getPhone());
                     age.setText(Integer.toString(user.getAge()));
                     favSport.setText(user.getFavSport());
-                    repu.setText(Integer.toString(user.getReputation()));
                     if (user.get_image() != null) {
                         Bitmap bitmap = getBitmapSavingMem(user.get_image());
                         bitmap = getCroppedBitmap(bitmap);
@@ -464,7 +463,6 @@ public class ChangeProfileActivity extends AppCompatActivity {
         phone = findViewById(R.id.phone);
         age = findViewById(R.id.age);
         favSport = findViewById(R.id.favSport);
-        repu = findViewById(R.id.rep);
         rl = findViewById(R.id.passGone);
 
         editEmail = findViewById(R.id.editEmail);
@@ -519,6 +517,9 @@ public class ChangeProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mDatabase.updateUser(users.get(0),mDatabase.getCurrentUID());
+                Toast.makeText(ChangeProfileActivity.this, "Profile saved", Toast.LENGTH_SHORT).show();
+
+
             }
         });
         profilePic = findViewById(R.id.profilePic);

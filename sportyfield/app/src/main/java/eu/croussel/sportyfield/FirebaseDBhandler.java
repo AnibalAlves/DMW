@@ -152,14 +152,15 @@ public class FirebaseDBhandler {
                                         maxId = fi.getId();
                                     } catch (NullPointerException e) {
                                     }
-                                    f.setId(maxId + 1);
-                                    if (f.getImage() != null) {
-                                        putFieldPic(f.getId(), f.getImage());
-                                        f.setImage(null);
-                                    }
-                                    db.child("field").push().setValue(f);
 
                                 }
+                                f.setId(maxId + 1);
+                                if (f.getImage() != null) {
+                                    putFieldPic(f.getId(), f.getImage());
+                                    f.setImage(null);
+                                }
+                                db.child("field").push().setValue(f);
+
                             }
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
@@ -326,8 +327,8 @@ public class FirebaseDBhandler {
                                     }
                                 }
                                 Collections.sort(reports);
-                                if(reports.size()>0)
-                                    addUserToListFromReport(reports,users,0);
+//                                if(reports.size()>0)
+//                                    addUserToListFromReport(reports,users,0);
 
 
                             }
@@ -569,7 +570,7 @@ public class FirebaseDBhandler {
                             Event e = child.getValue(Event.class);
                             try {
                                 for(String uId : e.getEventPlayers())
-                                        addUserToList(players,uId);
+                                        getUserToList(players,uId);
 
                             }catch(Exception ex){}
                             event.add(e);

@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Build;
@@ -33,6 +35,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -49,6 +52,7 @@ import com.mikepenz.materialdrawer.Drawer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import eu.croussel.sportyfield.DB_classes.Field;
@@ -82,11 +86,67 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     int oldFieldListSize = 0;
     private Handler handlerFields ;
     Runnable runnable ;
-
+    private HashMap<String, Integer> hash;
+    private Integer[] mThumbIds = {
+            R.drawable.pictobasketball01,
+            R.drawable.pictoarcherey01,
+            R.drawable.pictoathletism01,
+            R.drawable.pictobadminton01,
+            R.drawable.pictobaseball01,
+            R.drawable.pictobowling01,
+            R.drawable.pictoboxe01,
+            R.drawable.pictocurling01,
+            R.drawable.pictodiving01,
+            R.drawable.pictofish01,
+            R.drawable.pictofitness01,
+            R.drawable.pictogolf01,
+            R.drawable.pictogym01,
+            R.drawable.pictohockey01,
+            R.drawable.pictojudo01,
+            R.drawable.pictokayak01,
+            R.drawable.pictopingpong01,
+            R.drawable.pictorugby01,
+            R.drawable.pictorunning01,
+            R.drawable.pictosocker01,
+            R.drawable.pictoswim01,
+            R.drawable.pictotennis01,
+            R.drawable.pictovolleyball01
+    };
     ActionBar actionBar;
+    Bitmap cursor1;
+    Bitmap cursor2;
+    Bitmap cursor3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        cursor1=getBitmapSavingMem(R.drawable.toolpin01);
+        cursor2=getBitmapSavingMem(R.drawable.toolpin02);
+        cursor3=getBitmapSavingMem(R.drawable.toolpin03);
+        hash =  new HashMap<>();
+        hash.put("Basketball",0);
+        hash.put("Archery",1);
+        hash.put("Athletism",2);
+        hash.put("Badminton",3);
+        hash.put("Baseball",4);
+        hash.put("Bowling",5);
+        hash.put("Boxe",6);
+        hash.put("Curling",7);
+        hash.put("Diving",8);
+        hash.put("Fishing",9);
+        hash.put("Fitness",10);
+        hash.put("Golf",11);
+        hash.put("Gymnastic",12);
+        hash.put("Hockey",13);
+        hash.put("Judo",14);
+        hash.put("Kayak",15);
+        hash.put("Pingpong",16);
+        hash.put("Rugby",17);
+        hash.put("Running",18);
+        hash.put("Football",19);
+        hash.put("Swimming",20);
+        hash.put("Tennis",21);
+        hash.put("Volleyball",22);
+
         setContentView(R.layout.activity_maps);
         actionBar = getSupportActionBar();
         //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
@@ -144,6 +204,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
     public void onResume(){
         super.onResume();
         handlerFields.postDelayed(runnable, 1000);
+        getSupportActionBar().hide();
+        getSupportActionBar().show();
 
 //        fieldList = getFields();
         if(mapConnected){
@@ -211,8 +273,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                         tvTitle.setText(f.getDescription());
                         tvText.setText(f.getLocation());
 //                        mDatabase.downloadFieldImTask(f.getId(), iv);
-                        if(f.getDescription().equals("Basketball"))
-                            iv.setImageResource(R.drawable.picto_basketball_01);
+                        if(hash.containsKey(f.getDescription()))
+                            iv.setImageResource(mThumbIds[hash.get(f.getDescription())]);
                         break;
                 }
                 // Returning the view containing InfoWindow contents
@@ -325,12 +387,46 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         MarkerOptions fMarkOpt = new MarkerOptions()
                 .position(fLatLong)
                 .title(f.getDescription())
-                .snippet(f.getLocation());
+                .snippet(f.getLocation())
+                .icon(BitmapDescriptorFactory.fromBitmap(cursor1));
         Marker fieldMarker = mMap.addMarker(fMarkOpt);
         fieldMarker.setTag(f.getId() + 1);
     }
 
+    public Bitmap getBitmapSavingMem(int resId){
+        // Calculate inSampleSize
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(this.getResources(), resId, options);
 
+        options.inSampleSize = calculateInSampleSize(options, 16, 18);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(this.getResources(), resId, options);
+    }
+
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
     /////////////////////////////
     //      MAP - LOCATION     //
     /////////////////////////////
@@ -355,7 +451,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
                 .title("Current Position")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                .icon(BitmapDescriptorFactory.fromBitmap(cursor2));
+               // .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
         mCurrLocationMarker.setTag(1);
     }
@@ -486,7 +583,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         mClickedMark = mMap.addMarker(new MarkerOptions()
                         .position(position)
                         .title("New Field ?")
-                        .snippet("Click to add new Field"));
+                        .snippet("Click to add new Field")
+                        .icon(BitmapDescriptorFactory.fromBitmap(cursor3)));
         mClickedMark.setTag(0);
     }
 

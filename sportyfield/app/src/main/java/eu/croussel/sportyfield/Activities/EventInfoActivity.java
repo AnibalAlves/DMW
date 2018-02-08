@@ -33,6 +33,7 @@ public class EventInfoActivity extends AppCompatActivity {
     ImageView fieldImage;
     TextView textLocation ;
     TextView textDate;
+    TextView textDescription;
     Button buttonRegister;
     int oldEventListSize = 0;
     int oldFieldListSize = 0;
@@ -48,12 +49,13 @@ public class EventInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_info);
+        getSupportActionBar().setTitle("Event");
         listPlayers = (ListView) findViewById(R.id.listViewPlayers);
         fieldImage = findViewById(R.id.imageField);
         textDate = findViewById(R.id.textEventDate);
         textLocation = findViewById(R.id.textEventLoc);
         buttonRegister = findViewById(R.id.buttonRegister);
-
+        textDescription = findViewById(R.id.eventDescription);
         events = new ArrayList<Event>();
         players = new ArrayList<User>();
         field = new ArrayList<Field>();
@@ -88,11 +90,14 @@ public class EventInfoActivity extends AppCompatActivity {
                         registered = 0;
                         buttonRegister.setText("Register");
                     }
-                    textDate.setText("Date of event : " + DateFormat.format("yy/MM/dd hh:mm",events.get(0).getEventDate()));
+
+                    textDescription.setText(events.get(0).getEventDescription());
+                    textDate.setText(DateFormat.format("yy/MM/dd hh:mm",events.get(0).getEventDate()));
                     mDatabase.getOneFieldListener(field, events.get(0).getFieldId(),fieldImage);
                 }
                 if(field.size() != oldFieldListSize){
                     oldFieldListSize = field.size();
+                    getSupportActionBar().setTitle(field.get(0).getDescription()+" event");
                     textLocation.setText("Event at : "+field.get(0).getLocation());
                 }
                 if(players.size() != oldPlayerListSize){

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -29,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import eu.croussel.sportyfield.DB_classes.Event;
@@ -42,22 +44,72 @@ public class CreateEventActivity extends AppCompatActivity {
     int fieldId;
     String location;
     EditText name, descript;
-    TextView locat;
-    Button date, create;
-    NumberPicker numberPla;
-    private SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    TextView locat, dateText;
+    Button create;
+    ImageView date;
+    private SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy/MM/dd HH:mm");
     private int mYear, mMonth, mDay;
     Calendar finalDate = Calendar.getInstance();
     int aux=0;
     private FirebaseDBhandler mDatabase;
-
-
+    private String sportType;
+    private HashMap<String, Integer> hash;
+    private Integer[] mThumbIds = {
+            R.drawable.pictobasketball01,
+            R.drawable.pictoarcherey01,
+            R.drawable.pictoathletism01,
+            R.drawable.pictobadminton01,
+            R.drawable.pictobaseball01,
+            R.drawable.pictobowling01,
+            R.drawable.pictoboxe01,
+            R.drawable.pictocurling01,
+            R.drawable.pictodiving01,
+            R.drawable.pictofish01,
+            R.drawable.pictofitness01,
+            R.drawable.pictogolf01,
+            R.drawable.pictogym01,
+            R.drawable.pictohockey01,
+            R.drawable.pictojudo01,
+            R.drawable.pictokayak01,
+            R.drawable.pictopingpong01,
+            R.drawable.pictorugby01,
+            R.drawable.pictorunning01,
+            R.drawable.pictosocker01,
+            R.drawable.pictoswim01,
+            R.drawable.pictotennis01,
+            R.drawable.pictovolleyball01
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         //these 3 lines show the Menu icon on the toolbar! Must be used on every activity
         //that will use the drawer menu
+        hash =  new HashMap<>();
+        hash.put("Basketball",0);
+        hash.put("Archery",1);
+        hash.put("Athletism",2);
+        hash.put("Badminton",3);
+        hash.put("Baseball",4);
+        hash.put("Bowling",5);
+        hash.put("Boxe",6);
+        hash.put("Curling",7);
+        hash.put("Diving",8);
+        hash.put("Fishing",9);
+        hash.put("Fitness",10);
+        hash.put("Golf",11);
+        hash.put("Gymnastic",12);
+        hash.put("Hockey",13);
+        hash.put("Judo",14);
+        hash.put("Kayak",15);
+        hash.put("Pingpong",16);
+        hash.put("Rugby",17);
+        hash.put("Running",18);
+        hash.put("Football",19);
+        hash.put("Swimming",20);
+        hash.put("Tennis",21);
+        hash.put("Volleyball",22);
+
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.menu_white);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
@@ -69,14 +121,19 @@ public class CreateEventActivity extends AppCompatActivity {
         }
         Intent mIntent = getIntent();
         fieldId = mIntent.getIntExtra("fieldId", 0);
+        sportType = mIntent.getStringExtra("sport");
+        try
+        {
+            ((ImageView) findViewById(R.id.imageSport)).setImageResource(mThumbIds[hash.get(sportType)]);
+        }catch(Exception ex){}
 
         mDatabase = new FirebaseDBhandler();
-        locat = findViewById(R.id.locati);
-        locat.setText(mIntent.getStringExtra("location"));
-        name = findViewById(R.id.eveName);
-        descript = findViewById(R.id.descriptor);
-
-        date = findViewById(R.id.dateChoice);
+        locat = findViewById(R.id.textLocation);
+        locat.setText(mIntent.getStringExtra("location").replace(',','\n'));
+        name = findViewById(R.id.event_Name);
+        descript = findViewById(R.id.event_Description);
+        dateText = findViewById(R.id.textDate);
+        date = findViewById(R.id.imageDate);
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,18 +149,14 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        numberPla = findViewById(R.id.numbers);
 
         location = mIntent.getStringExtra("location"); //event location
         locat.setText(location);
 
-        numberPla.setMinValue(1);
-        numberPla.setMaxValue(25);
-        numberPla.setWrapSelectorWheel(true);
     }
 
     private void createEvent() {
-        if (date.getText().equals("Calendar") || name.getText().length()<1 || descript.getText().length()<1)
+        if (dateText.getText().equals("Calendar") || name.getText().length()<1 || descript.getText().length()<1)
         {
             Toast.makeText(getApplicationContext(), "Please fill all the parameters!", Toast.LENGTH_SHORT).show();
             return;
@@ -125,11 +178,10 @@ public class CreateEventActivity extends AppCompatActivity {
             } catch (ParseException e1) {
                 e1.printStackTrace();
             }
-            Integer numberPlayers = numberPla.getValue(); //stored as a list of users with this size
-            List<String> players = new ArrayList<String>(numberPlayers);
+            List<String> players = new ArrayList<String>();
             String eventDescription = descript.getText().toString();
             System.out.println("Variables: " + eventName + "\n" + eventDate + "\n" + players.size() + "\n" + eventDescription + "\n" + fieldId);
-            e = new Event(0,"",fieldId,eventName,eventDate,players,eventDescription);
+            e = new Event(0,"",fieldId,eventName,eventDate,players,eventDescription, sportType);
             mDatabase.createEvent(e);
             finish();
         }
@@ -153,16 +205,16 @@ public class CreateEventActivity extends AppCompatActivity {
                         @Override
                         public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                             if (selectedHour < 10 && selectedMinute <10) {
-                                date.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth + " - " +"0"+selectedHour + ":" + "0"+selectedMinute + " Hh:mm");
+                                dateText.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth + " - " +"0"+selectedHour + ":" + "0"+selectedMinute );
                             }
                             if (selectedHour < 10 && selectedMinute >10) {
-                                date.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth + " - " +"0"+selectedHour + ":" + selectedMinute + " Hh:mm");
+                                dateText.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth + " - " +"0"+selectedHour + ":" + selectedMinute );
                             }
                             if (selectedHour > 10 && selectedMinute <10) {
-                                date.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth + " - " +selectedHour + ":" + "0"+selectedMinute + " Hh:mm");
+                                dateText.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth + " - " +selectedHour + ":" + "0"+selectedMinute );
                             }
                             if (selectedHour > 10 && selectedMinute >10) {
-                                date.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth + " - " +selectedHour + ":"+selectedMinute + " Hh:mm");
+                                dateText.setText(year + "/" + (monthOfYear + 1) + "/" + dayOfMonth + " - " +selectedHour + ":"+selectedMinute);
                             }
                             finalDate.set(year,monthOfYear,dayOfMonth,hour,minute);
                         }

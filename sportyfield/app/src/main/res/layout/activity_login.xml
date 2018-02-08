@@ -122,29 +122,29 @@
 
     <ImageView
         android:id="@+id/sign_in_button"
-        android:layout_width="48dp"
-        android:layout_height="30dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
 
         android:layout_marginTop="44dp"
         android:scaleType="fitXY"
-        android:src="@drawable/tool_google_01"
+        android:src="@drawable/toolgooglecircle01"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintHorizontal_bias="0.65"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_reset_password" />
 
     <ImageView
         android:id="@+id/login_button_Image"
-        android:layout_width="13dp"
-        android:layout_height="32dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
 
         android:layout_marginTop="44dp"
         android:scaleType="fitXY"
-        android:src="@drawable/tool_facebook_01"
+        android:src="@drawable/toolfacebookcircle01"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.35"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_reset_password" />
 
