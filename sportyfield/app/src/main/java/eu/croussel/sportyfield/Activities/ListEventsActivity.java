@@ -66,6 +66,7 @@ public class ListEventsActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         events.clear();
+        oldEventListSize = 0;
         count = 0;
         mDatabase.getAllOwnedSimplifiedEvents(events);
         listView.setAdapter(null);

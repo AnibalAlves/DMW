@@ -562,7 +562,7 @@ public class FirebaseDBhandler {
 
     public void getEventInfo(final List<Event> event, int eventId, final List<User> players){
         db.child("events").orderByChild("eventId").equalTo(eventId)
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         event.clear();
